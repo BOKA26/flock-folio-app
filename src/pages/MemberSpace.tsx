@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Church, MapPin, Phone, Mail, Globe, Facebook, Heart, DollarSign, Megaphone, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
+import ChatbotReligieux from "@/components/ChatbotReligieux";
 
 const MemberSpace = () => {
   const navigate = useNavigate();
@@ -380,22 +381,18 @@ const MemberSpace = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MessageSquare className="h-6 w-6 text-secondary" />
-                  Assistant Spirituel GPT
+                  🤖 Assistant Spirituel GPT
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="bg-gradient-divine p-4 rounded-lg">
+              <CardContent>
+                <div className="bg-gradient-divine p-4 rounded-lg text-center">
                   <p className="text-sm">
                     Bonjour ! Je suis l'assistant spirituel de votre église. Posez-moi une question 🙌
                   </p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Cliquez sur l'icône en bas à droite pour discuter avec moi
+                  </p>
                 </div>
-                <Button 
-                  onClick={() => toast.info("Chatbot spirituel à venir")} 
-                  className="w-full"
-                  variant="secondary"
-                >
-                  Démarrer une conversation
-                </Button>
               </CardContent>
             </Card>
           </div>
@@ -410,6 +407,9 @@ const MemberSpace = () => {
           </p>
         </div>
       </footer>
+
+      {/* Chatbot floating button */}
+      <ChatbotReligieux />
     </div>
   );
 };
