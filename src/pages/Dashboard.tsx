@@ -20,6 +20,7 @@ const Dashboard = () => {
   const [recentMembers, setRecentMembers] = useState<any[]>([]);
   const [recentDonations, setRecentDonations] = useState<any[]>([]);
   const [weeklyDonations, setWeeklyDonations] = useState<any[]>([]);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     loadDashboardData();
@@ -32,7 +33,7 @@ const Dashboard = () => {
 
       const { data: roleData } = await supabase
         .from("user_roles")
-        .select("church_id")
+        .select("church_id, role")
         .eq("user_id", user.id)
         .single();
 
@@ -48,6 +49,7 @@ const Dashboard = () => {
         .single();
 
       setChurchInfo(churchData);
+      setUserRole(roleData.role);
 
       // Load stats and data
       const [membersData, prayersData, donationsData, announcementsData, recentMembersData, recentDonationsData] =
@@ -137,41 +139,43 @@ const Dashboard = () => {
             </Card>
           )}
 
-          {/* Quick Action Buttons */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Button
-              onClick={() => navigate('/members')}
-              className="h-auto py-4 flex flex-col items-center gap-2"
-              variant="outline"
-            >
-              <UserPlus className="h-6 w-6" />
-              <span className="text-sm">Ajouter un membre</span>
-            </Button>
-            <Button
-              onClick={() => navigate('/donations')}
-              className="h-auto py-4 flex flex-col items-center gap-2"
-              variant="outline"
-            >
-              <Plus className="h-6 w-6" />
-              <span className="text-sm">Nouveau don</span>
-            </Button>
-            <Button
-              onClick={() => navigate('/announcements')}
-              className="h-auto py-4 flex flex-col items-center gap-2"
-              variant="outline"
-            >
-              <Megaphone className="h-6 w-6" />
-              <span className="text-sm">Nouvelle annonce</span>
-            </Button>
-            <Button
-              onClick={() => navigate('/church')}
-              className="h-auto py-4 flex flex-col items-center gap-2"
-              variant="outline"
-            >
-              <Edit className="h-6 w-6" />
-              <span className="text-sm">Modifier mon église</span>
-            </Button>
-          </div>
+          {/* Quick Action Buttons - Only for admin and operateur */}
+          {(userRole === 'admin' || userRole === 'operateur') && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Button
+                onClick={() => navigate('/members')}
+                className="h-auto py-4 flex flex-col items-center gap-2"
+                variant="outline"
+              >
+                <UserPlus className="h-6 w-6" />
+                <span className="text-sm">Ajouter un membre</span>
+              </Button>
+              <Button
+                onClick={() => navigate('/donations')}
+                className="h-auto py-4 flex flex-col items-center gap-2"
+                variant="outline"
+              >
+                <Plus className="h-6 w-6" />
+                <span className="text-sm">Nouveau don</span>
+              </Button>
+              <Button
+                onClick={() => navigate('/announcements')}
+                className="h-auto py-4 flex flex-col items-center gap-2"
+                variant="outline"
+              >
+                <Megaphone className="h-6 w-6" />
+                <span className="text-sm">Nouvelle annonce</span>
+              </Button>
+              <Button
+                onClick={() => navigate('/church')}
+                className="h-auto py-4 flex flex-col items-center gap-2"
+                variant="outline"
+              >
+                <Edit className="h-6 w-6" />
+                <span className="text-sm">Modifier mon église</span>
+              </Button>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="shadow-gentle hover:shadow-elegant transition-all">
