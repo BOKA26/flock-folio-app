@@ -16,6 +16,7 @@ import OnlineDonations from "./pages/OnlineDonations";
 import Church from "./pages/Church";
 import Settings from "./pages/Settings";
 import MemberSpace from "./pages/MemberSpace";
+import Knowledge from "./pages/Knowledge";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/donation-payment" element={<DonationPayment />} />
           <Route path="/online-donations" element={<OnlineDonations />} />
           <Route path="/church" element={<Church />} />
+          <Route path="/knowledge" element={<Knowledge />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

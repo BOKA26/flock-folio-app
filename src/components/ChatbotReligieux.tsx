@@ -40,8 +40,33 @@ const ChatbotReligieux = () => {
     setIsLoading(true);
 
     try {
+      // Récupérer les infos de l'église de l'utilisateur
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error("Utilisateur non connecté");
+      }
+
+      // Récupérer le church_id et le nom de l'église
+      const { data: userRole } = await supabase
+        .from('user_roles')
+        .select('church_id, churches(nom)')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!userRole) {
+        throw new Error("Église non trouvée");
+      }
+
+      const churchId = userRole.church_id;
+      const churchName = (userRole.churches as any)?.nom || "votre église";
+
       const { data, error } = await supabase.functions.invoke("chat-religieux", {
-        body: { messages: [...messages, userMessage] }
+        body: { 
+          messages: [...messages, userMessage],
+          churchId,
+          churchName
+        }
       });
 
       if (error) throw error;

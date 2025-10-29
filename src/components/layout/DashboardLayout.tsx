@@ -15,6 +15,7 @@ import {
   LogOut,
   Menu,
   Home,
+  BookOpen,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -81,6 +82,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     { icon: DollarSign, label: "Dons", path: "/donations" },
     { icon: CreditCard, label: "Faire un don", path: "/online-donations" },
     { icon: Church, label: "Mon Église", path: "/church", roles: ["admin"] },
+    { icon: BookOpen, label: "Base de Connaissances", path: "/knowledge", roles: ["admin", "operateur"] },
     { icon: Settings, label: "Paramètres", path: "/settings" },
   ];
 

@@ -157,6 +157,124 @@ export type Database = {
           },
         ]
       }
+      kb_chunks: {
+        Row: {
+          chunk_index: number
+          church_id: string
+          content: string
+          created_at: string | null
+          document_id: string
+          embedding: string | null
+          id: string
+        }
+        Insert: {
+          chunk_index: number
+          church_id: string
+          content: string
+          created_at?: string | null
+          document_id: string
+          embedding?: string | null
+          id?: string
+        }
+        Update: {
+          chunk_index?: number
+          church_id?: string
+          content?: string
+          created_at?: string | null
+          document_id?: string
+          embedding?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kb_chunks_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kb_chunks_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "kb_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kb_documents: {
+        Row: {
+          church_id: string
+          created_at: string | null
+          id: string
+          language: string | null
+          source_type: string
+          source_url: string | null
+          title: string
+        }
+        Insert: {
+          church_id: string
+          created_at?: string | null
+          id?: string
+          language?: string | null
+          source_type?: string
+          source_url?: string | null
+          title: string
+        }
+        Update: {
+          church_id?: string
+          created_at?: string | null
+          id?: string
+          language?: string | null
+          source_type?: string
+          source_url?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kb_documents_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kb_faq: {
+        Row: {
+          answer: string
+          church_id: string
+          created_at: string | null
+          id: string
+          question: string
+          tags: string[] | null
+        }
+        Insert: {
+          answer: string
+          church_id: string
+          created_at?: string | null
+          id?: string
+          question: string
+          tags?: string[] | null
+        }
+        Update: {
+          answer?: string
+          church_id?: string
+          created_at?: string | null
+          id?: string
+          question?: string
+          tags?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kb_faq_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       members: {
         Row: {
           church_id: string
@@ -292,6 +410,18 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      match_chunks: {
+        Args: {
+          filter_church_id: string
+          match_count: number
+          query_embedding: string
+        }
+        Returns: {
+          content: string
+          id: string
+          similarity: number
+        }[]
       }
     }
     Enums: {
