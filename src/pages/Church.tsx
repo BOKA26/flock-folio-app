@@ -6,12 +6,28 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Church as ChurchIcon, Save, Copy } from "lucide-react";
+import { Church as ChurchIcon, Save, Copy, Upload, Trash2, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useNavigate } from "react-router-dom";
 
 const Church = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [churchId, setChurchId] = useState<string>("");
+  const [logoUrl, setLogoUrl] = useState<string>("");
+  const [coverUrl, setCoverUrl] = useState<string>("");
   const [formData, setFormData] = useState({
     nom: "",
     code_eglise: "",
@@ -65,6 +81,8 @@ const Church = () => {
           whatsapp: churchData.whatsapp || "",
           verset_clef: churchData.verset_clef || "",
         });
+        setLogoUrl(churchData.logo_url || "");
+        setCoverUrl(churchData.couverture_url || "");
       }
     } catch (error: any) {
       toast.error("Erreur lors du chargement");
@@ -105,6 +123,68 @@ const Church = () => {
     toast.success("Code copié !");
   };
 
+  const handleImageUpload = async (file: File, type: 'logo' | 'cover') => {
+    if (!churchId) return;
+
+    try {
+      setUploading(true);
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${churchId}/${Date.now()}.${fileExt}`;
+      const bucket = type === 'logo' ? 'church-logos' : 'church-covers';
+
+      // Upload file
+      const { error: uploadError } = await supabase.storage
+        .from(bucket)
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data } = supabase.storage.from(bucket).getPublicUrl(fileName);
+      const publicUrl = data.publicUrl;
+
+      // Update church record
+      const updateField = type === 'logo' ? 'logo_url' : 'couverture_url';
+      const { error: updateError } = await supabase
+        .from('churches')
+        .update({ [updateField]: publicUrl })
+        .eq('id', churchId);
+
+      if (updateError) throw updateError;
+
+      if (type === 'logo') {
+        setLogoUrl(publicUrl);
+      } else {
+        setCoverUrl(publicUrl);
+      }
+
+      toast.success(type === 'logo' ? 'Logo mis à jour' : 'Photo de couverture mise à jour');
+    } catch (error: any) {
+      toast.error(error.message || "Erreur lors de l'upload");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeleteChurch = async () => {
+    if (!churchId) return;
+
+    try {
+      const { error } = await supabase
+        .from('churches')
+        .delete()
+        .eq('id', churchId);
+
+      if (error) throw error;
+
+      toast.success("Église supprimée");
+      await supabase.auth.signOut();
+      navigate('/auth');
+    } catch (error: any) {
+      toast.error(error.message || "Erreur lors de la suppression");
+    }
+  };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -119,12 +199,73 @@ const Church = () => {
         <div>
           <h1 className="text-3xl font-display font-bold text-foreground flex items-center gap-2">
             <ChurchIcon className="h-8 w-8 text-primary" />
-            Mon Église
+            Paramètres de l'Église
           </h1>
           <p className="text-muted-foreground mt-1">
-            Gérez les informations de votre église
+            Personnalisez et gérez les informations de votre église
           </p>
         </div>
+
+        {/* Cover and Logo Section */}
+        <Card className="shadow-soft overflow-hidden">
+          <div className="relative h-48 bg-gradient-blessing">
+            {coverUrl ? (
+              <img src={coverUrl} alt="Couverture" className="w-full h-full object-cover" />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <ImageIcon className="h-16 w-16 text-muted-foreground/50" />
+              </div>
+            )}
+            <label className="absolute bottom-4 right-4 cursor-pointer">
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleImageUpload(file, 'cover');
+                }}
+                disabled={uploading}
+              />
+              <Button size="sm" variant="secondary" asChild>
+                <span>
+                  <Upload className="h-4 w-4 mr-2" />
+                  Photo de couverture
+                </span>
+              </Button>
+            </label>
+          </div>
+          <CardContent className="pt-16 relative">
+            <div className="absolute -top-16 left-8">
+              <div className="relative">
+                <div className="h-32 w-32 rounded-full border-4 border-card bg-muted flex items-center justify-center overflow-hidden">
+                  {logoUrl ? (
+                    <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+                  ) : (
+                    <ChurchIcon className="h-16 w-16 text-muted-foreground/50" />
+                  )}
+                </div>
+                <label className="absolute bottom-0 right-0 cursor-pointer">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleImageUpload(file, 'logo');
+                    }}
+                    disabled={uploading}
+                  />
+                  <Button size="icon" variant="secondary" className="rounded-full h-10 w-10" asChild>
+                    <span>
+                      <Upload className="h-4 w-4" />
+                    </span>
+                  </Button>
+                </label>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card className="shadow-gentle">
           <CardHeader>
@@ -264,13 +405,53 @@ const Church = () => {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full">
-                <Save className="mr-2 h-4 w-4" />
-                Enregistrer les modifications
-              </Button>
+              <div className="flex gap-4">
+                <Button type="submit" className="flex-1">
+                  <Save className="mr-2 h-4 w-4" />
+                  Enregistrer les modifications
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </form>
+
+        {/* Danger Zone */}
+        <Card className="shadow-soft border-destructive/50">
+          <CardHeader>
+            <CardTitle className="text-destructive">Zone dangereuse</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              La suppression de l'église est irréversible. Toutes les données associées seront perdues.
+            </p>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="w-full">
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Supprimer mon église
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Êtes-vous absolument sûr ?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Cette action est irréversible. Cela supprimera définitivement votre église
+                    et toutes les données associées (membres, annonces, prières, dons).
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Annuler</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeleteChurch}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Supprimer définitivement
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardContent>
+        </Card>
       </div>
     </DashboardLayout>
   );
