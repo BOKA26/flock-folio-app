@@ -12,6 +12,7 @@ import Prayers from "./pages/Prayers";
 import Donations from "./pages/Donations";
 import Church from "./pages/Church";
 import Settings from "./pages/Settings";
+import MemberSpace from "./pages/MemberSpace";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/member-space" element={<MemberSpace />} />
           <Route path="/members" element={<Members />} />
           <Route path="/announcements" element={<Announcements />} />
           <Route path="/prayers" element={<Prayers />} />
