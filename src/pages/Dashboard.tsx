@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Users, Heart, DollarSign, Megaphone } from "lucide-react";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [churchInfo, setChurchInfo] = useState<any>(null);
   const [stats, setStats] = useState({
     members: 0,
@@ -13,6 +16,7 @@ const Dashboard = () => {
     announcements: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
@@ -21,7 +25,7 @@ const Dashboard = () => {
   const loadDashboardData = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) { setLoading(false); return; }
 
       const { data: roleData } = await supabase
         .from("user_roles")
@@ -29,36 +33,40 @@ const Dashboard = () => {
         .eq("user_id", user.id)
         .single();
 
-      if (roleData) {
-        const { data: churchData } = await supabase
-          .from("churches")
-          .select("*")
-          .eq("id", roleData.church_id)
-          .single();
-
-        setChurchInfo(churchData);
-
-        // Load stats
-        const [membersData, prayersData, donationsData, announcementsData] =
-          await Promise.all([
-            supabase.from("members").select("id", { count: "exact" }),
-            supabase.from("prayer_requests").select("id", { count: "exact" }),
-            supabase.from("donations").select("montant"),
-            supabase.from("announcements").select("id", { count: "exact" }),
-          ]);
-
-        const totalDonations = (donationsData.data || []).reduce(
-          (sum, don) => sum + Number(don.montant),
-          0
-        );
-
-        setStats({
-          members: membersData.count || 0,
-          prayers: prayersData.count || 0,
-          donations: totalDonations,
-          announcements: announcementsData.count || 0,
-        });
+      if (!roleData) {
+        setNeedsOnboarding(true);
+        setLoading(false);
+        return;
       }
+
+      const { data: churchData } = await supabase
+        .from("churches")
+        .select("*")
+        .eq("id", roleData.church_id)
+        .single();
+
+      setChurchInfo(churchData);
+
+      // Load stats
+      const [membersData, prayersData, donationsData, announcementsData] =
+        await Promise.all([
+          supabase.from("members").select("id", { count: "exact" }),
+          supabase.from("prayer_requests").select("id", { count: "exact" }),
+          supabase.from("donations").select("montant"),
+          supabase.from("announcements").select("id", { count: "exact" }),
+        ]);
+
+      const totalDonations = (donationsData.data || []).reduce(
+        (sum, don) => sum + Number(don.montant),
+        0
+      );
+
+      setStats({
+        members: membersData.count || 0,
+        prayers: prayersData.count || 0,
+        donations: totalDonations,
+        announcements: announcementsData.count || 0,
+      });
     } catch (error) {
       console.error("Error loading dashboard:", error);
     } finally {
@@ -70,6 +78,22 @@ const Dashboard = () => {
     <DashboardLayout>
       {loading ? (
         <p className="text-center text-muted-foreground py-8">Chargement...</p>
+      ) : needsOnboarding ? (
+        <div className="max-w-xl mx-auto">
+          <Card className="shadow-gentle border-l-4 border-l-primary">
+            <CardHeader>
+              <CardTitle>Finalisez votre inscription</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground mb-4">
+                Votre compte n'est pas encore rattaché à une église. Cliquez ci-dessous pour terminer l'étape.
+              </p>
+              <Button onClick={() => navigate('/auth?mode=signup')} className="gradient-heaven">
+                Terminer l'inscription
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       ) : (
         <div className="space-y-6">
           <div>

@@ -183,7 +183,7 @@ const Auth = () => {
           data: {
             nom_complet: formData.nom_complet
           },
-          emailRedirectTo: `${window.location.origin}/dashboard`
+          emailRedirectTo: `${window.location.origin}/auth`
         }
       });
 
