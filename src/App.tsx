@@ -10,6 +10,7 @@ import Members from "./pages/Members";
 import Announcements from "./pages/Announcements";
 import Prayers from "./pages/Prayers";
 import Donations from "./pages/Donations";
+import DonationPayment from "./pages/DonationPayment";
 import OnlineDonations from "./pages/OnlineDonations";
 import Church from "./pages/Church";
 import Settings from "./pages/Settings";
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/announcements" element={<Announcements />} />
           <Route path="/prayers" element={<Prayers />} />
           <Route path="/donations" element={<Donations />} />
+          <Route path="/donation-payment" element={<DonationPayment />} />
           <Route path="/online-donations" element={<OnlineDonations />} />
           <Route path="/church" element={<Church />} />
           <Route path="/settings" element={<Settings />} />

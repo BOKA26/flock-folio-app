@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ import { Plus, DollarSign, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
 const Donations = () => {
+  const navigate = useNavigate();
   const [donations, setDonations] = useState<any[]>([]);
   const [members, setMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -98,6 +100,11 @@ const Donations = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!formData.montant || !formData.type_don) {
+      toast.error("Veuillez remplir tous les champs requis");
+      return;
+    }
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Non authentifié");
@@ -110,20 +117,26 @@ const Donations = () => {
 
       if (!roleData) throw new Error("Église non trouvée");
 
-      const { error } = await supabase.from("donations").insert({
-        montant: parseFloat(formData.montant),
-        type_don: formData.type_don,
-        membre_id: formData.membre_id || null,
-        church_id: roleData.church_id,
-        statut: "completed",
+      // Get member name if selected
+      const selectedMember = formData.membre_id 
+        ? members.find(m => m.id === formData.membre_id)
+        : null;
+
+      // Redirect to payment page with donation data
+      navigate("/donation-payment", {
+        state: {
+          donationData: {
+            montant: parseFloat(formData.montant),
+            type_don: formData.type_don,
+            membre_id: formData.membre_id || null,
+            church_id: roleData.church_id,
+            memberName: selectedMember ? `${selectedMember.nom} ${selectedMember.prenom}` : null,
+          }
+        }
       });
 
-      if (error) throw error;
-
-      toast.success("Don enregistré avec succès");
       setDialogOpen(false);
       setFormData({ montant: "", type_don: "", membre_id: "" });
-      loadDonations();
     } catch (error: any) {
       toast.error(error.message || "Erreur");
     }
