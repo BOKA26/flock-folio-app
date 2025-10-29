@@ -35,6 +35,7 @@ const Members = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingMember, setEditingMember] = useState<any>(null);
   const [formData, setFormData] = useState({
     nom: "",
     prenom: "",
@@ -78,20 +79,45 @@ const Members = () => {
 
       if (!roleData) throw new Error("Église non trouvée");
 
-      const { error } = await supabase.from("members").insert({
-        ...formData,
-        church_id: roleData.church_id,
-      });
+      if (editingMember) {
+        // Update existing member
+        const { error } = await supabase
+          .from("members")
+          .update(formData)
+          .eq("id", editingMember.id);
 
-      if (error) throw error;
+        if (error) throw error;
+        toast.success("Membre modifié avec succès");
+      } else {
+        // Create new member
+        const { error } = await supabase.from("members").insert({
+          ...formData,
+          church_id: roleData.church_id,
+        });
 
-      toast.success("Membre ajouté avec succès");
+        if (error) throw error;
+        toast.success("Membre ajouté avec succès");
+      }
+
       setDialogOpen(false);
+      setEditingMember(null);
       setFormData({ nom: "", prenom: "", email: "", telephone: "", sexe: "" });
       loadMembers();
     } catch (error: any) {
-      toast.error(error.message || "Erreur lors de l'ajout");
+      toast.error(error.message || "Erreur lors de l'opération");
     }
+  };
+
+  const handleEdit = (member: any) => {
+    setEditingMember(member);
+    setFormData({
+      nom: member.nom,
+      prenom: member.prenom,
+      email: member.email || "",
+      telephone: member.telephone || "",
+      sexe: member.sexe || "",
+    });
+    setDialogOpen(true);
   };
 
   const handleDelete = async (id: string) => {
@@ -125,7 +151,13 @@ const Members = () => {
             </p>
           </div>
 
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <Dialog open={dialogOpen} onOpenChange={(open) => {
+            setDialogOpen(open);
+            if (!open) {
+              setEditingMember(null);
+              setFormData({ nom: "", prenom: "", email: "", telephone: "", sexe: "" });
+            }
+          }}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
@@ -134,7 +166,7 @@ const Members = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Nouveau membre</DialogTitle>
+                <DialogTitle>{editingMember ? "Modifier le membre" : "Nouveau membre"}</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -200,7 +232,7 @@ const Members = () => {
                   </Select>
                 </div>
                 <Button type="submit" className="w-full">
-                  Ajouter
+                  {editingMember ? "Enregistrer" : "Ajouter"}
                 </Button>
               </form>
             </DialogContent>
@@ -272,13 +304,22 @@ const Members = () => {
                           )}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDelete(member.id)}
-                          >
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEdit(member)}
+                            >
+                              <Edit className="h-4 w-4 text-primary" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDelete(member.id)}
+                            >
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}

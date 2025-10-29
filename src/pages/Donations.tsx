@@ -24,23 +24,41 @@ import { toast } from "sonner";
 
 const Donations = () => {
   const [donations, setDonations] = useState<any[]>([]);
+  const [members, setMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [filterPeriod, setFilterPeriod] = useState<string>("all");
   const [formData, setFormData] = useState({
     montant: "",
     type_don: "",
+    membre_id: "",
   });
 
   useEffect(() => {
+    loadMembers();
     loadDonations();
   }, []);
+
+  const loadMembers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("members")
+        .select("*")
+        .order("nom");
+      
+      if (error) throw error;
+      setMembers(data || []);
+    } catch (error: any) {
+      console.error("Error loading members:", error);
+    }
+  };
 
   const loadDonations = async () => {
     try {
       const { data, error } = await supabase
         .from("donations")
-        .select("*")
+        .select("*, members(*)")
         .order("date_don", { ascending: false });
 
       if (error) throw error;
@@ -57,6 +75,24 @@ const Donations = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getFilteredDonations = () => {
+    if (filterPeriod === "all") return donations;
+    
+    const now = new Date();
+    const filtered = donations.filter(don => {
+      const donDate = new Date(don.date_don);
+      
+      if (filterPeriod === "month") {
+        return donDate.getMonth() === now.getMonth() && donDate.getFullYear() === now.getFullYear();
+      } else if (filterPeriod === "year") {
+        return donDate.getFullYear() === now.getFullYear();
+      }
+      return true;
+    });
+    
+    return filtered;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,6 +113,7 @@ const Donations = () => {
       const { error } = await supabase.from("donations").insert({
         montant: parseFloat(formData.montant),
         type_don: formData.type_don,
+        membre_id: formData.membre_id || null,
         church_id: roleData.church_id,
         statut: "completed",
       });
@@ -85,7 +122,7 @@ const Donations = () => {
 
       toast.success("Don enregistré avec succès");
       setDialogOpen(false);
-      setFormData({ montant: "", type_don: "" });
+      setFormData({ montant: "", type_don: "", membre_id: "" });
       loadDonations();
     } catch (error: any) {
       toast.error(error.message || "Erreur");
@@ -130,6 +167,26 @@ const Donations = () => {
                   />
                 </div>
                 <div>
+                  <Label htmlFor="membre_id">Membre (optionnel)</Label>
+                  <Select
+                    value={formData.membre_id}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, membre_id: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner un membre" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {members.map((member) => (
+                        <SelectItem key={member.id} value={member.id}>
+                          {member.nom} {member.prenom}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
                   <Label htmlFor="type_don">Type de don *</Label>
                   <Select
                     value={formData.type_don}
@@ -159,18 +216,30 @@ const Donations = () => {
 
         <Card className="shadow-gentle">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              Total des dons
-            </CardTitle>
+            <div className="flex justify-between items-center">
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-primary" />
+                Total des dons
+              </CardTitle>
+              <Select value={filterPeriod} onValueChange={setFilterPeriod}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Toutes périodes</SelectItem>
+                  <SelectItem value="month">Ce mois</SelectItem>
+                  <SelectItem value="year">Cette année</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardHeader>
           <CardContent>
             <p className="text-4xl font-bold text-foreground">
-              {totalAmount.toFixed(2)} €
+              {getFilteredDonations().reduce((sum, d) => sum + Number(d.montant), 0).toFixed(2)} €
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              {donations.length} don{donations.length > 1 ? "s" : ""} enregistré
-              {donations.length > 1 ? "s" : ""}
+              {getFilteredDonations().length} don{getFilteredDonations().length > 1 ? "s" : ""} enregistré
+              {getFilteredDonations().length > 1 ? "s" : ""}
             </p>
           </CardContent>
         </Card>
@@ -184,13 +253,13 @@ const Donations = () => {
               <p className="text-center text-muted-foreground py-8">
                 Chargement...
               </p>
-            ) : donations.length === 0 ? (
+            ) : getFilteredDonations().length === 0 ? (
               <p className="text-center text-muted-foreground py-8">
-                Aucun don enregistré
+                Aucun don pour cette période
               </p>
             ) : (
               <div className="space-y-3">
-                {donations.map((don) => (
+                {getFilteredDonations().map((don) => (
                   <div
                     key={don.id}
                     className="flex justify-between items-center p-4 rounded-lg bg-accent/50"
@@ -199,6 +268,11 @@ const Donations = () => {
                       <p className="font-medium text-foreground capitalize">
                         {don.type_don}
                       </p>
+                      {don.members && (
+                        <p className="text-sm font-semibold text-muted-foreground">
+                          {don.members.nom} {don.members.prenom}
+                        </p>
+                      )}
                       <p className="text-sm text-muted-foreground">
                         {new Date(don.date_don).toLocaleDateString("fr-FR", {
                           year: "numeric",

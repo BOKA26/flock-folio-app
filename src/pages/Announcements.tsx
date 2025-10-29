@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Calendar, Trash2 } from "lucide-react";
+import { Plus, Calendar, Trash2, Edit, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 const Announcements = () => {
@@ -21,10 +21,13 @@ const Announcements = () => {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [editingAnnouncement, setEditingAnnouncement] = useState<any>(null);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     titre: "",
     contenu: "",
     date_evenement: "",
+    image_url: "",
   });
 
   useEffect(() => {
@@ -61,6 +64,38 @@ const Announcements = () => {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Non authentifié");
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('church-covers')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('church-covers')
+        .getPublicUrl(filePath);
+
+      setFormData({ ...formData, image_url: publicUrl });
+      toast.success("Image uploadée");
+    } catch (error: any) {
+      toast.error("Erreur lors de l'upload");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -76,22 +111,46 @@ const Announcements = () => {
 
       if (!roleData) throw new Error("Église non trouvée");
 
-      const { error } = await supabase.from("announcements").insert({
+      const announcementData = {
         titre: formData.titre,
         contenu: formData.contenu,
         date_evenement: formData.date_evenement || null,
+        image_url: formData.image_url || null,
         church_id: roleData.church_id,
-      });
+      };
 
-      if (error) throw error;
+      if (editingAnnouncement) {
+        const { error } = await supabase
+          .from("announcements")
+          .update(announcementData)
+          .eq("id", editingAnnouncement.id);
 
-      toast.success("Annonce créée avec succès");
+        if (error) throw error;
+        toast.success("Annonce modifiée avec succès");
+      } else {
+        const { error } = await supabase.from("announcements").insert(announcementData);
+        if (error) throw error;
+        toast.success("Annonce créée avec succès");
+      }
+
       setDialogOpen(false);
-      setFormData({ titre: "", contenu: "", date_evenement: "" });
+      setEditingAnnouncement(null);
+      setFormData({ titre: "", contenu: "", date_evenement: "", image_url: "" });
       loadAnnouncements();
     } catch (error: any) {
-      toast.error(error.message || "Erreur lors de la création");
+      toast.error(error.message || "Erreur lors de l'opération");
     }
+  };
+
+  const handleEdit = (announcement: any) => {
+    setEditingAnnouncement(announcement);
+    setFormData({
+      titre: announcement.titre,
+      contenu: announcement.contenu,
+      date_evenement: announcement.date_evenement ? new Date(announcement.date_evenement).toISOString().slice(0, 16) : "",
+      image_url: announcement.image_url || "",
+    });
+    setDialogOpen(true);
   };
 
   const handleDelete = async (id: string) => {
@@ -124,16 +183,22 @@ const Announcements = () => {
           </div>
 
           {canManage && (
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <Dialog open={dialogOpen} onOpenChange={(open) => {
+              setDialogOpen(open);
+              if (!open) {
+                setEditingAnnouncement(null);
+                setFormData({ titre: "", contenu: "", date_evenement: "", image_url: "" });
+              }
+            }}>
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="mr-2 h-4 w-4" />
                   Nouvelle annonce
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>Créer une annonce</DialogTitle>
+                  <DialogTitle>{editingAnnouncement ? "Modifier l'annonce" : "Créer une annonce"}</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
@@ -173,8 +238,23 @@ const Announcements = () => {
                       }
                     />
                   </div>
-                  <Button type="submit" className="w-full">
-                    Créer l'annonce
+                  <div>
+                    <Label htmlFor="image">Image (optionnelle)</Label>
+                    <div className="space-y-2">
+                      <Input
+                        id="image"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        disabled={uploading}
+                      />
+                      {formData.image_url && (
+                        <img src={formData.image_url} alt="Preview" className="w-full h-32 object-cover rounded" />
+                      )}
+                    </div>
+                  </div>
+                  <Button type="submit" className="w-full" disabled={uploading}>
+                    {uploading ? "Upload en cours..." : (editingAnnouncement ? "Enregistrer" : "Créer l'annonce")}
                   </Button>
                 </form>
               </DialogContent>
@@ -218,17 +298,33 @@ const Announcements = () => {
                       )}
                     </div>
                     {canManage && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(announcement.id)}
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEdit(announcement)}
+                        >
+                          <Edit className="h-4 w-4 text-primary" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDelete(announcement.id)}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
                     )}
                   </div>
                 </CardHeader>
                 <CardContent>
+                  {announcement.image_url && (
+                    <img 
+                      src={announcement.image_url} 
+                      alt={announcement.titre}
+                      className="w-full h-48 object-cover rounded-lg mb-4"
+                    />
+                  )}
                   <p className="text-muted-foreground whitespace-pre-wrap">
                     {announcement.contenu}
                   </p>

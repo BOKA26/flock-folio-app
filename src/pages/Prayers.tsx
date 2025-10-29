@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Heart, Trash2 } from "lucide-react";
+import { Plus, Heart, Trash2, User } from "lucide-react";
 import { toast } from "sonner";
 
 const Prayers = () => {
@@ -44,7 +44,7 @@ const Prayers = () => {
     try {
       const { data, error } = await supabase
         .from("prayer_requests")
-        .select("*")
+        .select("*, members(*)")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -191,13 +191,21 @@ const Prayers = () => {
                   <p className="text-muted-foreground whitespace-pre-wrap mb-3">
                     {prayer.texte}
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(prayer.date_demande).toLocaleDateString("fr-FR", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
+                  <div className="flex justify-between items-center mt-4 pt-3 border-t">
+                    <div className="text-xs text-muted-foreground">
+                      {new Date(prayer.date_demande).toLocaleDateString("fr-FR", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </div>
+                    {prayer.members && (
+                      <div className="flex items-center gap-1 text-xs text-primary">
+                        <User className="h-3 w-3" />
+                        {prayer.members.nom} {prayer.members.prenom}
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             ))}
