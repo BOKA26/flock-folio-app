@@ -14,16 +14,285 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      announcements: {
+        Row: {
+          church_id: string
+          contenu: string
+          created_at: string
+          date_evenement: string | null
+          id: string
+          image_url: string | null
+          titre: string
+        }
+        Insert: {
+          church_id: string
+          contenu: string
+          created_at?: string
+          date_evenement?: string | null
+          id?: string
+          image_url?: string | null
+          titre: string
+        }
+        Update: {
+          church_id?: string
+          contenu?: string
+          created_at?: string
+          date_evenement?: string | null
+          id?: string
+          image_url?: string | null
+          titre?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcements_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      churches: {
+        Row: {
+          adresse: string | null
+          code_eglise: string
+          contact: string | null
+          couverture_url: string | null
+          created_at: string
+          description: string | null
+          email: string | null
+          facebook: string | null
+          id: string
+          logo_url: string | null
+          nom: string
+          site_web: string | null
+          verset_clef: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          adresse?: string | null
+          code_eglise: string
+          contact?: string | null
+          couverture_url?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          facebook?: string | null
+          id?: string
+          logo_url?: string | null
+          nom: string
+          site_web?: string | null
+          verset_clef?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          adresse?: string | null
+          code_eglise?: string
+          contact?: string | null
+          couverture_url?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          facebook?: string | null
+          id?: string
+          logo_url?: string | null
+          nom?: string
+          site_web?: string | null
+          verset_clef?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      donations: {
+        Row: {
+          church_id: string
+          created_at: string
+          date_don: string
+          id: string
+          membre_id: string | null
+          montant: number
+          reference_transaction: string | null
+          statut: string | null
+          type_don: string
+        }
+        Insert: {
+          church_id: string
+          created_at?: string
+          date_don?: string
+          id?: string
+          membre_id?: string | null
+          montant: number
+          reference_transaction?: string | null
+          statut?: string | null
+          type_don: string
+        }
+        Update: {
+          church_id?: string
+          created_at?: string
+          date_don?: string
+          id?: string
+          membre_id?: string | null
+          montant?: number
+          reference_transaction?: string | null
+          statut?: string | null
+          type_don?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donations_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "donations_membre_id_fkey"
+            columns: ["membre_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      members: {
+        Row: {
+          church_id: string
+          created_at: string
+          date_adhesion: string | null
+          email: string | null
+          id: string
+          nom: string
+          prenom: string
+          sexe: string | null
+          telephone: string | null
+          user_id: string | null
+        }
+        Insert: {
+          church_id: string
+          created_at?: string
+          date_adhesion?: string | null
+          email?: string | null
+          id?: string
+          nom: string
+          prenom: string
+          sexe?: string | null
+          telephone?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          church_id?: string
+          created_at?: string
+          date_adhesion?: string | null
+          email?: string | null
+          id?: string
+          nom?: string
+          prenom?: string
+          sexe?: string | null
+          telephone?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "members_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prayer_requests: {
+        Row: {
+          church_id: string
+          created_at: string
+          date_demande: string
+          id: string
+          membre_id: string | null
+          texte: string
+        }
+        Insert: {
+          church_id: string
+          created_at?: string
+          date_demande?: string
+          id?: string
+          membre_id?: string | null
+          texte: string
+        }
+        Update: {
+          church_id?: string
+          created_at?: string
+          date_demande?: string
+          id?: string
+          membre_id?: string | null
+          texte?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prayer_requests_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prayer_requests_membre_id_fkey"
+            columns: ["membre_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          church_id: string
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          church_id: string
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          church_id?: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_church_code: { Args: never; Returns: string }
+      get_user_church_id: { Args: { _user_id: string }; Returns: string }
+      has_role: {
+        Args: {
+          _church_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "operateur" | "fidele"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +419,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "operateur", "fidele"],
+    },
   },
 } as const
