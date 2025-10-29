@@ -1,44 +1,35 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
+import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut, Church, Users, Heart, DollarSign } from "lucide-react";
-import { toast } from "sonner";
+import { Users, Heart, DollarSign, Megaphone } from "lucide-react";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-  const [user, setUser] = useState<any>(null);
-  const [userRole, setUserRole] = useState<string | null>(null);
   const [churchInfo, setChurchInfo] = useState<any>(null);
+  const [stats, setStats] = useState({
+    members: 0,
+    prayers: 0,
+    donations: 0,
+    announcements: 0,
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    checkUser();
+    loadDashboardData();
   }, []);
 
-  const checkUser = async () => {
+  const loadDashboardData = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        navigate("/auth");
-        return;
-      }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-      setUser(session.user);
-
-      // Get user role
       const { data: roleData } = await supabase
         .from("user_roles")
-        .select("role, church_id")
-        .eq("user_id", session.user.id)
+        .select("church_id")
+        .eq("user_id", user.id)
         .single();
 
       if (roleData) {
-        setUserRole(roleData.role);
-
-        // Get church info
         const { data: churchData } = await supabase
           .from("churches")
           .select("*")
@@ -46,6 +37,27 @@ const Dashboard = () => {
           .single();
 
         setChurchInfo(churchData);
+
+        // Load stats
+        const [membersData, prayersData, donationsData, announcementsData] =
+          await Promise.all([
+            supabase.from("members").select("id", { count: "exact" }),
+            supabase.from("prayer_requests").select("id", { count: "exact" }),
+            supabase.from("donations").select("montant"),
+            supabase.from("announcements").select("id", { count: "exact" }),
+          ]);
+
+        const totalDonations = (donationsData.data || []).reduce(
+          (sum, don) => sum + Number(don.montant),
+          0
+        );
+
+        setStats({
+          members: membersData.count || 0,
+          prayers: prayersData.count || 0,
+          donations: totalDonations,
+          announcements: announcementsData.count || 0,
+        });
       }
     } catch (error) {
       console.error("Error loading dashboard:", error);
@@ -54,127 +66,103 @@ const Dashboard = () => {
     }
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    toast.success("Déconnexion réussie");
-    navigate("/");
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center gradient-blessing">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Chargement...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen gradient-blessing">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+    <DashboardLayout>
+      {loading ? (
+        <p className="text-center text-muted-foreground py-8">Chargement...</p>
+      ) : (
+        <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-display font-bold text-foreground mb-2">
+            <h1 className="text-3xl font-display font-bold text-foreground">
               Tableau de bord
             </h1>
-            <p className="text-muted-foreground">
-              Bienvenue, {user?.user_metadata?.nom_complet || user?.email}
+            <p className="text-muted-foreground mt-1">
+              Bienvenue sur votre espace de gestion
             </p>
           </div>
-          <Button onClick={handleLogout} variant="outline">
-            <LogOut className="mr-2 h-4 w-4" />
-            Déconnexion
-          </Button>
-        </div>
 
-        {/* Church Info Card */}
-        {churchInfo && (
-          <Card className="mb-8 shadow-gentle hover:shadow-elegant transition-all duration-300">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Church className="h-5 w-5 text-primary" />
-                {churchInfo.nom}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  <span className="font-semibold">Code d'église:</span> {churchInfo.code_eglise}
+          {churchInfo?.verset_clef && (
+            <Card className="shadow-gentle border-l-4 border-l-primary">
+              <CardContent className="py-6">
+                <p className="text-lg italic text-foreground">
+                  "{churchInfo.verset_clef}"
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  <span className="font-semibold">Rôle:</span>{" "}
-                  <span className="capitalize badge-primary px-2 py-1 rounded-full">
-                    {userRole}
-                  </span>
+              </CardContent>
+            </Card>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="shadow-gentle hover:shadow-elegant transition-all">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Megaphone className="h-5 w-5 text-primary" />
+                  Annonces
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold text-foreground">
+                  {stats.announcements}
                 </p>
-                {churchInfo.verset_clef && (
-                  <p className="text-sm italic text-primary mt-4">
-                    "{churchInfo.verset_clef}"
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                <p className="text-sm text-muted-foreground mt-1">
+                  Annonces actives
+                </p>
+              </CardContent>
+            </Card>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="shadow-gentle hover:shadow-elegant transition-all duration-300">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Users className="h-5 w-5 text-primary" />
-                Membres
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold text-foreground">0</p>
-              <p className="text-sm text-muted-foreground mt-1">Membres actifs</p>
-            </CardContent>
-          </Card>
+            <Card className="shadow-gentle hover:shadow-elegant transition-all">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Users className="h-5 w-5 text-primary" />
+                  Membres
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold text-foreground">
+                  {stats.members}
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Membres enregistrés
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card className="shadow-gentle hover:shadow-elegant transition-all duration-300">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Heart className="h-5 w-5 text-primary" />
-                Prières
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold text-foreground">0</p>
-              <p className="text-sm text-muted-foreground mt-1">Demandes de prière</p>
-            </CardContent>
-          </Card>
+            <Card className="shadow-gentle hover:shadow-elegant transition-all">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Heart className="h-5 w-5 text-primary" />
+                  Prières
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold text-foreground">
+                  {stats.prayers}
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Demandes de prière
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card className="shadow-gentle hover:shadow-elegant transition-all duration-300">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <DollarSign className="h-5 w-5 text-primary" />
-                Dons
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold text-foreground">0 €</p>
-              <p className="text-sm text-muted-foreground mt-1">Total des dons</p>
-            </CardContent>
-          </Card>
+            <Card className="shadow-gentle hover:shadow-elegant transition-all">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <DollarSign className="h-5 w-5 text-primary" />
+                  Dons
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold text-foreground">
+                  {stats.donations.toFixed(2)} €
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Total des dons
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-
-        {/* Coming Soon */}
-        <Card className="shadow-gentle">
-          <CardHeader>
-            <CardTitle>Fonctionnalités à venir</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">
-              Plus de fonctionnalités seront bientôt disponibles pour gérer votre église.
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+      )}
+    </DashboardLayout>
   );
 };
 
