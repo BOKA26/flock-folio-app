@@ -26,6 +26,8 @@ const Auth = () => {
     role: "fidele" as "admin" | "fidele"
   });
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
+  const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
+  const [resendingEmail, setResendingEmail] = useState(false);
 
   // After the user confirms email and gets a session, we finalize onboarding
   const processPendingOnboarding = async (userId: string) => {
@@ -204,7 +206,8 @@ const Auth = () => {
       // If no session yet, wait for email confirmation and finish onboarding after login
       const { data: { session: nowSession } } = await supabase.auth.getSession();
       if (!nowSession) {
-        toast("Veuillez confirmer votre email. Nous finaliserons la création de votre église après connexion.");
+        setNeedsEmailConfirmation(true);
+        toast.info("📧 Veuillez confirmer votre email. Cliquez sur le lien dans l'email que nous venons de vous envoyer.");
         return;
       }
 
@@ -282,6 +285,31 @@ const Auth = () => {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!formData.email) {
+      toast.error("Veuillez entrer votre email");
+      return;
+    }
+
+    setResendingEmail(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: formData.email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth`
+        }
+      });
+
+      if (error) throw error;
+      toast.success("Email de confirmation renvoyé avec succès !");
+    } catch (error: any) {
+      toast.error(error.message || "Erreur lors de l'envoi de l'email");
+    } finally {
+      setResendingEmail(false);
     }
   };
 
@@ -446,6 +474,24 @@ const Auth = () => {
                   <p className="text-xs text-muted-foreground text-center mt-2">
                     Vous avez tenté trop souvent. Patientez {cooldownSeconds}s avant de réessayer.
                   </p>
+                )}
+
+                {needsEmailConfirmation && (
+                  <div className="mt-4 p-4 bg-primary/10 rounded-lg border border-primary/20">
+                    <p className="text-sm text-center mb-3">
+                      Un email de confirmation a été envoyé à <strong>{formData.email}</strong>
+                    </p>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={handleResendConfirmation}
+                      disabled={resendingEmail}
+                    >
+                      {resendingEmail ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                      Renvoyer l'email de confirmation
+                    </Button>
+                  </div>
                 )}
               </form>
             </TabsContent>
