@@ -2,9 +2,3 @@ project_id = "tyzcwcdqntxudqjftzsz"
 
 [functions.paystack-webhook]
 verify_jwt = false
-
-[functions.chat-religieux]
-verify_jwt = false
-
-[functions.ingest-document]
-verify_jwt = false

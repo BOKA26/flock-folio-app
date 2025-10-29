@@ -39,6 +39,15 @@ serve(async (req) => {
   }
 
   try {
+    // Authentication check
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Missing authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     if (!openAIApiKey) {
       throw new Error('OpenAI API key is not configured');
     }
@@ -47,6 +56,17 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    
+    if (authError || !user) {
+      console.error('Auth error:', authError);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Invalid token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { messages, churchId, churchName } = await req.json();
     
     if (!churchId || !churchName) {
@@ -54,7 +74,31 @@ serve(async (req) => {
     }
 
     const lastUserMessage = messages[messages.length - 1]?.content || '';
-    console.log(`Processing question for church ${churchName}: ${lastUserMessage}`);
+
+    // Validate question length
+    if (lastUserMessage.length > 2000) {
+      return new Response(
+        JSON.stringify({ error: 'Question too long - maximum 2000 characters' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Verify user belongs to the requested church
+    const { data: userRole, error: roleError } = await supabase
+      .from('user_roles')
+      .select('church_id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (roleError || !userRole || userRole.church_id !== churchId) {
+      console.error('Access denied - user does not belong to church:', user.id, churchId);
+      return new Response(
+        JSON.stringify({ error: 'Access denied - You do not have access to this church' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Authenticated request from user ${user.id} for church ${churchName}: ${lastUserMessage}`);
 
     // 1) Chercher une FAQ très proche
     const { data: faqs } = await supabase

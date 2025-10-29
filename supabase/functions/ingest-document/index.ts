@@ -7,12 +7,23 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const MAX_TEXT_LENGTH = 500000; // 500KB of text
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Authentication check
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Missing authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -23,13 +34,63 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { churchId, title, text, sourceType = 'text' } = await req.json();
-
-    if (!churchId || !title || !text) {
-      throw new Error('Missing required fields: churchId, title, text');
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    
+    if (authError || !user) {
+      console.error('Auth error:', authError);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Invalid token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    console.log(`Ingesting document: ${title} for church ${churchId}`);
+    const { churchId, title, text, sourceType = 'text' } = await req.json();
+
+    // Input validation
+    if (!churchId || !title || !text) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields: churchId, title, text' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (title.length > 500) {
+      return new Response(
+        JSON.stringify({ error: 'Title too long - maximum 500 characters' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (text.length > MAX_TEXT_LENGTH) {
+      return new Response(
+        JSON.stringify({ error: `Text too long - maximum ${MAX_TEXT_LENGTH} characters` }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Verify user has admin or operateur role for the church
+    const { data: hasAdminRole } = await supabase.rpc('has_role', {
+      _user_id: user.id,
+      _church_id: churchId,
+      _role: 'admin'
+    });
+
+    const { data: hasOperateurRole } = await supabase.rpc('has_role', {
+      _user_id: user.id,
+      _church_id: churchId,
+      _role: 'operateur'
+    });
+
+    if (!hasAdminRole && !hasOperateurRole) {
+      console.error('Access denied - user does not have admin/operateur role:', user.id, churchId);
+      return new Response(
+        JSON.stringify({ error: 'Access denied - Admin or operateur role required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Authenticated request from user ${user.id} ingesting document: ${title} for church ${churchId}`);
 
     // 1) Créer un enregistrement document
     const { data: doc, error: docError } = await supabase
