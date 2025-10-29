@@ -81,7 +81,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     { icon: Heart, label: "Prières", path: "/prayers" },
     { icon: DollarSign, label: "Dons", path: "/donations" },
     { icon: CreditCard, label: "Faire un don", path: "/online-donations" },
-    { icon: Church, label: "Mon Église", path: "/church", roles: ["admin"] },
+    { icon: Church, label: "Paramètres de l'église", path: "/church", roles: ["admin"] },
     { icon: BookOpen, label: "Base de Connaissances", path: "/knowledge", roles: ["admin", "operateur"] },
     { icon: Settings, label: "Paramètres", path: "/settings" },
   ];
