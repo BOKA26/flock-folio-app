@@ -27,6 +27,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [user, setUser] = useState<any>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [churchName, setChurchName] = useState<string>("");
+  const [churchLogo, setChurchLogo] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -54,11 +55,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
       const { data: churchData } = await supabase
         .from("churches")
-        .select("nom")
+        .select("nom, logo_url")
         .eq("id", roleData.church_id)
         .single();
 
-      if (churchData) setChurchName(churchData.nom);
+      if (churchData) {
+        setChurchName(churchData.nom);
+        setChurchLogo(churchData.logo_url);
+      }
     }
   };
 
@@ -85,8 +89,16 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const SidebarContent = () => (
     <div className="flex h-full flex-col">
       <div className="border-b border-border/40 p-6">
-        <div className="flex items-center gap-2">
-          <Church className="h-6 w-6 text-primary" />
+        <div className="flex items-center gap-3">
+          {churchLogo ? (
+            <img 
+              src={churchLogo} 
+              alt={churchName || "Logo"} 
+              className="h-10 w-10 rounded-lg object-cover"
+            />
+          ) : (
+            <Church className="h-10 w-10 text-primary" />
+          )}
           <div>
             <h2 className="font-display font-bold text-lg text-foreground">
               {churchName || "EgliConnect"}
@@ -133,8 +145,16 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       {/* Mobile Header */}
       <div className="lg:hidden flex items-center justify-between p-4 border-b border-border/40 bg-background/80 backdrop-blur-sm sticky top-0 z-40">
         <div className="flex items-center gap-2">
-          <Church className="h-5 w-5 text-primary" />
-          <span className="font-display font-bold text-foreground">EgliConnect</span>
+          {churchLogo ? (
+            <img 
+              src={churchLogo} 
+              alt={churchName || "Logo"} 
+              className="h-8 w-8 rounded object-cover"
+            />
+          ) : (
+            <Church className="h-5 w-5 text-primary" />
+          )}
+          <span className="font-display font-bold text-foreground">{churchName || "EgliConnect"}</span>
         </div>
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetTrigger asChild>
