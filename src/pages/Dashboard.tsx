@@ -17,7 +17,6 @@ const Dashboard = () => {
     announcements: 0,
   });
   const [loading, setLoading] = useState(true);
-  const [needsOnboarding, setNeedsOnboarding] = useState(false);
   const [recentMembers, setRecentMembers] = useState<any[]>([]);
   const [recentDonations, setRecentDonations] = useState<any[]>([]);
   const [weeklyDonations, setWeeklyDonations] = useState<any[]>([]);
@@ -38,7 +37,6 @@ const Dashboard = () => {
         .single();
 
       if (!roleData) {
-        setNeedsOnboarding(true);
         setLoading(false);
         return;
       }
@@ -118,22 +116,6 @@ const Dashboard = () => {
     <DashboardLayout>
       {loading ? (
         <p className="text-center text-muted-foreground py-8">Chargement...</p>
-      ) : needsOnboarding ? (
-        <div className="max-w-xl mx-auto">
-          <Card className="shadow-gentle border-l-4 border-l-primary">
-            <CardHeader>
-              <CardTitle>Finalisez votre inscription</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4">
-                Votre compte n'est pas encore rattaché à une église. Cliquez ci-dessous pour terminer l'étape.
-              </p>
-              <Button onClick={() => navigate('/auth?mode=signup')} className="gradient-heaven">
-                Terminer l'inscription
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
       ) : (
         <div className="space-y-6">
           <div>
