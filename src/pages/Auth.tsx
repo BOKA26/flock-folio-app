@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Church, Loader2 } from "lucide-react";
+import { Church, Loader2, ArrowLeft } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const Auth = () => {
@@ -163,7 +163,17 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen gradient-blessing flex items-center justify-center p-4">
-      <Card className="w-full max-w-lg shadow-divine">
+      <div className="w-full max-w-lg">
+        <Button
+          variant="ghost"
+          className="mb-4"
+          onClick={() => navigate("/")}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Retour à l'accueil
+        </Button>
+        
+        <Card className="w-full shadow-divine">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
             <Church className="h-8 w-8 text-primary" />
@@ -313,6 +323,7 @@ const Auth = () => {
           </Tabs>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
