@@ -352,11 +352,13 @@ const Announcements = () => {
                     </CardHeader>
                     <CardContent>
                       {announcement.image_url && (
-                        <img 
-                          src={announcement.image_url} 
-                          alt={announcement.titre}
-                          className="w-full h-48 object-cover rounded-lg mb-4"
-                        />
+                        <div className="overflow-hidden rounded-lg mb-4">
+                          <img 
+                            src={announcement.image_url} 
+                            alt={announcement.titre}
+                            className="w-full h-auto object-contain transition-transform duration-300 hover:scale-110 cursor-pointer"
+                          />
+                        </div>
                       )}
                       <p className="text-muted-foreground whitespace-pre-wrap">
                         {announcement.contenu}
@@ -426,11 +428,13 @@ const Announcements = () => {
                     </CardHeader>
                     <CardContent>
                       {culte.image_url && (
-                        <img 
-                          src={culte.image_url} 
-                          alt={culte.titre}
-                          className="w-full h-48 object-cover rounded-lg mb-4"
-                        />
+                        <div className="overflow-hidden rounded-lg mb-4">
+                          <img 
+                            src={culte.image_url} 
+                            alt={culte.titre}
+                            className="w-full h-auto object-contain transition-transform duration-300 hover:scale-110 cursor-pointer"
+                          />
+                        </div>
                       )}
                       <p className="text-muted-foreground whitespace-pre-wrap">
                         {culte.contenu}
