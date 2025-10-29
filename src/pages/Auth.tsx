@@ -25,12 +25,82 @@ const Auth = () => {
     church_code: "",
     role: "fidele" as "admin" | "fidele"
   });
+  const [cooldownSeconds, setCooldownSeconds] = useState(0);
+
+  // After the user confirms email and gets a session, we finalize onboarding
+  const processPendingOnboarding = async (userId: string) => {
+    try {
+      const raw = localStorage.getItem('egli_pending_onboarding');
+      if (!raw) return;
+      const pending = JSON.parse(raw || '{}');
+
+      if (pending.role === 'admin' && pending.church_name) {
+        const { data: churchCode, error: rpcError } = await supabase.rpc('generate_church_code');
+        if (rpcError) throw rpcError;
+
+        const { data: churchData, error: churchError } = await supabase
+          .from('churches')
+          .insert({
+            nom: pending.church_name,
+            code_eglise: churchCode,
+            description: 'Bienvenue dans notre église',
+            verset_clef: 'Le Seigneur est ma lumière et mon salut'
+          })
+          .select()
+          .single();
+        if (churchError) throw churchError;
+
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({ user_id: userId, church_id: churchData.id, role: 'admin' });
+        if (roleError) throw roleError;
+
+        toast.success(`Église créée avec succès ! Code: ${churchCode}`);
+        localStorage.removeItem('egli_pending_onboarding');
+        navigate('/dashboard');
+        return;
+      }
+
+      if (pending.role === 'fidele' && (pending.church_code || pending.church_id)) {
+        let churchId = pending.church_id || pending.church_code;
+        if (pending.church_code && String(pending.church_code).startsWith('EG-')) {
+          const { data: church, error: churchError } = await supabase
+            .from('churches')
+            .select('id')
+            .eq('code_eglise', pending.church_code)
+            .maybeSingle();
+          if (churchError || !church) throw new Error("Code d'église invalide");
+          churchId = church.id;
+        }
+
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({ user_id: userId, church_id: churchId, role: 'fidele' });
+        if (roleError) throw roleError;
+
+        toast.success('Compte créé avec succès !');
+        localStorage.removeItem('egli_pending_onboarding');
+        navigate('/dashboard');
+        return;
+      }
+    } catch (e: any) {
+      console.error('Onboarding error:', e);
+      toast.error(e?.message || "Erreur lors de l'initialisation du compte");
+    }
+  };
 
   useEffect(() => {
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate("/dashboard");
+        setTimeout(() => {
+          const raw = localStorage.getItem('egli_pending_onboarding');
+          if (raw) {
+            processPendingOnboarding(session.user.id);
+          } else {
+            navigate('/dashboard');
+          }
+        }, 0);
       }
     });
 
@@ -49,12 +119,28 @@ const Auth = () => {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
-        navigate("/dashboard");
+        setTimeout(() => {
+          const raw = localStorage.getItem('egli_pending_onboarding');
+          if (raw) {
+            processPendingOnboarding(session.user.id);
+          } else {
+            navigate('/dashboard');
+          }
+        }, 0);
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  // Handle cooldown countdown for signup rate limiting
+  useEffect(() => {
+    if (cooldownSeconds <= 0) return;
+    const t = setInterval(() => {
+      setCooldownSeconds((s) => (s > 0 ? s - 1 : 0));
+    }, 1000);
+    return () => clearInterval(t);
+  }, [cooldownSeconds]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,7 +167,14 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
 
+    // Save intended onboarding so we can resume after email confirmation
     try {
+      localStorage.setItem('egli_pending_onboarding', JSON.stringify({
+        role: formData.role,
+        church_name: formData.church_name,
+        church_code: formData.church_code
+      }));
+
       // Create auth user
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
@@ -107,6 +200,13 @@ const Auth = () => {
 
       // Wait a bit more for session to be fully established
       await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // If no session yet, wait for email confirmation and finish onboarding after login
+      const { data: { session: nowSession } } = await supabase.auth.getSession();
+      if (!nowSession) {
+        toast("Veuillez confirmer votre email. Nous finaliserons la création de votre église après connexion.");
+        return;
+      }
 
       if (formData.role === "admin") {
         // Create new church for pastor/admin
@@ -173,7 +273,13 @@ const Auth = () => {
 
     } catch (error: any) {
       console.error("Signup error:", error);
-      toast.error(error.message || "Erreur lors de l'inscription");
+      const code = error?.code || error?.value?.code;
+      if (code === 'over_email_send_rate_limit' || error?.value?.status === 429) {
+        setCooldownSeconds(55);
+        toast.warning("Trop de demandes d'inscription. Patientez ~50s puis réessayez.");
+      } else {
+        toast.error(error.message || "Erreur lors de l'inscription");
+      }
     } finally {
       setLoading(false);
     }
@@ -332,10 +438,15 @@ const Auth = () => {
                   </div>
                 )}
 
-                <Button type="submit" className="w-full gradient-heaven" disabled={loading}>
+                <Button type="submit" className="w-full gradient-heaven" disabled={loading || cooldownSeconds > 0}>
                   {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  S'inscrire
+                  {cooldownSeconds > 0 ? `Réessayer dans ${cooldownSeconds}s` : "S'inscrire"}
                 </Button>
+                {cooldownSeconds > 0 && (
+                  <p className="text-xs text-muted-foreground text-center mt-2">
+                    Vous avez tenté trop souvent. Patientez {cooldownSeconds}s avant de réessayer.
+                  </p>
+                )}
               </form>
             </TabsContent>
           </Tabs>
