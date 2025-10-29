@@ -97,8 +97,16 @@ const Auth = () => {
       if (authError) throw authError;
       if (!authData.user) throw new Error("Erreur lors de la création du compte");
 
-      // Wait for session to be fully established
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Set the session manually to ensure it's available immediately
+      if (authData.session) {
+        await supabase.auth.setSession({
+          access_token: authData.session.access_token,
+          refresh_token: authData.session.refresh_token
+        });
+      }
+
+      // Wait a bit more for session to be fully established
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
       if (formData.role === "admin") {
         // Create new church for pastor/admin
