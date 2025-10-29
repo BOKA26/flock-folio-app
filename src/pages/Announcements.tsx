@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -28,6 +30,7 @@ const Announcements = () => {
     contenu: "",
     date_evenement: "",
     image_url: "",
+    type: "annonce",
   });
 
   useEffect(() => {
@@ -116,6 +119,7 @@ const Announcements = () => {
         contenu: formData.contenu,
         date_evenement: formData.date_evenement || null,
         image_url: formData.image_url || null,
+        type: formData.type,
         church_id: roleData.church_id,
       };
 
@@ -135,7 +139,7 @@ const Announcements = () => {
 
       setDialogOpen(false);
       setEditingAnnouncement(null);
-      setFormData({ titre: "", contenu: "", date_evenement: "", image_url: "" });
+      setFormData({ titre: "", contenu: "", date_evenement: "", image_url: "", type: "annonce" });
       loadAnnouncements();
     } catch (error: any) {
       toast.error(error.message || "Erreur lors de l'opération");
@@ -149,6 +153,7 @@ const Announcements = () => {
       contenu: announcement.contenu,
       date_evenement: announcement.date_evenement ? new Date(announcement.date_evenement).toISOString().slice(0, 16) : "",
       image_url: announcement.image_url || "",
+      type: announcement.type || "annonce",
     });
     setDialogOpen(true);
   };
@@ -168,6 +173,8 @@ const Announcements = () => {
   };
 
   const canManage = userRole === "admin" || userRole === "operateur";
+  const announcesOnly = announcements.filter(a => !a.type || a.type === 'annonce');
+  const cultesOnly = announcements.filter(a => a.type === 'culte');
 
   return (
     <DashboardLayout>
@@ -175,10 +182,10 @@ const Announcements = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-3xl font-display font-bold text-foreground">
-              Annonces
+              Annonces et Cultes
             </h1>
             <p className="text-muted-foreground mt-1">
-              Informations et événements de l'église
+              Gérez les annonces, événements et programmes de culte
             </p>
           </div>
 
@@ -187,20 +194,37 @@ const Announcements = () => {
               setDialogOpen(open);
               if (!open) {
                 setEditingAnnouncement(null);
-                setFormData({ titre: "", contenu: "", date_evenement: "", image_url: "" });
+                setFormData({ titre: "", contenu: "", date_evenement: "", image_url: "", type: "annonce" });
               }
             }}>
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="mr-2 h-4 w-4" />
-                  Nouvelle annonce
+                  Nouveau
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>{editingAnnouncement ? "Modifier l'annonce" : "Créer une annonce"}</DialogTitle>
+                  <DialogTitle>
+                    {editingAnnouncement ? "Modifier" : "Nouveau"} {formData.type === 'culte' ? 'programme de culte' : 'annonce'}
+                  </DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <Label htmlFor="type">Type *</Label>
+                    <Select
+                      value={formData.type}
+                      onValueChange={(value) => setFormData({ ...formData, type: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sélectionnez le type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="annonce">Annonce</SelectItem>
+                        <SelectItem value="culte">Programme de culte</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div>
                     <Label htmlFor="titre">Titre *</Label>
                     <Input
@@ -210,10 +234,11 @@ const Announcements = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, titre: e.target.value })
                       }
+                      placeholder={formData.type === 'culte' ? "Ex: Culte du dimanche" : "Titre de l'annonce"}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="contenu">Contenu *</Label>
+                    <Label htmlFor="contenu">{formData.type === 'culte' ? 'Programme / Description *' : 'Contenu *'}</Label>
                     <Textarea
                       id="contenu"
                       required
@@ -222,6 +247,7 @@ const Announcements = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, contenu: e.target.value })
                       }
+                      placeholder={formData.type === 'culte' ? "Détails du programme de culte" : "Description de l'annonce"}
                     />
                   </div>
                   <div>
@@ -264,78 +290,161 @@ const Announcements = () => {
 
         {loading ? (
           <p className="text-center text-muted-foreground py-8">Chargement...</p>
-        ) : announcements.length === 0 ? (
-          <Card className="shadow-gentle">
-            <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground">Aucune annonce pour le moment</p>
-            </CardContent>
-          </Card>
         ) : (
-          <div className="grid gap-6">
-            {announcements.map((announcement) => (
-              <Card key={announcement.id} className="shadow-gentle hover:shadow-elegant transition-all">
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <CardTitle className="text-xl mb-2">
-                        {announcement.titre}
-                      </CardTitle>
-                      {announcement.date_evenement && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Calendar className="h-4 w-4" />
-                          {new Date(announcement.date_evenement).toLocaleDateString(
-                            "fr-FR",
-                            {
-                              weekday: "long",
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            }
+          <Tabs defaultValue="annonces" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="annonces">Annonces ({announcesOnly.length})</TabsTrigger>
+              <TabsTrigger value="cultes">Programmes de culte ({cultesOnly.length})</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="annonces" className="space-y-4">
+              {announcesOnly.length === 0 ? (
+                <Card className="shadow-gentle">
+                  <CardContent className="py-12 text-center">
+                    <p className="text-muted-foreground">Aucune annonce pour le moment</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                announcesOnly.map((announcement) => (
+                  <Card key={announcement.id} className="shadow-gentle hover:shadow-elegant transition-all">
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <CardTitle className="text-xl mb-2">
+                            {announcement.titre}
+                          </CardTitle>
+                          {announcement.date_evenement && (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Calendar className="h-4 w-4" />
+                              {new Date(announcement.date_evenement).toLocaleDateString(
+                                "fr-FR",
+                                {
+                                  weekday: "long",
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )}
+                            </div>
                           )}
                         </div>
-                      )}
-                    </div>
-                    {canManage && (
-                      <div className="flex gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleEdit(announcement)}
-                        >
-                          <Edit className="h-4 w-4 text-primary" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDelete(announcement.id)}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
+                        {canManage && (
+                          <div className="flex gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEdit(announcement)}
+                            >
+                              <Edit className="h-4 w-4 text-primary" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDelete(announcement.id)}
+                            >
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {announcement.image_url && (
-                    <img 
-                      src={announcement.image_url} 
-                      alt={announcement.titre}
-                      className="w-full h-48 object-cover rounded-lg mb-4"
-                    />
-                  )}
-                  <p className="text-muted-foreground whitespace-pre-wrap">
-                    {announcement.contenu}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-4">
-                    Publié le{" "}
-                    {new Date(announcement.created_at).toLocaleDateString("fr-FR")}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    </CardHeader>
+                    <CardContent>
+                      {announcement.image_url && (
+                        <img 
+                          src={announcement.image_url} 
+                          alt={announcement.titre}
+                          className="w-full h-48 object-cover rounded-lg mb-4"
+                        />
+                      )}
+                      <p className="text-muted-foreground whitespace-pre-wrap">
+                        {announcement.contenu}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-4">
+                        Publié le{" "}
+                        {new Date(announcement.created_at).toLocaleDateString("fr-FR")}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </TabsContent>
+
+            <TabsContent value="cultes" className="space-y-4">
+              {cultesOnly.length === 0 ? (
+                <Card className="shadow-gentle">
+                  <CardContent className="py-12 text-center">
+                    <p className="text-muted-foreground">Aucun programme de culte pour le moment</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                cultesOnly.map((culte) => (
+                  <Card key={culte.id} className="shadow-gentle hover:shadow-elegant transition-all">
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <CardTitle className="text-xl mb-2">
+                            {culte.titre}
+                          </CardTitle>
+                          {culte.date_evenement && (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Calendar className="h-4 w-4" />
+                              {new Date(culte.date_evenement).toLocaleDateString(
+                                "fr-FR",
+                                {
+                                  weekday: "long",
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        {canManage && (
+                          <div className="flex gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEdit(culte)}
+                            >
+                              <Edit className="h-4 w-4 text-primary" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDelete(culte.id)}
+                            >
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      {culte.image_url && (
+                        <img 
+                          src={culte.image_url} 
+                          alt={culte.titre}
+                          className="w-full h-48 object-cover rounded-lg mb-4"
+                        />
+                      )}
+                      <p className="text-muted-foreground whitespace-pre-wrap">
+                        {culte.contenu}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-4">
+                        Publié le{" "}
+                        {new Date(culte.created_at).toLocaleDateString("fr-FR")}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </TabsContent>
+          </Tabs>
         )}
       </div>
     </DashboardLayout>

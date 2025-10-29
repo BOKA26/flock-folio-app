@@ -222,18 +222,64 @@ const MemberSpace = () => {
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Left Column */}
           <div className="space-y-8">
+            {/* Programmes de culte */}
+            <Card className="shadow-soft">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Church className="h-6 w-6 text-primary" />
+                  🙏 Programmes de culte
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {announcements.filter(a => a.type === 'culte').length > 0 ? (
+                  announcements.filter(a => a.type === 'culte').slice(0, 3).map((culte) => (
+                    <div key={culte.id} className="border-l-4 border-l-primary pl-4 py-2 bg-accent/50 rounded-lg p-3">
+                      {culte.image_url && (
+                        <img 
+                          src={culte.image_url} 
+                          alt={culte.titre}
+                          className="w-full h-32 object-cover rounded-lg mb-2"
+                        />
+                      )}
+                      <h4 className="font-semibold">{culte.titre}</h4>
+                      <p className="text-sm text-muted-foreground mt-1">{culte.contenu}</p>
+                      {culte.date_evenement && (
+                        <p className="text-xs text-muted-foreground mt-2">
+                          📅 {new Date(culte.date_evenement).toLocaleDateString('fr-FR', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </p>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground">Aucun programme de culte pour le moment</p>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Annonces et Événements */}
             <Card className="shadow-soft">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Megaphone className="h-6 w-6 text-primary" />
-                  Annonces et Événements
+                  📢 Annonces et Événements
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {announcements.length > 0 ? (
-                  announcements.map((announcement) => (
+                {announcements.filter(a => !a.type || a.type === 'annonce').length > 0 ? (
+                  announcements.filter(a => !a.type || a.type === 'annonce').slice(0, 5).map((announcement) => (
                     <div key={announcement.id} className="border-l-4 border-l-primary pl-4 py-2">
+                      {announcement.image_url && (
+                        <img 
+                          src={announcement.image_url} 
+                          alt={announcement.titre}
+                          className="w-full h-32 object-cover rounded-lg mb-2"
+                        />
+                      )}
                       <h4 className="font-semibold">{announcement.titre}</h4>
                       <p className="text-sm text-muted-foreground mt-1">{announcement.contenu}</p>
                       {announcement.date_evenement && (

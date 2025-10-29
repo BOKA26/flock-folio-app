@@ -23,6 +23,7 @@ export type Database = {
           id: string
           image_url: string | null
           titre: string
+          type: string
         }
         Insert: {
           church_id: string
@@ -32,6 +33,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           titre: string
+          type?: string
         }
         Update: {
           church_id?: string
@@ -41,6 +43,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           titre?: string
+          type?: string
         }
         Relationships: [
           {
