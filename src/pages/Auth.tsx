@@ -69,6 +69,7 @@ const Auth = () => {
       if (error) throw error;
       
       toast.success("Connexion réussie !");
+      navigate("/dashboard");
     } catch (error: any) {
       toast.error(error.message || "Erreur de connexion");
     } finally {
@@ -96,15 +97,20 @@ const Auth = () => {
       if (authError) throw authError;
       if (!authData.user) throw new Error("Erreur lors de la création du compte");
 
+      // Wait for session to be fully established
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
       if (formData.role === "admin") {
         // Create new church for pastor/admin
-        const churchCode = await supabase.rpc("generate_church_code");
+        const { data: churchCode, error: rpcError } = await supabase.rpc("generate_church_code");
         
+        if (rpcError) throw rpcError;
+
         const { data: churchData, error: churchError } = await supabase
           .from("churches")
           .insert({
             nom: formData.church_name,
-            code_eglise: churchCode.data,
+            code_eglise: churchCode,
             description: "Bienvenue dans notre église",
             verset_clef: "Le Seigneur est ma lumière et mon salut"
           })
@@ -124,7 +130,8 @@ const Auth = () => {
 
         if (roleError) throw roleError;
 
-        toast.success(`Église créée avec succès ! Code: ${churchCode.data}`);
+        toast.success(`Église créée avec succès ! Code: ${churchCode}`);
+        navigate("/dashboard");
       } else {
         // Fidele joining existing church
         let churchId = formData.church_code;
@@ -153,10 +160,13 @@ const Auth = () => {
         if (roleError) throw roleError;
 
         toast.success("Compte créé avec succès !");
+        navigate("/dashboard");
       }
 
     } catch (error: any) {
+      console.error("Signup error:", error);
       toast.error(error.message || "Erreur lors de l'inscription");
+    } finally {
       setLoading(false);
     }
   };
