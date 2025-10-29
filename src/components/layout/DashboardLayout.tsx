@@ -10,6 +10,7 @@ import {
   Megaphone,
   Heart,
   DollarSign,
+  CreditCard,
   Settings,
   LogOut,
   Menu,
@@ -78,6 +79,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     { icon: Users, label: "Membres", path: "/members", roles: ["admin", "operateur"] },
     { icon: Heart, label: "Prières", path: "/prayers" },
     { icon: DollarSign, label: "Dons", path: "/donations" },
+    { icon: CreditCard, label: "Faire un don", path: "/online-donations" },
     { icon: Church, label: "Mon Église", path: "/church", roles: ["admin"] },
     { icon: Settings, label: "Paramètres", path: "/settings" },
   ];
