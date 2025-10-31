@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Church, Users, Heart, TrendingUp, Shield, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
 import bibleImage from "@/assets/bible-floating.png";
+import churchAssemblyBg from "@/assets/church-assembly-bg.jpg";
 import { useEffect, useRef, useState } from "react";
 import Earth3D from "@/components/Earth3D";
 
@@ -109,7 +110,7 @@ const Index = () => {
       {/* Pitch Section with Stats */}
       <section 
         className="relative py-24 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url("/placeholder.svg")' }}
+        style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url(${churchAssemblyBg})` }}
       >
         <div className="container mx-auto px-4">
           <div
