@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Church, Users, Heart, TrendingUp, Shield, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
 import churchAssemblyBg from "@/assets/church-assembly-bg.jpg";
 import egliconnectLogo from "@/assets/egliconnect-logo.png";
-import heroHandEgliconnect from "@/assets/hero-hand-egliconnect.jpg";
+import heroHandFinal from "@/assets/hero-hand-final.jpg";
 import { useEffect, useRef, useState } from "react";
 
 const Index = () => {
@@ -37,7 +37,7 @@ const Index = () => {
         {/* Background Image */}
         <div className="absolute inset-0 opacity-30">
           <img 
-            src={heroHandEgliconnect} 
+            src={heroHandFinal} 
             alt="" 
             className="w-full h-full object-cover"
           />
