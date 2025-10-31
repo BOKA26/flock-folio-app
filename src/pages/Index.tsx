@@ -5,6 +5,8 @@ import { Church, Users, Heart, TrendingUp, Shield, Sparkles, ArrowRight, CheckCi
 import churchAssemblyBg from "@/assets/church-assembly-bg.jpg";
 import egliconnectLogo from "@/assets/egliconnect-logo.png";
 import heroHandFinal from "@/assets/hero-hand-final.jpg";
+import heroGoldenHand from "@/assets/hero-golden-hand.png";
+import egliconnectLogoOfficial from "@/assets/egliconnect-logo-official.png";
 import { useEffect, useRef, useState } from "react";
 
 const Index = () => {
@@ -32,88 +34,69 @@ const Index = () => {
 
   return (
     <div className="min-h-screen gradient-blessing overflow-hidden">
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-amber-900/30">
+      {/* Hero Section - Matching Reference Design */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#1a1a1a]">
+        {/* Decorative Sparkles */}
+        <Sparkles className="absolute top-20 left-[10%] w-6 h-6 text-yellow-400 animate-pulse" style={{ animationDelay: "0s" }} />
+        <Sparkles className="absolute top-32 right-[15%] w-5 h-5 text-yellow-400 animate-pulse" style={{ animationDelay: "1s" }} />
+        <Sparkles className="absolute top-[60%] right-[20%] w-6 h-6 text-yellow-400 animate-pulse" style={{ animationDelay: "0.5s" }} />
+        <Sparkles className="absolute bottom-32 left-[12%] w-5 h-5 text-yellow-400 animate-pulse" style={{ animationDelay: "1.5s" }} />
+        <Sparkles className="absolute bottom-[40%] right-[8%] w-6 h-6 text-yellow-400 animate-pulse" style={{ animationDelay: "2s" }} />
         
-        <div className="container relative mx-auto px-4 py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
-            {/* Left Content */}
-            <div className="space-y-8 animate-fade-in">
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-white">
-                <span className="block">Simple et Rapide</span>
-                <span className="block">Solution de Gestion</span>
-                <span className="block">pour votre Église</span>
-              </h1>
-              
-              <p className="text-base md:text-lg text-slate-300 leading-relaxed max-w-xl">
-                Gérez les membres, dons, annonces et prières sur une seule plateforme sécurisée. Une expérience moderne, claire et efficace.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  size="lg" 
-                  className="bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-semibold text-lg px-8 py-6 shadow-lg hover:scale-105 transition-all duration-300"
-                  onClick={() => navigate("/auth?mode=signup")}
-                >
-                  Commencer Maintenant
-                </Button>
-                
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="border-2 border-slate-400 text-slate-200 bg-slate-800/50 backdrop-blur-sm hover:bg-slate-700/50 text-lg px-8 py-6 hover:scale-105 transition-all duration-300"
-                  onClick={() => navigate("/auth")}
-                >
-                  Télécharger l'App
-                </Button>
-              </div>
-            </div>
-
-            {/* Right Visual - Hand with cards */}
-            <div className="relative flex justify-center items-center animate-fade-in" style={{ animationDelay: "0.3s" }}>
-              <div className="relative w-full max-w-2xl">
-                <img 
-                  src={heroHandFinal} 
-                  alt="EgliConnect Cards" 
-                  className="w-full h-auto rounded-2xl shadow-2xl"
-                />
-                {/* Overlay stats like reference */}
-                <div className="absolute bottom-6 right-6">
-                  <div className="bg-yellow-400/95 text-slate-900 font-bold text-2xl rounded-xl px-5 py-3 shadow-xl text-center">
-                    1.24M
-                  </div>
-                  <div className="mt-3 flex items-center gap-2 bg-slate-900/60 backdrop-blur-md rounded-xl px-3 py-2 border border-slate-700 text-white text-xs">
-                    <div className="flex -space-x-2">
-                      <div className="w-8 h-8 rounded-full bg-primary border-2 border-white/20"></div>
-                      <div className="w-8 h-8 rounded-full bg-secondary border-2 border-white/20"></div>
-                      <div className="w-8 h-8 rounded-full bg-yellow-400 border-2 border-white/20"></div>
-                    </div>
-                    <span>World Active User</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Features at bottom */}
-          <div className="mt-20 grid sm:grid-cols-2 lg:grid-cols-2 gap-8 max-w-4xl mx-auto animate-fade-in" style={{ animationDelay: "0.6s" }}>
-            <div className="flex gap-4">
-              <div className="text-yellow-500 text-4xl font-bold flex-shrink-0">01</div>
-              <div className="text-white">
-                <h3 className="font-semibold text-lg mb-1">Gestion Centralisée</h3>
-                <p className="text-slate-400 text-sm">Gérez tous les aspects de votre église depuis une seule plateforme</p>
-              </div>
-            </div>
+        <div className="container relative mx-auto px-4 py-16 md:py-20">
+          <div className="flex flex-col items-center text-center space-y-8 md:space-y-12 max-w-5xl mx-auto">
             
-            <div className="flex gap-4">
-              <div className="text-yellow-500 text-4xl font-bold flex-shrink-0">02</div>
-              <div className="text-white">
-                <h3 className="font-semibold text-lg mb-1">Système Facile à Utiliser</h3>
-                <p className="text-slate-400 text-sm">Interface moderne conçue pour simplifier votre quotidien</p>
-              </div>
+            {/* Logo */}
+            <div className="animate-fade-in mb-4">
+              <img 
+                src={egliconnectLogoOfficial} 
+                alt="EgliConnect" 
+                className="h-16 md:h-20 w-auto"
+              />
             </div>
-          </div>
 
+            {/* Heading */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-white animate-fade-in px-4" style={{ animationDelay: "0.2s" }}>
+              Simple et Rapide<br />
+              Solution de Gestion<br />
+              pour votre Église
+            </h1>
+            
+            {/* Description */}
+            <p className="text-base sm:text-lg md:text-xl text-slate-300 leading-relaxed max-w-3xl animate-fade-in px-4" style={{ animationDelay: "0.4s" }}>
+              Gérez les membres, dons, annonces et prières sur une seule plateforme sécurisée. Une expérience moderne, claire et efficace.
+            </p>
+            
+            {/* Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 animate-fade-in" style={{ animationDelay: "0.6s" }}>
+              <Button 
+                size="lg" 
+                className="bg-[#C9A55A] hover:bg-[#B8944A] text-white font-semibold text-base md:text-lg px-8 md:px-10 py-5 md:py-6 shadow-2xl hover:scale-105 transition-all duration-300 rounded-lg"
+                onClick={() => navigate("/auth?mode=signup")}
+              >
+                Commencer Maintenant
+              </Button>
+              
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-2 border-slate-400 text-slate-200 bg-transparent hover:bg-slate-800/30 text-base md:text-lg px-8 md:px-10 py-5 md:py-6 hover:scale-105 transition-all duration-300 rounded-lg"
+                onClick={() => navigate("/auth")}
+              >
+                Télécharger l'App
+              </Button>
+            </div>
+
+            {/* Golden Hand with Card - Using Reference Image */}
+            <div className="relative w-full max-w-2xl mt-8 md:mt-12 animate-fade-in" style={{ animationDelay: "0.8s" }}>
+              <img 
+                src={heroGoldenHand} 
+                alt="EgliConnect Golden Hand" 
+                className="w-full h-auto object-contain"
+              />
+            </div>
+
+          </div>
         </div>
       </section>
 
