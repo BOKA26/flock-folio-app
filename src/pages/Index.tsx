@@ -2,11 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Church, Users, Heart, TrendingUp, Shield, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
-import bibleImage from "@/assets/bible-floating.png";
 import churchAssemblyBg from "@/assets/church-assembly-bg.jpg";
 import egliconnectLogo from "@/assets/egliconnect-logo.png";
+import heroHandLogo from "@/assets/hero-hand-logo.jpg";
 import { useEffect, useRef, useState } from "react";
-import Earth3D from "@/components/Earth3D";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -38,13 +37,13 @@ const Index = () => {
         {/* Decorative Sparkles */}
         <div className="absolute top-20 left-1/4 w-3 h-3 bg-yellow-400 rounded-full animate-pulse" />
         <div className="absolute top-40 right-1/3 w-2 h-2 bg-yellow-300 rounded-full animate-pulse" style={{ animationDelay: "0.5s" }} />
-        <div className="absolute bottom-1/3 left-1/2 w-2 h-2 bg-yellow-400 rounded-full animate-pulse" style={{ animationDelay: "1s" }} />
+        <div className="absolute bottom-1/3 right-1/2 w-2 h-2 bg-yellow-400 rounded-full animate-pulse" style={{ animationDelay: "1s" }} />
         <div className="absolute bottom-40 right-1/4 w-3 h-3 bg-yellow-300 rounded-full animate-pulse" style={{ animationDelay: "1.5s" }} />
         
         <div className="container relative mx-auto px-4 py-20">
-          <div className="max-w-7xl mx-auto">
-            {/* Main Content */}
-            <div className="space-y-8 animate-fade-in max-w-3xl">
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
+            {/* Left Content */}
+            <div className="space-y-8 animate-fade-in">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-white">
                 Plateforme Simple et Moderne Pour Votre Église
               </h1>
@@ -73,22 +72,50 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Features at bottom */}
-            <div className="mt-24 grid sm:grid-cols-2 gap-8 max-w-3xl animate-fade-in" style={{ animationDelay: "0.6s" }}>
-              <div className="flex gap-4">
-                <div className="text-yellow-500 text-4xl font-bold">01</div>
-                <div className="text-white">
-                  <h3 className="font-semibold text-lg mb-1">Gestion Centralisée</h3>
-                  <p className="text-slate-400 text-sm">Gérez tous les aspects de votre église depuis une seule plateforme intuitive</p>
+            {/* Right Visual - Hand holding logo */}
+            <div className="relative flex justify-center items-center animate-fade-in" style={{ animationDelay: "0.3s" }}>
+              <div className="relative w-full max-w-2xl">
+                <img 
+                  src={heroHandLogo} 
+                  alt="EgliConnect sur tablette" 
+                  className="w-full h-auto rounded-2xl shadow-2xl"
+                />
+                
+                {/* Decorative circle badge */}
+                <div className="absolute -bottom-6 -left-6 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full w-32 h-32 flex flex-col items-center justify-center text-slate-900 shadow-2xl animate-pulse">
+                  <div className="text-3xl font-bold">24/7</div>
+                  <div className="text-xs uppercase tracking-wider font-semibold">Support</div>
+                </div>
+
+                {/* Stats Badge */}
+                <div className="absolute -top-6 -right-6 bg-gradient-to-br from-primary to-blue-700 rounded-2xl p-4 shadow-2xl text-white">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-6 h-6" />
+                    <div>
+                      <div className="text-2xl font-bold">1.24M</div>
+                      <div className="text-xs opacity-90">Utilisateurs Actifs</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              
-              <div className="flex gap-4">
-                <div className="text-yellow-500 text-4xl font-bold">02</div>
-                <div className="text-white">
-                  <h3 className="font-semibold text-lg mb-1">Système Facile à Utiliser</h3>
-                  <p className="text-slate-400 text-sm">Interface moderne et accessible conçue pour simplifier votre quotidien</p>
-                </div>
+            </div>
+          </div>
+
+          {/* Features at bottom */}
+          <div className="mt-20 grid sm:grid-cols-2 gap-8 max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: "0.6s" }}>
+            <div className="flex gap-4">
+              <div className="text-yellow-500 text-4xl font-bold">01</div>
+              <div className="text-white">
+                <h3 className="font-semibold text-lg mb-1">Gestion Centralisée</h3>
+                <p className="text-slate-400 text-sm">Gérez tous les aspects de votre église depuis une seule plateforme intuitive</p>
+              </div>
+            </div>
+            
+            <div className="flex gap-4">
+              <div className="text-yellow-500 text-4xl font-bold">02</div>
+              <div className="text-white">
+                <h3 className="font-semibold text-lg mb-1">Système Facile à Utiliser</h3>
+                <p className="text-slate-400 text-sm">Interface moderne et accessible conçue pour simplifier votre quotidien</p>
               </div>
             </div>
           </div>
