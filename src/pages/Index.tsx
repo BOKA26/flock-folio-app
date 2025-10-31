@@ -34,74 +34,86 @@ const Index = () => {
   return (
     <div className="min-h-screen gradient-blessing overflow-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-sky-50 via-white to-sky-50"></div>
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        {/* Decorative Sparkles */}
+        <div className="absolute top-20 left-1/4 w-3 h-3 bg-yellow-400 rounded-full animate-pulse" />
+        <div className="absolute top-40 right-1/3 w-2 h-2 bg-yellow-300 rounded-full animate-pulse" style={{ animationDelay: "0.5s" }} />
+        <div className="absolute bottom-1/3 left-1/2 w-2 h-2 bg-yellow-400 rounded-full animate-pulse" style={{ animationDelay: "1s" }} />
+        <div className="absolute bottom-40 right-1/4 w-3 h-3 bg-yellow-300 rounded-full animate-pulse" style={{ animationDelay: "1.5s" }} />
         
-        <div className="container relative mx-auto px-4 py-12">
-          <div className="mx-auto max-w-6xl">
-            {/* 3D Earth and Floating Bible */}
-            <div className="relative mb-12 flex justify-center">
-              <div className="relative w-full max-w-2xl">
+        <div className="container relative mx-auto px-4 py-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
+            {/* Left Content */}
+            <div className="space-y-8 animate-fade-in">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-white">
+                Plateforme Simple et Moderne Pour Votre Église
+              </h1>
+              
+              <p className="text-lg text-slate-300 max-w-xl leading-relaxed">
+                Gérez vos membres, dons, annonces et prières sur une seule plateforme sécurisée. EgliConnect simplifie la gestion de votre communauté avec des outils modernes et intuitifs.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  size="lg" 
+                  className="bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-semibold text-lg px-8 py-6 shadow-lg hover:scale-105 transition-all duration-300"
+                  onClick={() => navigate("/auth?mode=signup")}
+                >
+                  Commencer Maintenant
+                </Button>
+                
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-2 border-slate-400 text-slate-200 hover:bg-slate-800 text-lg px-8 py-6 hover:scale-105 transition-all duration-300"
+                  onClick={() => navigate("/auth")}
+                >
+                  Télécharger l'App
+                </Button>
+              </div>
+            </div>
+
+            {/* Right Visual - 3D Earth and Bible */}
+            <div className="relative flex justify-center items-center">
+              <div className="relative w-full max-w-xl">
+                {/* Glowing background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-secondary/30 blur-3xl rounded-full"></div>
+                
                 <Earth3D />
+                
                 {/* Floating Bible at center */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 animate-float-delayed pointer-events-none">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 animate-float-delayed pointer-events-none">
                   <img 
                     src={bibleImage} 
                     alt="Bible" 
                     className="w-full h-full object-contain drop-shadow-2xl animate-gentle-rotate"
                   />
                 </div>
+                
+                {/* Decorative circle badge */}
+                <div className="absolute bottom-10 -right-5 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full w-32 h-32 flex flex-col items-center justify-center text-slate-900 shadow-2xl animate-pulse">
+                  <div className="text-3xl font-bold">100%</div>
+                  <div className="text-xs uppercase tracking-wider">Sécurisé</div>
+                </div>
               </div>
             </div>
-            
-            <div className="text-center space-y-6 animate-fade-in">
-              <h1 className="text-6xl font-bold leading-tight md:text-7xl lg:text-8xl">
-                <span className="text-gradient">EgliConnect</span>
-              </h1>
-              
-              <p className="text-2xl font-medium text-foreground md:text-3xl" style={{ animationDelay: "0.2s" }}>
-                La plateforme moderne pour gérer votre église
-              </p>
-              
-              <p className="text-lg text-muted-foreground md:text-xl max-w-3xl mx-auto" style={{ animationDelay: "0.4s" }}>
-                Membres, dons, annonces et prières réunis sur une seule plateforme sécurisée et intuitive
-              </p>
-            </div>
-            
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center mt-8 animate-fade-in" style={{ animationDelay: "0.6s" }}>
-              <Button 
-                size="lg" 
-                className="gradient-heaven text-lg px-8 py-6 shadow-deep hover:scale-105 hover:shadow-divine transition-all duration-300 group"
-                onClick={() => navigate("/auth?mode=signup")}
-              >
-                <Sparkles className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
-                Créer mon église
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-2 border-primary text-lg px-8 py-6 hover:bg-primary/10 hover:scale-105 transition-all duration-300"
-                onClick={() => navigate("/auth")}
-              >
-                Se connecter
-              </Button>
-            </div>
+          </div>
 
-            {/* Stats Bar */}
-            <div className="mt-12 grid grid-cols-3 gap-8 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: "0.8s" }}>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-primary mb-1">100%</div>
-                <div className="text-sm text-muted-foreground">Sécurisé</div>
+          {/* Features at bottom */}
+          <div className="mt-20 grid sm:grid-cols-2 gap-8 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: "0.6s" }}>
+            <div className="flex gap-4">
+              <div className="text-yellow-500 text-4xl font-bold">01</div>
+              <div className="text-white">
+                <h3 className="font-semibold text-lg mb-1">Gestion Centralisée</h3>
+                <p className="text-slate-400 text-sm">Gérez tous les aspects de votre église depuis une seule plateforme intuitive</p>
               </div>
-              <div className="text-center border-x border-border">
-                <div className="text-3xl font-bold text-primary mb-1">24/7</div>
-                <div className="text-sm text-muted-foreground">Disponible</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-primary mb-1">∞</div>
-                <div className="text-sm text-muted-foreground">Églises</div>
+            </div>
+            
+            <div className="flex gap-4">
+              <div className="text-yellow-500 text-4xl font-bold">02</div>
+              <div className="text-white">
+                <h3 className="font-semibold text-lg mb-1">Système Facile à Utiliser</h3>
+                <p className="text-slate-400 text-sm">Interface moderne et accessible conçue pour simplifier votre quotidien</p>
               </div>
             </div>
           </div>
