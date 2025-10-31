@@ -34,23 +34,19 @@ const Index = () => {
     <div className="min-h-screen gradient-blessing overflow-hidden">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-amber-900/30">
-        {/* Decorative Sparkles */}
-        <div className="absolute top-32 left-1/2 -translate-x-1/2 w-12 h-12 z-10">
-          <Sparkles className="w-full h-full text-white animate-pulse" />
-        </div>
-        <div className="absolute top-1/3 right-1/4 w-3 h-3 bg-yellow-400 rounded-full animate-pulse" style={{ animationDelay: "0.5s" }} />
-        <div className="absolute bottom-1/3 left-1/4 w-3 h-3 bg-yellow-400 rounded-full animate-pulse" style={{ animationDelay: "1s" }} />
         
         <div className="container relative mx-auto px-4 py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
             {/* Left Content */}
             <div className="space-y-8 animate-fade-in">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-white">
-                Plateforme Simple et Moderne Pour Votre Église
+                <span className="block">Simple et Rapide</span>
+                <span className="block">Solution de Gestion</span>
+                <span className="block">pour votre Église</span>
               </h1>
               
-              <p className="text-lg text-slate-300 leading-relaxed max-w-xl">
-                Gérez vos membres, dons, annonces et prières sur une seule plateforme sécurisée. EgliConnect simplifie la gestion de votre communauté avec des outils modernes et intuitifs.
+              <p className="text-base md:text-lg text-slate-300 leading-relaxed max-w-xl">
+                Gérez les membres, dons, annonces et prières sur une seule plateforme sécurisée. Une expérience moderne, claire et efficace.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
@@ -79,14 +75,28 @@ const Index = () => {
                 <img 
                   src={heroHandFinal} 
                   alt="EgliConnect Cards" 
-                  className="w-full h-auto rounded-2xl"
+                  className="w-full h-auto rounded-2xl shadow-2xl"
                 />
+                {/* Overlay stats like reference */}
+                <div className="absolute bottom-6 right-6">
+                  <div className="bg-yellow-400/95 text-slate-900 font-bold text-2xl rounded-xl px-5 py-3 shadow-xl text-center">
+                    1.24M
+                  </div>
+                  <div className="mt-3 flex items-center gap-2 bg-slate-900/60 backdrop-blur-md rounded-xl px-3 py-2 border border-slate-700 text-white text-xs">
+                    <div className="flex -space-x-2">
+                      <div className="w-8 h-8 rounded-full bg-primary border-2 border-white/20"></div>
+                      <div className="w-8 h-8 rounded-full bg-secondary border-2 border-white/20"></div>
+                      <div className="w-8 h-8 rounded-full bg-yellow-400 border-2 border-white/20"></div>
+                    </div>
+                    <span>World Active User</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Features at bottom */}
-          <div className="mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto animate-fade-in" style={{ animationDelay: "0.6s" }}>
+          <div className="mt-20 grid sm:grid-cols-2 lg:grid-cols-2 gap-8 max-w-4xl mx-auto animate-fade-in" style={{ animationDelay: "0.6s" }}>
             <div className="flex gap-4">
               <div className="text-yellow-500 text-4xl font-bold flex-shrink-0">01</div>
               <div className="text-white">
@@ -102,37 +112,8 @@ const Index = () => {
                 <p className="text-slate-400 text-sm">Interface moderne conçue pour simplifier votre quotidien</p>
               </div>
             </div>
-
-            {/* Circular Badge */}
-            <div className="flex justify-center items-center">
-              <div className="relative w-32 h-32">
-                <div className="absolute inset-0 bg-yellow-500 rounded-full animate-pulse opacity-20"></div>
-                <div className="absolute inset-2 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-2xl">
-                  <div className="text-center">
-                    <CheckCircle className="w-10 h-10 text-slate-900 mx-auto mb-1" />
-                    <div className="text-slate-900 text-xs font-bold uppercase tracking-wider leading-tight">Solution<br/>Parfaite</div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
-          {/* Bottom Stats */}
-          <div className="mt-12 flex flex-wrap justify-center items-center gap-8 animate-fade-in" style={{ animationDelay: "0.8s" }}>
-            <div className="bg-yellow-500/90 backdrop-blur-sm rounded-2xl px-8 py-4 shadow-xl">
-              <div className="text-slate-900 text-3xl font-bold">1.24M</div>
-              <div className="text-slate-900 text-xs font-semibold uppercase tracking-wide">Utilisateurs Actifs</div>
-            </div>
-            
-            <div className="flex items-center gap-3 bg-slate-800/50 backdrop-blur-sm rounded-2xl px-6 py-4 border border-slate-700">
-              <div className="flex -space-x-2">
-                <div className="w-10 h-10 rounded-full bg-primary border-2 border-slate-800 shadow-lg"></div>
-                <div className="w-10 h-10 rounded-full bg-secondary border-2 border-slate-800 shadow-lg"></div>
-                <div className="w-10 h-10 rounded-full bg-yellow-500 border-2 border-slate-800 shadow-lg"></div>
-              </div>
-              <div className="text-white text-sm font-semibold">+1000 églises actives</div>
-            </div>
-          </div>
         </div>
       </section>
 
