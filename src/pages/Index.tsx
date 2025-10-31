@@ -42,15 +42,15 @@ const Index = () => {
         <div className="absolute bottom-40 right-1/4 w-3 h-3 bg-yellow-300 rounded-full animate-pulse" style={{ animationDelay: "1.5s" }} />
         
         <div className="container relative mx-auto px-4 py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
-            {/* Left Content */}
-            <div className="space-y-8 animate-fade-in">
+          <div className="max-w-7xl mx-auto">
+            {/* Main Content */}
+            <div className="space-y-8 animate-fade-in max-w-3xl">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-white">
                 Plateforme Simple et Moderne Pour Votre Église
               </h1>
               
-              <p className="text-lg text-slate-300 max-w-xl leading-relaxed">
-                Gérez vos membres, dons, annonces et prières sur une seule plateforme sécurisée. EgliConnect simplifie la gestion de votre communauté avec des outils modernes et intuitifs.
+              <p className="text-lg text-slate-300 leading-relaxed">
+                Gérez vos membres, dons, annonces et prières sur une seule plateforme sécurisée. EgliConnect simplifie la gestion de votre communauté avec des outils modernes et intuitifs adaptés aux besoins de votre église.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
@@ -73,47 +73,22 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Right Visual - 3D Earth and Bible */}
-            <div className="relative flex justify-center items-center">
-              <div className="relative w-full max-w-xl">
-                {/* Glowing background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-secondary/30 blur-3xl rounded-full"></div>
-                
-                <Earth3D />
-                
-                {/* Floating Bible at center */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 animate-float-delayed pointer-events-none">
-                  <img 
-                    src={bibleImage} 
-                    alt="Bible" 
-                    className="w-full h-full object-contain drop-shadow-2xl animate-gentle-rotate"
-                  />
-                </div>
-                
-                {/* Decorative circle badge */}
-                <div className="absolute bottom-10 -right-5 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full w-32 h-32 flex flex-col items-center justify-center text-slate-900 shadow-2xl animate-pulse">
-                  <div className="text-3xl font-bold">100%</div>
-                  <div className="text-xs uppercase tracking-wider">Sécurisé</div>
+            {/* Features at bottom */}
+            <div className="mt-24 grid sm:grid-cols-2 gap-8 max-w-3xl animate-fade-in" style={{ animationDelay: "0.6s" }}>
+              <div className="flex gap-4">
+                <div className="text-yellow-500 text-4xl font-bold">01</div>
+                <div className="text-white">
+                  <h3 className="font-semibold text-lg mb-1">Gestion Centralisée</h3>
+                  <p className="text-slate-400 text-sm">Gérez tous les aspects de votre église depuis une seule plateforme intuitive</p>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Features at bottom */}
-          <div className="mt-20 grid sm:grid-cols-2 gap-8 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: "0.6s" }}>
-            <div className="flex gap-4">
-              <div className="text-yellow-500 text-4xl font-bold">01</div>
-              <div className="text-white">
-                <h3 className="font-semibold text-lg mb-1">Gestion Centralisée</h3>
-                <p className="text-slate-400 text-sm">Gérez tous les aspects de votre église depuis une seule plateforme intuitive</p>
-              </div>
-            </div>
-            
-            <div className="flex gap-4">
-              <div className="text-yellow-500 text-4xl font-bold">02</div>
-              <div className="text-white">
-                <h3 className="font-semibold text-lg mb-1">Système Facile à Utiliser</h3>
-                <p className="text-slate-400 text-sm">Interface moderne et accessible conçue pour simplifier votre quotidien</p>
+              
+              <div className="flex gap-4">
+                <div className="text-yellow-500 text-4xl font-bold">02</div>
+                <div className="text-white">
+                  <h3 className="font-semibold text-lg mb-1">Système Facile à Utiliser</h3>
+                  <p className="text-slate-400 text-sm">Interface moderne et accessible conçue pour simplifier votre quotidien</p>
+                </div>
               </div>
             </div>
           </div>
