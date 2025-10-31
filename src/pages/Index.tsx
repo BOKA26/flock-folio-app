@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Church, Users, Heart, TrendingUp, Shield, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
+import bibleImage from "@/assets/bible-floating.png";
 import { useEffect, useRef, useState } from "react";
 
 const Index = () => {
@@ -41,8 +42,18 @@ const Index = () => {
         <div className="container relative mx-auto px-4 py-20">
           <div className="mx-auto max-w-5xl">
             <div className="mb-8 flex justify-center animate-scale-in">
-              <div className="rounded-full bg-white p-8 shadow-divine hover-scale">
-                <Church className="h-20 w-20 text-primary" />
+              <div className="relative">
+                <div className="rounded-full bg-white p-8 shadow-divine animate-float">
+                  <Church className="h-20 w-20 text-primary animate-gentle-spin" />
+                </div>
+                {/* Floating Bible */}
+                <div className="absolute -right-16 -top-8 w-32 h-32 animate-float-delayed">
+                  <img 
+                    src={bibleImage} 
+                    alt="Bible" 
+                    className="w-full h-full object-contain drop-shadow-2xl animate-gentle-rotate"
+                  />
+                </div>
               </div>
             </div>
             
