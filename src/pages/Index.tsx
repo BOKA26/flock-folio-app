@@ -1,173 +1,311 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { Church, Users, Heart, TrendingUp, Shield, Sparkles } from "lucide-react";
+import { Church, Users, Heart, TrendingUp, Shield, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
+import { useEffect, useRef, useState } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [isVisible, setIsVisible] = useState<{ [key: string]: boolean }>({});
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible((prev) => ({ ...prev, [entry.target.id]: true }));
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const elements = document.querySelectorAll("[data-animate]");
+    elements.forEach((el) => observerRef.current?.observe(el));
+
+    return () => observerRef.current?.disconnect();
+  }, []);
 
   return (
-    <div className="min-h-screen gradient-blessing">
+    <div className="min-h-screen gradient-blessing overflow-hidden">
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-fade-in"
           style={{ backgroundImage: `url(${heroBg})` }}
         ></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/70 to-white/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-white/85 via-white/75 to-white/90"></div>
         
         <div className="container relative mx-auto px-4 py-20">
-          <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-6 flex justify-center">
-              <div className="rounded-full bg-white p-6 shadow-divine">
-                <Church className="h-16 w-16 text-primary" />
+          <div className="mx-auto max-w-5xl">
+            <div className="mb-8 flex justify-center animate-scale-in">
+              <div className="rounded-full bg-white p-8 shadow-divine hover-scale">
+                <Church className="h-20 w-20 text-primary" />
               </div>
             </div>
             
-            <h1 className="mb-6 text-5xl font-bold leading-tight md:text-6xl">
+            <h1 className="mb-8 text-center text-6xl font-bold leading-tight md:text-7xl lg:text-8xl animate-fade-in">
               <span className="text-gradient">EgliConnect</span>
             </h1>
             
-            <p className="mb-4 text-xl text-muted-foreground md:text-2xl">
+            <p className="mb-6 text-center text-2xl font-medium text-foreground md:text-3xl animate-fade-in" style={{ animationDelay: "0.2s" }}>
               La plateforme moderne pour gérer votre église
             </p>
             
-            <p className="mb-10 text-lg text-muted-foreground">
-              Membres, dons, annonces et prières sur une seule plateforme sécurisée
+            <p className="mb-12 text-center text-lg text-muted-foreground md:text-xl max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: "0.4s" }}>
+              Membres, dons, annonces et prières réunis sur une seule plateforme sécurisée et intuitive
             </p>
             
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center animate-fade-in" style={{ animationDelay: "0.6s" }}>
               <Button 
                 size="lg" 
-                className="gradient-heaven text-lg shadow-deep hover:scale-105 transition-transform"
+                className="gradient-heaven text-lg px-8 py-6 shadow-deep hover:scale-105 hover:shadow-divine transition-all duration-300 group"
                 onClick={() => navigate("/auth?mode=signup")}
               >
-                <Sparkles className="mr-2 h-5 w-5" />
+                <Sparkles className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
                 Créer mon église
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
               
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-2 border-primary text-lg hover:bg-primary/10"
+                className="border-2 border-primary text-lg px-8 py-6 hover:bg-primary/10 hover:scale-105 transition-all duration-300"
                 onClick={() => navigate("/auth")}
               >
                 Se connecter
               </Button>
+            </div>
+
+            {/* Stats Bar */}
+            <div className="mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: "0.8s" }}>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-primary mb-1">100%</div>
+                <div className="text-sm text-muted-foreground">Sécurisé</div>
+              </div>
+              <div className="text-center border-x border-border">
+                <div className="text-3xl font-bold text-primary mb-1">24/7</div>
+                <div className="text-sm text-muted-foreground">Disponible</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-primary mb-1">∞</div>
+                <div className="text-sm text-muted-foreground">Églises</div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20">
+      <section className="py-24 bg-white">
         <div className="container mx-auto px-4">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold md:text-4xl">
-              Une solution complète pour votre communauté
+          <div 
+            id="features-header" 
+            data-animate
+            className={`mb-16 text-center transition-all duration-1000 ${isVisible['features-header'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+          >
+            <h2 className="mb-4 text-4xl font-bold md:text-5xl">
+              Une solution <span className="text-gradient">complète</span> pour votre communauté
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Tout ce dont vous avez besoin pour gérer efficacement votre église
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="border-2 shadow-soft hover:shadow-divine transition-shadow">
-              <CardContent className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <Users className="h-6 w-6 text-primary" />
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
+            {[
+              {
+                icon: Users,
+                title: "Gestion des membres",
+                description: "Enregistrez et suivez tous vos fidèles en toute simplicité",
+                color: "primary",
+                delay: "0s"
+              },
+              {
+                icon: TrendingUp,
+                title: "Suivi des dons",
+                description: "Gérez les offrandes et dîmes avec paiement en ligne sécurisé",
+                color: "secondary",
+                delay: "0.1s"
+              },
+              {
+                icon: Heart,
+                title: "Demandes de prière",
+                description: "Recueillez et organisez les intentions de prière de votre communauté",
+                color: "primary",
+                delay: "0.2s"
+              },
+              {
+                icon: Church,
+                title: "Annonces & Événements",
+                description: "Communiquez facilement avec vos fidèles sur les activités",
+                color: "secondary",
+                delay: "0.3s"
+              },
+              {
+                icon: Shield,
+                title: "Sécurité multi-tenant",
+                description: "Vos données sont isolées et protégées par église",
+                color: "primary",
+                delay: "0.4s"
+              },
+              {
+                icon: Sparkles,
+                title: "Assistant spirituel IA",
+                description: "Chatbot intelligent pour répondre aux questions spirituelles",
+                color: "secondary",
+                delay: "0.5s"
+              }
+            ].map((feature, index) => {
+              const Icon = feature.icon;
+              const bgColor = feature.color === "primary" ? "bg-primary/10" : "bg-secondary/10";
+              const iconColor = feature.color === "primary" ? "text-primary" : "text-secondary";
+              
+              return (
+                <div
+                  key={index}
+                  id={`feature-${index}`}
+                  data-animate
+                  className={`group transition-all duration-700 ${isVisible[`feature-${index}`] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+                  style={{ transitionDelay: feature.delay }}
+                >
+                  <Card className="h-full border-2 shadow-soft hover:shadow-divine hover:-translate-y-2 hover:border-primary/30 transition-all duration-300 bg-white">
+                    <CardContent className="p-8">
+                      <div className={`mb-6 flex h-16 w-16 items-center justify-center rounded-2xl ${bgColor} group-hover:scale-110 transition-transform duration-300`}>
+                        <Icon className={`h-8 w-8 ${iconColor}`} />
+                      </div>
+                      <h3 className="mb-3 text-xl font-bold group-hover:text-primary transition-colors">{feature.title}</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {feature.description}
+                      </p>
+                    </CardContent>
+                  </Card>
                 </div>
-                <h3 className="mb-2 text-xl font-semibold">Gestion des membres</h3>
-                <p className="text-muted-foreground">
-                  Enregistrez et suivez tous vos fidèles en toute simplicité
-                </p>
-              </CardContent>
-            </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
-            <Card className="border-2 shadow-soft hover:shadow-divine transition-shadow">
-              <CardContent className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-secondary/10">
-                  <TrendingUp className="h-6 w-6 text-secondary" />
-                </div>
-                <h3 className="mb-2 text-xl font-semibold">Suivi des dons</h3>
-                <p className="text-muted-foreground">
-                  Gérez les offrandes et dîmes avec paiement en ligne sécurisé
-                </p>
-              </CardContent>
-            </Card>
+      {/* Benefits Section */}
+      <section className="py-24 gradient-blessing">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+            <div
+              id="benefits-content"
+              data-animate
+              className={`transition-all duration-1000 ${isVisible['benefits-content'] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
+            >
+              <h2 className="text-4xl font-bold mb-6 md:text-5xl">
+                Pourquoi choisir <span className="text-gradient">EgliConnect</span> ?
+              </h2>
+              <p className="text-lg text-muted-foreground mb-8">
+                Une plateforme pensée pour simplifier la gestion de votre église et renforcer votre communauté
+              </p>
+              
+              <div className="space-y-4">
+                {[
+                  "Interface intuitive et facile à utiliser",
+                  "Sécurité de niveau entreprise",
+                  "Support technique réactif",
+                  "Mises à jour régulières et gratuites"
+                ].map((benefit, index) => (
+                  <div key={index} className="flex items-start gap-3 group">
+                    <CheckCircle className="h-6 w-6 text-primary mt-1 group-hover:scale-110 transition-transform flex-shrink-0" />
+                    <span className="text-lg">{benefit}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-            <Card className="border-2 shadow-soft hover:shadow-divine transition-shadow">
-              <CardContent className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <Heart className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="mb-2 text-xl font-semibold">Demandes de prière</h3>
-                <p className="text-muted-foreground">
-                  Recueillez et organisez les intentions de prière de votre communauté
-                </p>
-              </CardContent>
-            </Card>
+            <div
+              id="benefits-visual"
+              data-animate
+              className={`transition-all duration-1000 ${isVisible['benefits-visual'] ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}
+            >
+              <Card className="p-8 shadow-divine border-2 border-primary/20 bg-white">
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4 p-4 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors">
+                    <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
+                      <Users className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-lg">Gestion simplifiée</div>
+                      <div className="text-sm text-muted-foreground">Gérez tout en un seul endroit</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4 p-4 rounded-lg bg-secondary/5 hover:bg-secondary/10 transition-colors">
+                    <div className="h-12 w-12 rounded-full bg-secondary flex items-center justify-center">
+                      <TrendingUp className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-lg">Croissance assurée</div>
+                      <div className="text-sm text-muted-foreground">Suivez vos progrès en temps réel</div>
+                    </div>
+                  </div>
 
-            <Card className="border-2 shadow-soft hover:shadow-divine transition-shadow">
-              <CardContent className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-secondary/10">
-                  <Church className="h-6 w-6 text-secondary" />
+                  <div className="flex items-center gap-4 p-4 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors">
+                    <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
+                      <Shield className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-lg">Données protégées</div>
+                      <div className="text-sm text-muted-foreground">Sécurité maximale garantie</div>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="mb-2 text-xl font-semibold">Annonces & Événements</h3>
-                <p className="text-muted-foreground">
-                  Communiquez facilement avec vos fidèles sur les activités
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 shadow-soft hover:shadow-divine transition-shadow">
-              <CardContent className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <Shield className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="mb-2 text-xl font-semibold">Sécurité multi-tenant</h3>
-                <p className="text-muted-foreground">
-                  Vos données sont isolées et protégées par église
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 shadow-soft hover:shadow-divine transition-shadow">
-              <CardContent className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-secondary/10">
-                  <Sparkles className="h-6 w-6 text-secondary" />
-                </div>
-                <h3 className="mb-2 text-xl font-semibold">Assistant spirituel IA</h3>
-                <p className="text-muted-foreground">
-                  Chatbot intelligent pour répondre aux questions spirituelles
-                </p>
-              </CardContent>
-            </Card>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20">
+      <section className="py-24 bg-white">
         <div className="container mx-auto px-4">
-          <Card className="gradient-heaven border-0 shadow-deep">
-            <CardContent className="p-12 text-center text-white">
-              <h2 className="mb-4 text-3xl font-bold md:text-4xl">
-                Prêt à transformer la gestion de votre église ?
-              </h2>
-              <p className="mb-8 text-lg text-white/90">
-                Rejoignez les églises qui utilisent EgliConnect pour servir mieux
-              </p>
-              <Button 
-                size="lg" 
-                className="bg-white text-primary hover:bg-white/90 text-lg shadow-lg"
-                onClick={() => navigate("/auth?mode=signup")}
-              >
-                Commencer gratuitement
-              </Button>
-            </CardContent>
-          </Card>
+          <div
+            id="cta-section"
+            data-animate
+            className={`transition-all duration-1000 ${isVisible['cta-section'] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+          >
+            <Card className="gradient-heaven border-0 shadow-deep overflow-hidden relative max-w-5xl mx-auto">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+              <CardContent className="relative p-12 md:p-16 text-center text-white">
+                <div className="mb-6 flex justify-center">
+                  <div className="h-20 w-20 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm animate-pulse">
+                    <Sparkles className="h-10 w-10 text-white" />
+                  </div>
+                </div>
+                <h2 className="mb-6 text-4xl font-bold md:text-5xl">
+                  Prêt à transformer la gestion de votre église ?
+                </h2>
+                <p className="mb-10 text-xl text-white/90 max-w-2xl mx-auto">
+                  Rejoignez les églises qui utilisent EgliConnect pour mieux servir leur communauté
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button 
+                    size="lg" 
+                    className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 shadow-lg hover:scale-105 transition-all duration-300 group"
+                    onClick={() => navigate("/auth?mode=signup")}
+                  >
+                    Commencer gratuitement
+                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="border-2 border-white text-white hover:bg-white/20 text-lg px-8 py-6 backdrop-blur-sm"
+                    onClick={() => navigate("/auth")}
+                  >
+                    En savoir plus
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
