@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Church, Users, Heart, TrendingUp, Shield, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
 import bibleImage from "@/assets/bible-floating.png";
 import churchAssemblyBg from "@/assets/church-assembly-bg.jpg";
+import egliconnectLogo from "@/assets/egliconnect-logo.png";
 import { useEffect, useRef, useState } from "react";
 import Earth3D from "@/components/Earth3D";
 
@@ -109,53 +110,71 @@ const Index = () => {
 
       {/* Pitch Section with Stats */}
       <section 
-        className="relative py-24 bg-cover bg-center bg-no-repeat"
+        className="relative py-24 bg-cover bg-center bg-no-repeat overflow-hidden"
         style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url(${churchAssemblyBg})` }}
       >
         <div className="container mx-auto px-4">
           <div
             id="pitch-section"
             data-animate
-            className={`grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto transition-all duration-1000 ${isVisible['pitch-section'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+            className={`max-w-6xl mx-auto transition-all duration-1000 ${isVisible['pitch-section'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
           >
-            {/* Left Content */}
-            <div className="text-white space-y-6">
-              <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-wide">
-                Découvrez EgliConnect
-              </h2>
-              <p className="text-white/90 text-lg leading-relaxed">
-                <span className="font-semibold">EgliConnect</span> est une plateforme SaaS multi-tenant qui permet à chaque église de gérer facilement ses membres, ses dons et ses activités sur une interface moderne, sécurisée et accessible en ligne. Grâce à Supabase, Paystack et OpenAI, chaque église dispose d'un espace privé, personnalisé et connecté à sa communauté.
-              </p>
-              <Button 
-                size="lg" 
-                className="bg-primary hover:bg-primary/90 text-white uppercase tracking-wide"
-                onClick={() => navigate("/auth?mode=signup")}
-              >
-                En savoir plus
-              </Button>
+            {/* Centered Animated Logo */}
+            <div className="flex justify-center mb-16">
+              <div className="relative w-64 h-64 md:w-80 md:h-80">
+                {/* Glowing background circle */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/30 to-secondary/30 blur-3xl animate-pulse"></div>
+                {/* Animated Logo */}
+                <div className="relative w-full h-full animate-float">
+                  <img 
+                    src={egliconnectLogo} 
+                    alt="EgliConnect Logo" 
+                    className="w-full h-full object-contain drop-shadow-2xl animate-gentle-spin"
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* Right Stats */}
-            <div className="space-y-8">
-              {[
-                { label: "Objectifs Spirituels", value: 85 },
-                { label: "Gestion Complète", value: 92 },
-                { label: "Communauté Active", value: 78 },
-                { label: "Innovation Tech", value: 95 }
-              ].map((stat, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex justify-between items-center text-white">
-                    <span className="uppercase text-sm font-semibold tracking-wide">{stat.label}</span>
-                    <span className="text-2xl font-bold">{stat.value}%</span>
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              {/* Left Content */}
+              <div className="text-white space-y-6">
+                <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-wide">
+                  Découvrez EgliConnect
+                </h2>
+                <p className="text-white/90 text-lg leading-relaxed">
+                  <span className="font-semibold">EgliConnect</span> est une plateforme SaaS multi-tenant qui permet à chaque église de gérer facilement ses membres, ses dons et ses activités sur une interface moderne, sécurisée et accessible en ligne. Grâce à Supabase, Paystack et OpenAI, chaque église dispose d'un espace privé, personnalisé et connecté à sa communauté.
+                </p>
+                <Button 
+                  size="lg" 
+                  className="bg-primary hover:bg-primary/90 text-white uppercase tracking-wide"
+                  onClick={() => navigate("/auth?mode=signup")}
+                >
+                  En savoir plus
+                </Button>
+              </div>
+
+              {/* Right Stats */}
+              <div className="space-y-8">
+                {[
+                  { label: "Objectifs Spirituels", value: 85 },
+                  { label: "Gestion Complète", value: 92 },
+                  { label: "Communauté Active", value: 78 },
+                  { label: "Innovation Tech", value: 95 }
+                ].map((stat, index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="flex justify-between items-center text-white">
+                      <span className="uppercase text-sm font-semibold tracking-wide">{stat.label}</span>
+                      <span className="text-2xl font-bold">{stat.value}%</span>
+                    </div>
+                    <div className="h-3 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
+                      <div 
+                        className="h-full bg-white rounded-full transition-all duration-1000 ease-out"
+                        style={{ width: isVisible['pitch-section'] ? `${stat.value}%` : '0%' }}
+                      />
+                    </div>
                   </div>
-                  <div className="h-3 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
-                    <div 
-                      className="h-full bg-white rounded-full transition-all duration-1000 ease-out"
-                      style={{ width: isVisible['pitch-section'] ? `${stat.value}%` : '0%' }}
-                    />
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
