@@ -106,6 +106,44 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Pitch Section */}
+      <section className="py-24 bg-gradient-to-b from-white to-sky-50/30">
+        <div className="container mx-auto px-4">
+          <div
+            id="pitch-section"
+            data-animate
+            className={`max-w-5xl mx-auto transition-all duration-1000 ${isVisible['pitch-section'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+          >
+            <Card className="border-2 border-primary/20 shadow-divine bg-white overflow-hidden">
+              <CardContent className="p-10 md:p-14">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-heaven mb-6">
+                    <Church className="h-8 w-8 text-white" />
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                    <span className="text-gradient">EgliConnect</span> – Servir Dieu à travers la technologie ✝️
+                  </h2>
+                </div>
+                
+                <div className="space-y-6 text-lg leading-relaxed">
+                  <p className="text-foreground">
+                    <span className="font-semibold text-primary">EgliConnect</span> est une plateforme <span className="font-semibold">SaaS multi-tenant</span> qui permet à chaque église de gérer facilement ses membres, ses dons et ses activités sur une interface moderne, sécurisée et accessible en ligne.
+                  </p>
+                  
+                  <p className="text-muted-foreground">
+                    Grâce à <span className="font-semibold text-primary">Supabase</span> pour la gestion des données, <span className="font-semibold text-secondary">Paystack</span> pour les dons en ligne et <span className="font-semibold text-primary">OpenAI</span> pour l'assistant spirituel intelligent, chaque église dispose d'un espace privé, personnalisé et connecté à sa communauté.
+                  </p>
+                  
+                  <p className="text-foreground font-medium bg-primary/5 p-6 rounded-xl border-l-4 border-primary">
+                    EgliConnect simplifie la vie des pasteurs, opérateurs et fidèles, tout en renforçant le lien spirituel et organisationnel au sein des paroisses.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-24 bg-white">
         <div className="container mx-auto px-4">
