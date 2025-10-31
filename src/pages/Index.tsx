@@ -35,55 +35,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen gradient-blessing overflow-hidden">
-      {/* Hero Section - New Design */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-[#2a2418] via-[#1a1a1a] to-[#1a1a1a]">
-        {/* Decorative Sparkles */}
-        <Sparkles className="absolute top-[15%] right-[10%] w-4 h-4 md:w-6 md:h-6 text-yellow-400 animate-pulse" style={{ animationDelay: "0s" }} />
-        <Sparkles className="absolute bottom-[30%] left-[5%] w-4 h-4 md:w-5 md:h-5 text-yellow-400 animate-pulse" style={{ animationDelay: "1s" }} />
-        <Sparkles className="absolute top-[40%] right-[25%] w-5 h-5 md:w-6 md:h-6 text-yellow-400 animate-pulse" style={{ animationDelay: "0.5s" }} />
-        <Sparkles className="absolute bottom-[20%] right-[15%] w-4 h-4 md:w-5 md:h-5 text-yellow-400 animate-pulse" style={{ animationDelay: "1.5s" }} />
-        
-        <div className="container relative mx-auto px-4 py-20 md:py-0">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-screen">
-            
-            {/* Left Content */}
-            <div className="space-y-6 md:space-y-8 animate-fade-in">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-white">
-                Simple et Rapide<br />
-                Solution de Gestion<br />
-                pour votre Église
-              </h1>
-              
-              <div className="space-y-2 text-base sm:text-lg md:text-xl text-slate-300">
-                <p>Gérez les membres, dons, annonces et prières</p>
-                <p>sur une seule plateforme sécurisée.</p>
-                <p>Une expérience moderne, claire et efficace.</p>
-              </div>
-              
-              <div className="pt-4">
-                <Button 
-                  size="lg" 
-                  className="bg-[#C9A55A] hover:bg-[#B8944A] text-white font-semibold text-base md:text-lg px-8 md:px-12 py-5 md:py-6 shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl"
-                  onClick={() => navigate("/auth?mode=signup")}
-                >
-                  Commencer Maintenant
-                </Button>
-              </div>
-            </div>
-
-            {/* Right Image */}
-            <div className="relative animate-fade-in lg:pl-8" style={{ animationDelay: "0.3s" }}>
-              <img 
-                src={heroHandCard} 
-                alt="EgliConnect Card" 
-                className="w-full h-auto object-contain max-w-2xl mx-auto"
-              />
-            </div>
-
-          </div>
-        </div>
-      </section>
-
       {/* Pitch Section with Stats */}
       <section 
         className="relative py-24 bg-cover bg-center bg-no-repeat overflow-hidden"
