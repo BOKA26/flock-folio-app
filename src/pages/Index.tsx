@@ -2,9 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Church, Users, Heart, TrendingUp, Shield, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
-import heroBg from "@/assets/hero-bg.jpg";
 import bibleImage from "@/assets/bible-floating.png";
 import { useEffect, useRef, useState } from "react";
+import Earth3D from "@/components/Earth3D";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -32,22 +32,17 @@ const Index = () => {
   return (
     <div className="min-h-screen gradient-blessing overflow-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-fade-in"
-          style={{ backgroundImage: `url(${heroBg})` }}
-        ></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-white/85 via-white/75 to-white/90"></div>
+      <section className="relative min-h-screen flex items-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-sky-50 via-white to-sky-50"></div>
         
-        <div className="container relative mx-auto px-4 py-20">
-          <div className="mx-auto max-w-5xl">
-            <div className="mb-8 flex justify-center animate-scale-in">
-              <div className="relative">
-                <div className="rounded-full bg-white p-8 shadow-divine animate-float">
-                  <Church className="h-20 w-20 text-primary animate-gentle-spin" />
-                </div>
-                {/* Floating Bible */}
-                <div className="absolute -right-16 -top-8 w-32 h-32 animate-float-delayed">
+        <div className="container relative mx-auto px-4 py-12">
+          <div className="mx-auto max-w-6xl">
+            {/* 3D Earth and Floating Bible */}
+            <div className="relative mb-12 flex justify-center">
+              <div className="relative w-full max-w-2xl">
+                <Earth3D />
+                {/* Floating Bible at center */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 animate-float-delayed pointer-events-none">
                   <img 
                     src={bibleImage} 
                     alt="Bible" 
@@ -57,19 +52,21 @@ const Index = () => {
               </div>
             </div>
             
-            <h1 className="mb-8 text-center text-6xl font-bold leading-tight md:text-7xl lg:text-8xl animate-fade-in">
-              <span className="text-gradient">EgliConnect</span>
-            </h1>
+            <div className="text-center space-y-6 animate-fade-in">
+              <h1 className="text-6xl font-bold leading-tight md:text-7xl lg:text-8xl">
+                <span className="text-gradient">EgliConnect</span>
+              </h1>
+              
+              <p className="text-2xl font-medium text-foreground md:text-3xl" style={{ animationDelay: "0.2s" }}>
+                La plateforme moderne pour gérer votre église
+              </p>
+              
+              <p className="text-lg text-muted-foreground md:text-xl max-w-3xl mx-auto" style={{ animationDelay: "0.4s" }}>
+                Membres, dons, annonces et prières réunis sur une seule plateforme sécurisée et intuitive
+              </p>
+            </div>
             
-            <p className="mb-6 text-center text-2xl font-medium text-foreground md:text-3xl animate-fade-in" style={{ animationDelay: "0.2s" }}>
-              La plateforme moderne pour gérer votre église
-            </p>
-            
-            <p className="mb-12 text-center text-lg text-muted-foreground md:text-xl max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: "0.4s" }}>
-              Membres, dons, annonces et prières réunis sur une seule plateforme sécurisée et intuitive
-            </p>
-            
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center animate-fade-in" style={{ animationDelay: "0.6s" }}>
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center mt-8 animate-fade-in" style={{ animationDelay: "0.6s" }}>
               <Button 
                 size="lg" 
                 className="gradient-heaven text-lg px-8 py-6 shadow-deep hover:scale-105 hover:shadow-divine transition-all duration-300 group"
@@ -91,7 +88,7 @@ const Index = () => {
             </div>
 
             {/* Stats Bar */}
-            <div className="mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: "0.8s" }}>
+            <div className="mt-12 grid grid-cols-3 gap-8 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: "0.8s" }}>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary mb-1">100%</div>
                 <div className="text-sm text-muted-foreground">Sécurisé</div>
