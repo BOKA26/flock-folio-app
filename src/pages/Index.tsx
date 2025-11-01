@@ -324,7 +324,7 @@ const Index = () => {
                     className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 shadow-lg hover:scale-105 transition-all duration-300 group"
                     onClick={() => navigate("/auth?mode=signup")}
                   >
-                    Commencer gratuitement
+                    S'inscrire gratuitement
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                   <Button 

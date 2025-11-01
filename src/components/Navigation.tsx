@@ -34,7 +34,7 @@ export const Navigation = () => {
             <Button 
               onClick={() => navigate("/auth?mode=signup")}
             >
-              Commencer
+              S'inscrire
             </Button>
           </div>
 
@@ -82,7 +82,7 @@ export const Navigation = () => {
                 setIsMenuOpen(false);
               }}
             >
-              Commencer
+              S'inscrire
             </Button>
           </div>
         )}
