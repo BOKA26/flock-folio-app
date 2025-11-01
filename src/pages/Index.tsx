@@ -38,9 +38,48 @@ const Index = () => {
     <div className="min-h-screen gradient-blessing overflow-hidden">
       {/* Hero Section */}
       <section className="relative w-full min-h-screen overflow-hidden bg-[#1a1410]">
-        {/* Full Background Image - Responsive */}
+        {/* Mobile: Flex Column Layout (Text top, Image bottom) */}
+        <div className="flex flex-col h-screen md:hidden">
+          {/* Text Content - Top on mobile */}
+          <div className="flex-1 flex items-center justify-center px-6 py-12 bg-[#1a1410]">
+            <div className="text-center space-y-6 max-w-lg">
+              <h1 className="text-4xl font-bold text-white leading-tight">
+                Simple et Rapide
+                <br />
+                <span className="text-primary">Solution de Gestion</span>
+                <br />
+                pour votre Église
+              </h1>
+              <p className="text-white/80 text-lg">
+                Gérez vos membres, dons, annonces et prières depuis une seule plateforme sécurisée.
+              </p>
+              <p className="text-white/70">
+                Une expérience moderne, claire et efficace.
+              </p>
+              <Button 
+                size="lg" 
+                className="bg-primary hover:bg-primary/90 text-white uppercase tracking-wide mt-6"
+                onClick={() => navigate("/auth?mode=signup")}
+              >
+                Commencer Maintenant
+              </Button>
+            </div>
+          </div>
+          
+          {/* Image - Bottom on mobile */}
+          <div className="flex-1 relative">
+            <div 
+              className="absolute inset-0 bg-no-repeat bg-cover bg-center"
+              style={{ 
+                backgroundImage: `url(${heroHandLandscape})`
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Desktop: Full Background Image */}
         <div 
-          className="absolute inset-0 w-full h-full bg-no-repeat bg-cover bg-[position:15%_center] sm:bg-[position:25%_center] md:bg-[position:35%_center] lg:bg-center"
+          className="hidden md:block absolute inset-0 w-full h-full bg-no-repeat bg-cover bg-center"
           style={{ 
             backgroundImage: `url(${heroHandLandscape})`
           }}
