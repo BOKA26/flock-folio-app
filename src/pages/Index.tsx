@@ -47,12 +47,16 @@ const Index = () => {
       </section>
 
       {/* Mission Statement Section */}
-      <section className="py-16 bg-white">
+      <section className="py-20 bg-gradient-to-b from-white to-background/30">
         <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto text-center">
-            <p className="text-2xl md:text-3xl font-medium text-foreground leading-relaxed">
-              EgliConnect simplifie la vie des pasteurs, opérateurs et fidèles, tout en renforçant le lien spirituel et organisationnel au sein des paroisses.
-            </p>
+          <div className="max-w-5xl mx-auto">
+            <div className="relative pl-8 md:pl-12 border-l-4 border-primary">
+              <div className="absolute -left-2 top-0 w-4 h-4 bg-primary rounded-full"></div>
+              <div className="absolute -left-2 bottom-0 w-4 h-4 bg-primary rounded-full"></div>
+              <p className="text-xl md:text-3xl font-medium text-foreground leading-relaxed">
+                EgliConnect simplifie la vie des pasteurs, opérateurs et fidèles, tout en renforçant le lien spirituel et organisationnel au sein des paroisses.
+              </p>
+            </div>
           </div>
         </div>
       </section>
