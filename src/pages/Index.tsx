@@ -41,7 +41,7 @@ const Index = () => {
         <img 
           src={heroCardFullscreen}
           alt="EgliConnect - Simple et Rapide Solution de Gestion pour votre Église"
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="absolute inset-0 w-full h-full object-contain md:object-cover object-center"
         />
       </section>
 
