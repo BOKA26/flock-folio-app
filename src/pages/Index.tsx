@@ -38,13 +38,10 @@ const Index = () => {
       
       {/* Hero Section */}
       <section className="relative w-full h-screen overflow-hidden pt-16">
-        <div 
-          className="absolute inset-0 bg-contain bg-center bg-no-repeat"
-          style={{ 
-            backgroundImage: `url(${heroCardFullscreen})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center'
-          }}
+        <img 
+          src={heroCardFullscreen}
+          alt="EgliConnect - Simple et Rapide Solution de Gestion pour votre Église"
+          className="absolute inset-0 w-full h-full object-cover object-center"
         />
       </section>
 
