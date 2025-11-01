@@ -4,12 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { Church, Users, Heart, TrendingUp, Shield, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
 import churchAssemblyBg from "@/assets/church-assembly-bg.jpg";
 import egliconnectLogo from "@/assets/egliconnect-logo.png";
-import heroHandFinal from "@/assets/hero-hand-final.jpg";
-import heroGoldenHand from "@/assets/hero-golden-hand.png";
 import heroHandCard from "@/assets/hero-hand-card.png";
-import heroHandLandscape from "@/assets/hero-hand-landscape.png";
 import egliconnectLogoOfficial from "@/assets/egliconnect-logo-official.png";
 import { useEffect, useRef, useState } from "react";
+import { Navigation } from "@/components/Navigation";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -36,54 +34,56 @@ const Index = () => {
 
   return (
     <div className="min-h-screen gradient-blessing overflow-hidden">
+      <Navigation />
+      
       {/* Hero Section */}
-      <section className="relative w-full min-h-screen overflow-hidden bg-[#1a1410]">
-        {/* Mobile: Flex Column Layout (Text top, Image bottom) */}
-        <div className="flex flex-col h-screen md:hidden">
-          {/* Text Content - Top on mobile */}
-          <div className="flex-1 flex items-center justify-center px-6 py-12 bg-[#1a1410]">
-            <div className="text-center space-y-6 max-w-lg">
-              <h1 className="text-4xl font-bold text-white leading-tight">
+      <section className="relative w-full min-h-screen overflow-hidden bg-gradient-to-br from-[#2d1f14] via-[#3d2a1a] to-[#1a1410] pt-16">
+        <div className="container mx-auto px-4 h-screen flex items-center">
+          <div className="grid md:grid-cols-2 gap-8 items-center w-full">
+            {/* Text Content */}
+            <div className="text-center md:text-left space-y-6 z-10">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
                 Simple et Rapide
                 <br />
                 <span className="text-primary">Solution de Gestion</span>
                 <br />
                 pour votre Église
               </h1>
-              <p className="text-white/80 text-lg">
-                Gérez vos membres, dons, annonces et prières depuis une seule plateforme sécurisée.
+              <p className="text-white/80 text-lg md:text-xl">
+                Gérez vos membres, dons, annonces et prières sur une seule plateforme sécurisée.
               </p>
-              <p className="text-white/70">
+              <p className="text-white/70 text-base md:text-lg">
                 Une expérience moderne, claire et efficace.
               </p>
-              <Button 
-                size="lg" 
-                className="bg-primary hover:bg-primary/90 text-white uppercase tracking-wide mt-6"
-                onClick={() => navigate("/auth?mode=signup")}
-              >
-                Commencer Maintenant
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-4">
+                <Button 
+                  size="lg" 
+                  className="bg-primary hover:bg-primary/90 text-white uppercase tracking-wide"
+                  onClick={() => navigate("/auth?mode=signup")}
+                >
+                  Commencer Maintenant
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="border-white/20 text-white hover:bg-white/10"
+                  onClick={() => navigate("/auth")}
+                >
+                  Se Connecter
+                </Button>
+              </div>
+            </div>
+
+            {/* Image */}
+            <div className="relative flex items-center justify-center">
+              <img 
+                src={heroHandCard} 
+                alt="EgliConnect Card" 
+                className="w-full max-w-lg h-auto object-contain drop-shadow-2xl animate-fade-in"
+              />
             </div>
           </div>
-          
-          {/* Image - Bottom on mobile */}
-          <div className="flex-1 relative">
-            <div 
-              className="absolute inset-0 bg-no-repeat bg-cover bg-center"
-              style={{ 
-                backgroundImage: `url(${heroHandLandscape})`
-              }}
-            />
-          </div>
         </div>
-
-        {/* Desktop: Full Background Image */}
-        <div 
-          className="hidden md:block absolute inset-0 w-full h-full bg-no-repeat bg-cover bg-center"
-          style={{ 
-            backgroundImage: `url(${heroHandLandscape})`
-          }}
-        />
       </section>
 
       {/* Pitch Section with Stats */}
@@ -173,7 +173,7 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 bg-white">
+      <section id="features" className="py-24 bg-white">
         <div className="container mx-auto px-4">
           <div 
             id="features-header" 
@@ -264,7 +264,7 @@ const Index = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-24 gradient-blessing">
+      <section id="benefits" className="py-24 gradient-blessing">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
             <div
