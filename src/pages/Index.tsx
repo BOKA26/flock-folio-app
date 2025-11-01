@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Church, Users, Heart, TrendingUp, Shield, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
 import churchAssemblyBg from "@/assets/church-assembly-bg.jpg";
 import egliconnectLogo from "@/assets/egliconnect-logo.png";
-import heroHandCard from "@/assets/hero-hand-card.png";
+import heroCardFullscreen from "@/assets/hero-card-fullscreen.png";
 import egliconnectLogoOfficial from "@/assets/egliconnect-logo-official.png";
 import { useEffect, useRef, useState } from "react";
 import { Navigation } from "@/components/Navigation";
@@ -39,9 +39,11 @@ const Index = () => {
       {/* Hero Section */}
       <section className="relative w-full h-screen overflow-hidden pt-16">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-contain bg-center bg-no-repeat"
           style={{ 
-            backgroundImage: `url(${heroHandCard})`,
+            backgroundImage: `url(${heroCardFullscreen})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center center'
           }}
         />
       </section>
