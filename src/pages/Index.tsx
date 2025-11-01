@@ -6,6 +6,7 @@ import churchAssemblyBg from "@/assets/church-assembly-bg.jpg";
 import egliconnectLogo from "@/assets/egliconnect-logo.png";
 import heroCardFullscreen from "@/assets/hero-card-fullscreen.png";
 import egliconnectLogoOfficial from "@/assets/egliconnect-logo-official.png";
+import egliconnectLogoNew from "@/assets/egliconnect-logo-new.png";
 import { useEffect, useRef, useState } from "react";
 import { Navigation } from "@/components/Navigation";
 
@@ -349,9 +350,11 @@ const Index = () => {
             {/* Logo Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-center md:justify-start">
-                <div className="h-14 w-14 rounded bg-primary flex items-center justify-center">
-                  <Church className="h-8 w-8 text-white" />
-                </div>
+                <img 
+                  src={egliconnectLogoNew} 
+                  alt="EgliConnect Logo" 
+                  className="h-24 w-auto"
+                />
               </div>
               <p className="text-white/70 text-sm leading-relaxed">
                 EgliConnect simplifie la gestion de votre église et renforce le lien spirituel au sein de votre communauté.
