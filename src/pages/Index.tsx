@@ -40,11 +40,9 @@ const Index = () => {
       <section className="relative w-full min-h-screen overflow-hidden bg-[#1a1410]">
         {/* Full Background Image - Responsive */}
         <div 
-          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 w-full h-full bg-no-repeat bg-cover bg-[position:85%_center] sm:bg-[position:75%_center] md:bg-[position:65%_center] lg:bg-center"
           style={{ 
-            backgroundImage: `url(${heroHandLandscape})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center'
+            backgroundImage: `url(${heroHandLandscape})`
           }}
         />
       </section>
