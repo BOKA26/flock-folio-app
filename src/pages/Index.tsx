@@ -46,6 +46,17 @@ const Index = () => {
         />
       </section>
 
+      {/* Mission Statement Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto text-center">
+            <p className="text-2xl md:text-3xl font-medium text-foreground leading-relaxed">
+              EgliConnect simplifie la vie des pasteurs, opérateurs et fidèles, tout en renforçant le lien spirituel et organisationnel au sein des paroisses.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Pitch Section with Stats */}
       <section 
         className="relative py-24 bg-cover bg-center bg-no-repeat overflow-hidden"
