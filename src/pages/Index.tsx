@@ -7,6 +7,7 @@ import egliconnectLogo from "@/assets/egliconnect-logo.png";
 import heroHandFinal from "@/assets/hero-hand-final.jpg";
 import heroGoldenHand from "@/assets/hero-golden-hand.png";
 import heroHandCard from "@/assets/hero-hand-card.png";
+import heroHandLandscape from "@/assets/hero-hand-landscape.png";
 import egliconnectLogoOfficial from "@/assets/egliconnect-logo-official.png";
 import { useEffect, useRef, useState } from "react";
 
@@ -35,6 +36,53 @@ const Index = () => {
 
   return (
     <div className="min-h-screen gradient-blessing overflow-hidden">
+      {/* Hero Section */}
+      <section className="relative min-h-screen w-full overflow-hidden">
+        {/* Background Image with Overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ 
+            backgroundImage: `url(${heroHandLandscape})`,
+          }}
+        >
+          {/* Gradient Overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
+        </div>
+
+        {/* Decorative Sparkles */}
+        <Sparkles className="absolute top-[15%] right-[10%] w-5 h-5 md:w-6 md:h-6 text-yellow-400 animate-pulse z-10" style={{ animationDelay: "0s" }} />
+        <Sparkles className="absolute bottom-[25%] left-[8%] w-4 h-4 md:w-5 md:h-5 text-yellow-400 animate-pulse z-10" style={{ animationDelay: "1s" }} />
+        <Sparkles className="absolute top-[35%] right-[20%] w-5 h-5 md:w-6 md:h-6 text-yellow-400 animate-pulse z-10" style={{ animationDelay: "0.5s" }} />
+        <Sparkles className="absolute bottom-[15%] right-[30%] w-4 h-4 md:w-5 md:h-5 text-yellow-400 animate-pulse z-10" style={{ animationDelay: "1.5s" }} />
+
+        {/* Content */}
+        <div className="relative z-10 container mx-auto px-4 md:px-8 h-screen flex items-center">
+          <div className="max-w-2xl space-y-6 md:space-y-8 animate-fade-in">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-white drop-shadow-2xl">
+              Simple et Rapide<br />
+              Solution de Gestion<br />
+              pour votre Église
+            </h1>
+            
+            <div className="space-y-2 text-base sm:text-lg md:text-xl text-white/95 drop-shadow-lg">
+              <p>Gérez les membres, dons, annonces et prières</p>
+              <p>sur une seule plateforme sécurisée.</p>
+              <p>Une expérience moderne, claire et efficace.</p>
+            </div>
+            
+            <div className="pt-4">
+              <Button 
+                size="lg" 
+                className="bg-[#C9A55A] hover:bg-[#B8944A] text-white font-semibold text-base md:text-lg px-10 md:px-14 py-6 md:py-7 shadow-2xl hover:scale-105 transition-all duration-300 rounded-xl"
+                onClick={() => navigate("/auth?mode=signup")}
+              >
+                Commencer Maintenant
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Pitch Section with Stats */}
       <section 
         className="relative py-24 bg-cover bg-center bg-no-repeat overflow-hidden"
