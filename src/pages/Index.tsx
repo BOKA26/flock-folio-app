@@ -98,8 +98,8 @@ const Index = () => {
                   <span className="font-semibold">EgliConnect</span> est une plateforme SaaS multi-tenant qui permet à chaque église de gérer facilement ses membres, ses dons et ses activités sur une interface moderne, sécurisée et accessible en ligne. Grâce à Supabase, Paystack et OpenAI, chaque église dispose d'un espace privé, personnalisé et connecté à sa communauté.
                 </p>
                 <Button 
-                  size="lg" 
-                  className="bg-primary hover:bg-primary/90 text-white uppercase tracking-wide"
+                  size="lg"
+                  variant="premium"
                   onClick={() => navigate("/auth?mode=signup")}
                 >
                   En savoir plus

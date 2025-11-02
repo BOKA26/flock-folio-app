@@ -198,7 +198,7 @@ const Announcements = () => {
               }
             }}>
               <DialogTrigger asChild>
-                <Button>
+                <Button variant="premium">
                   <Plus className="mr-2 h-4 w-4" />
                   Nouveau
                 </Button>
@@ -279,7 +279,7 @@ const Announcements = () => {
                       )}
                     </div>
                   </div>
-                  <Button type="submit" className="w-full" disabled={uploading}>
+                  <Button type="submit" variant="premium" className="w-full" disabled={uploading}>
                     {uploading ? "Upload en cours..." : (editingAnnouncement ? "Enregistrer" : "Créer l'annonce")}
                   </Button>
                 </form>

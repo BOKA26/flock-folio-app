@@ -177,7 +177,7 @@ const OnlineDonations = () => {
                 </p>
               </div>
 
-              <Button type="submit" className="w-full" size="lg" disabled={loading}>
+              <Button type="submit" variant="premium" className="w-full" size="lg" disabled={loading}>
                 <CreditCard className="mr-2 h-5 w-5" />
                 {loading ? "Chargement..." : "Payer avec Paystack"}
               </Button>

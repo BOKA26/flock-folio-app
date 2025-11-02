@@ -222,7 +222,7 @@ const Auth = () => {
                   />
                 </div>
 
-                <Button type="submit" className="w-full gradient-heaven" disabled={loading}>
+                <Button type="submit" variant="premium" className="w-full" disabled={loading}>
                   {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                   Se connecter
                 </Button>
@@ -322,7 +322,7 @@ const Auth = () => {
                   </div>
                 )}
 
-                <Button type="submit" className="w-full gradient-heaven" disabled={loading}>
+                <Button type="submit" variant="premium" className="w-full" disabled={loading}>
                   {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                   S'inscrire
                 </Button>

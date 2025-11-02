@@ -202,6 +202,7 @@ const DonationPayment = () => {
             </div>
 
             <Button
+              variant="premium"
               onClick={handlePaymentMethodSelect}
               className="w-full"
               size="lg"
@@ -272,6 +273,7 @@ const DonationPayment = () => {
                 Retour
               </Button>
               <Button
+                variant="premium"
                 onClick={handlePaymentConfirm}
                 className="flex-1"
                 size="lg"

@@ -121,7 +121,7 @@ const Prayers = () => {
 
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button>
+              <Button variant="premium">
                 <Plus className="mr-2 h-4 w-4" />
                 Nouvelle demande
               </Button>
@@ -144,7 +144,7 @@ const Prayers = () => {
                     }
                   />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" variant="premium" className="w-full">
                   Soumettre
                 </Button>
               </form>

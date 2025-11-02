@@ -159,7 +159,7 @@ const Members = () => {
             }
           }}>
             <DialogTrigger asChild>
-              <Button>
+              <Button variant="premium">
                 <Plus className="mr-2 h-4 w-4" />
                 Ajouter un membre
               </Button>
@@ -231,7 +231,7 @@ const Members = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" variant="premium" className="w-full">
                   {editingMember ? "Enregistrer" : "Ajouter"}
                 </Button>
               </form>

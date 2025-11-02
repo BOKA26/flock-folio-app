@@ -406,7 +406,7 @@ const Church = () => {
               </div>
 
               <div className="flex gap-4">
-                <Button type="submit" className="flex-1">
+                <Button type="submit" variant="premium" className="flex-1">
                   <Save className="mr-2 h-4 w-4" />
                   Enregistrer les modifications
                 </Button>
