@@ -9,8 +9,11 @@ export const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="container mx-auto px-4">
+    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-border/50" style={{ 
+      background: 'linear-gradient(135deg, hsl(0 0% 100% / 0.95), hsl(43 65% 52% / 0.05))',
+      boxShadow: '0 4px 20px hsl(201 85% 21% / 0.08)'
+    }}>
+      <div className="container mx-auto px-4" style={{ fontFamily: "'Inter', 'Poppins', sans-serif" }}>
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
@@ -19,19 +22,27 @@ export const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-foreground/80 hover:text-primary transition-colors">
+            <a 
+              href="#features" 
+              className="text-[hsl(201,85%,21%)] font-medium transition-colors duration-300 hover:text-[hsl(43,65%,52%)]"
+            >
               Fonctionnalités
             </a>
-            <a href="#benefits" className="text-foreground/80 hover:text-primary transition-colors">
+            <a 
+              href="#benefits" 
+              className="text-[hsl(201,85%,21%)] font-medium transition-colors duration-300 hover:text-[hsl(43,65%,52%)]"
+            >
               Avantages
             </a>
             <Button 
               variant="ghost" 
               onClick={() => navigate("/auth")}
+              className="text-[hsl(201,85%,21%)] hover:text-[hsl(43,65%,52%)] font-medium"
             >
               Se Connecter
             </Button>
             <Button 
+              variant="premium"
               onClick={() => navigate("/auth?mode=signup")}
             >
               S'inscrire
@@ -50,24 +61,24 @@ export const Navigation = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 space-y-4 border-t border-border">
+          <div className="md:hidden py-4 space-y-4 border-t border-border/50">
             <a 
               href="#features" 
-              className="block text-foreground/80 hover:text-primary transition-colors"
+              className="block text-[hsl(201,85%,21%)] font-medium transition-colors duration-300 hover:text-[hsl(43,65%,52%)]"
               onClick={() => setIsMenuOpen(false)}
             >
               Fonctionnalités
             </a>
             <a 
               href="#benefits" 
-              className="block text-foreground/80 hover:text-primary transition-colors"
+              className="block text-[hsl(201,85%,21%)] font-medium transition-colors duration-300 hover:text-[hsl(43,65%,52%)]"
               onClick={() => setIsMenuOpen(false)}
             >
               Avantages
             </a>
             <Button 
               variant="ghost" 
-              className="w-full justify-start"
+              className="w-full justify-start text-[hsl(201,85%,21%)] hover:text-[hsl(43,65%,52%)] font-medium"
               onClick={() => {
                 navigate("/auth");
                 setIsMenuOpen(false);
@@ -76,6 +87,7 @@ export const Navigation = () => {
               Se Connecter
             </Button>
             <Button 
+              variant="premium"
               className="w-full"
               onClick={() => {
                 navigate("/auth?mode=signup");
