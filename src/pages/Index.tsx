@@ -9,6 +9,7 @@ import egliconnectLogoOfficial from "@/assets/egliconnect-logo-official.png";
 import egliconnectLogoNew from "@/assets/egliconnect-logo-new.png";
 import { useEffect, useRef, useState } from "react";
 import { Navigation } from "@/components/Navigation";
+import Logo3D from "@/components/Logo3D";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -83,18 +84,14 @@ const Index = () => {
             data-animate
             className={`max-w-6xl mx-auto transition-all duration-1000 ${isVisible['pitch-section'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
           >
-            {/* Centered Animated Logo */}
+            {/* Centered 3D Logo */}
             <div className="flex justify-center mb-16">
               <div className="relative w-64 h-64 md:w-80 md:h-80">
                 {/* Glowing background circle */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/30 to-secondary/30 blur-3xl animate-pulse"></div>
-                {/* Animated Logo */}
-                <div className="relative w-full h-full animate-float">
-                  <img 
-                    src={egliconnectLogo} 
-                    alt="EgliConnect Logo" 
-                    className="w-full h-full object-contain drop-shadow-2xl animate-gentle-spin"
-                  />
+                {/* 3D Logo */}
+                <div className="relative w-full h-full">
+                  <Logo3D />
                 </div>
               </div>
             </div>
