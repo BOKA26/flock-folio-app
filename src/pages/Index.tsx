@@ -19,18 +19,29 @@ const Index = () => {
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && entry.target.id) {
             setIsVisible((prev) => ({ ...prev, [entry.target.id]: true }));
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: '50px' }
     );
 
-    const elements = document.querySelectorAll("[data-animate]");
-    elements.forEach((el) => observerRef.current?.observe(el));
+    // Wait for DOM to be ready
+    setTimeout(() => {
+      const elements = document.querySelectorAll("[data-animate]");
+      elements.forEach((el) => {
+        if (observerRef.current) {
+          observerRef.current.observe(el);
+        }
+      });
+    }, 100);
 
-    return () => observerRef.current?.disconnect();
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
   }, []);
 
   return (
