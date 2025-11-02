@@ -21,23 +21,25 @@ export const Navigation = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            <a 
-              href="#features" 
-              className="text-[hsl(201,85%,21%)] font-medium transition-colors duration-300 hover:text-[hsl(43,65%,52%)]"
+          <div className="hidden md:flex items-center gap-4">
+            <Button 
+              variant="premium"
+              size="sm"
+              onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
             >
               Fonctionnalités
-            </a>
-            <a 
-              href="#benefits" 
-              className="text-[hsl(201,85%,21%)] font-medium transition-colors duration-300 hover:text-[hsl(43,65%,52%)]"
+            </Button>
+            <Button 
+              variant="premium"
+              size="sm"
+              onClick={() => document.getElementById('benefits')?.scrollIntoView({ behavior: 'smooth' })}
             >
               Avantages
-            </a>
+            </Button>
             <Button 
-              variant="ghost" 
+              variant="premium"
+              size="sm"
               onClick={() => navigate("/auth")}
-              className="text-[hsl(201,85%,21%)] hover:text-[hsl(43,65%,52%)] font-medium"
             >
               Se Connecter
             </Button>
@@ -61,24 +63,33 @@ export const Navigation = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 space-y-4 border-t border-border/50">
-            <a 
-              href="#features" 
-              className="block text-[hsl(201,85%,21%)] font-medium transition-colors duration-300 hover:text-[hsl(43,65%,52%)]"
-              onClick={() => setIsMenuOpen(false)}
+          <div className="md:hidden py-4 space-y-3 border-t border-border/50">
+            <Button 
+              variant="premium"
+              size="sm"
+              className="w-full"
+              onClick={() => {
+                document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                setIsMenuOpen(false);
+              }}
             >
               Fonctionnalités
-            </a>
-            <a 
-              href="#benefits" 
-              className="block text-[hsl(201,85%,21%)] font-medium transition-colors duration-300 hover:text-[hsl(43,65%,52%)]"
-              onClick={() => setIsMenuOpen(false)}
+            </Button>
+            <Button 
+              variant="premium"
+              size="sm"
+              className="w-full"
+              onClick={() => {
+                document.getElementById('benefits')?.scrollIntoView({ behavior: 'smooth' });
+                setIsMenuOpen(false);
+              }}
             >
               Avantages
-            </a>
+            </Button>
             <Button 
-              variant="ghost" 
-              className="w-full justify-start text-[hsl(201,85%,21%)] hover:text-[hsl(43,65%,52%)] font-medium"
+              variant="premium"
+              size="sm"
+              className="w-full"
               onClick={() => {
                 navigate("/auth");
                 setIsMenuOpen(false);
