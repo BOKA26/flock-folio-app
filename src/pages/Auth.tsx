@@ -14,6 +14,7 @@ const Auth = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [churches, setChurches] = useState<any[]>([]);
+  const [isSignup, setIsSignup] = useState(true);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -53,6 +54,27 @@ const Auth = () => {
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (error) throw error;
+      
+      toast.success("Connexion réussie !");
+      navigate("/dashboard");
+    } catch (error: any) {
+      toast.error(error.message || "Erreur de connexion");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -191,12 +213,13 @@ const Auth = () => {
               </div>
             </div>
             <CardTitle className="text-4xl font-bold" style={{ color: '#0A3C60' }}>
-              Créer mon compte
+              {isSignup ? "Créer mon compte" : "Connexion"}
             </CardTitle>
           </CardHeader>
           
           <CardContent className="pt-0">
-            <form onSubmit={handleSignup} className="space-y-4 animate-fade-in">
+            {isSignup ? (
+              <form onSubmit={handleSignup} className="space-y-4 animate-fade-in">
               <div className="space-y-2">
                 <Label htmlFor="nom_complet" style={{ color: '#0A3C60' }}>Nom complet</Label>
                 <Input
@@ -322,7 +345,80 @@ const Auth = () => {
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 S'inscrire maintenant
               </Button>
+
+              <div className="text-center mt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsSignup(false)}
+                  className="text-sm transition-colors"
+                  style={{ color: '#0A3C60' }}
+                >
+                  Vous avez déjà un compte ?{' '}
+                  <span className="font-bold hover:underline" style={{ color: '#1E90FF' }}>
+                    Se connecter
+                  </span>
+                </button>
+              </div>
             </form>
+            ) : (
+              <form onSubmit={handleLogin} className="space-y-4 animate-fade-in">
+                <div className="space-y-2">
+                  <Label htmlFor="login-email" style={{ color: '#0A3C60' }}>Adresse e-mail</Label>
+                  <Input
+                    id="login-email"
+                    type="email"
+                    placeholder="votre@email.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                    className="glass-card border-white/40 focus:border-[#1E90FF] transition-all"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="login-password" style={{ color: '#0A3C60' }}>Mot de passe</Label>
+                  <Input
+                    id="login-password"
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    required
+                    className="glass-card border-white/40 focus:border-[#1E90FF] transition-all"
+                  />
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className="w-full btn-led hover:scale-105 transition-all duration-300" 
+                  style={{ 
+                    background: '#1E90FF',
+                    color: 'white',
+                    borderRadius: '10px',
+                    padding: '12px',
+                    fontWeight: 'bold',
+                    boxShadow: '0 4px 15px rgba(30, 144, 255, 0.4)'
+                  }}
+                  disabled={loading}
+                >
+                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  Se connecter maintenant
+                </Button>
+
+                <div className="text-center mt-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsSignup(true)}
+                    className="text-sm transition-colors"
+                    style={{ color: '#0A3C60' }}
+                  >
+                    Vous n'avez pas de compte ?{' '}
+                    <span className="font-bold hover:underline" style={{ color: '#1E90FF' }}>
+                      S'inscrire
+                    </span>
+                  </button>
+                </div>
+              </form>
+            )}
           </CardContent>
         </div>
       </div>
