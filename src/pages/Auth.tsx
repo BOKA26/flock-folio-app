@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Church, Loader2, ArrowLeft } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import egliconnectLogo from "@/assets/egliconnect-logo.png";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -170,167 +171,209 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen gradient-blessing flex items-center justify-center p-4">
-      <div className="w-full max-w-lg">
-        <Button
-          variant="ghost"
-          className="mb-4"
-          onClick={() => navigate("/")}
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Retour à l'accueil
-        </Button>
-        
-        <Card className="w-full shadow-divine">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <Church className="h-8 w-8 text-primary" />
-          </div>
-          <CardTitle className="text-3xl text-gradient">EgliConnect</CardTitle>
-          <CardDescription>Gérez votre église en toute simplicité</CardDescription>
-        </CardHeader>
-        
-        <CardContent>
-          <Tabs defaultValue={mode} className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Connexion</TabsTrigger>
-              <TabsTrigger value="signup">Inscription</TabsTrigger>
-            </TabsList>
+    <div className="min-h-screen auth-gradient flex items-center justify-center p-4 relative">
+      {/* Floating Particles */}
+      <div className="particle particle-gold w-3 h-3" style={{ top: '10%', left: '15%', animation: 'float-particle 6s ease-in-out infinite' }} />
+      <div className="particle particle-blue w-2 h-2" style={{ top: '20%', left: '80%', animation: 'float-particle-delayed 7s ease-in-out infinite' }} />
+      <div className="particle particle-gold w-4 h-4" style={{ top: '70%', left: '10%', animation: 'float-particle-slow 8s ease-in-out infinite' }} />
+      <div className="particle particle-blue w-3 h-3" style={{ top: '80%', left: '85%', animation: 'float-particle 5s ease-in-out infinite' }} />
+      <div className="particle particle-gold w-2 h-2" style={{ top: '15%', right: '20%', animation: 'float-particle-delayed 6.5s ease-in-out infinite' }} />
+      <div className="particle particle-blue w-3 h-3" style={{ bottom: '15%', left: '50%', animation: 'float-particle-slow 7.5s ease-in-out infinite' }} />
+      <div className="particle particle-gold w-2 h-2" style={{ top: '40%', left: '5%', animation: 'float-particle 8s ease-in-out infinite' }} />
+      <div className="particle particle-blue w-4 h-4" style={{ top: '60%', right: '10%', animation: 'float-particle-delayed 6s ease-in-out infinite' }} />
+      
+      <div className="w-full max-w-lg relative z-10 animate-fade-in">
+        <div className="glass-card rounded-3xl p-8 spiritual-glow">
+          <CardHeader className="text-center pb-8 space-y-4">
+            {/* Logo with Halo */}
+            <div className="mx-auto mb-4 relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/30 to-[#1E90FF]/30 rounded-full blur-2xl animate-pulse" />
+              <img 
+                src={egliconnectLogo} 
+                alt="EgliConnect Logo" 
+                className="w-24 h-24 object-contain relative z-10 drop-shadow-2xl animate-float"
+              />
+            </div>
+            <CardTitle className="text-4xl font-bold" style={{ color: '#0A3C60' }}>
+              Créer mon compte
+            </CardTitle>
+            <CardTitle className="text-3xl font-bold" style={{ color: '#1E90FF' }}>
+              EgliConnect
+            </CardTitle>
+          </CardHeader>
+          
+          <CardContent className="pt-0">
+            <Tabs defaultValue={mode} className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-6 glass-card">
+                <TabsTrigger value="login" className="data-[state=active]:bg-white/40">Connexion</TabsTrigger>
+                <TabsTrigger value="signup" className="data-[state=active]:bg-white/40">Inscription</TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="login">
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="pasteur@eglise.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="password">Mot de passe</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    required
-                  />
-                </div>
-
-                <Button type="submit" variant="premium" className="w-full" disabled={loading}>
-                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  Se connecter
-                </Button>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="signup">
-              <form onSubmit={handleSignup} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="nom_complet">Nom complet</Label>
-                  <Input
-                    id="nom_complet"
-                    placeholder="Jean Dupont"
-                    value={formData.nom_complet}
-                    onChange={(e) => setFormData({ ...formData, nom_complet: e.target.value })}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
-                  <Input
-                    id="signup-email"
-                    type="email"
-                    placeholder="email@exemple.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password">Mot de passe</Label>
-                  <Input
-                    id="signup-password"
-                    type="password"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    required
-                    minLength={6}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Je suis</Label>
-                  <Select
-                    value={formData.role}
-                    onValueChange={(value: "admin" | "fidele") => setFormData({ ...formData, role: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="admin">Pasteur / Responsable (créer une église)</SelectItem>
-                      <SelectItem value="fidele">Fidèle (rejoindre une église)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {formData.role === "admin" ? (
+              <TabsContent value="login" className="animate-fade-in">
+                <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="church_name">Nom de l'église</Label>
+                    <Label htmlFor="email" style={{ color: '#0A3C60' }}>Adresse e-mail</Label>
                     <Input
-                      id="church_name"
-                      placeholder="Église de la Grâce"
-                      value={formData.church_name}
-                      onChange={(e) => setFormData({ ...formData, church_name: e.target.value })}
+                      id="email"
+                      type="email"
+                      placeholder="votre@email.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
+                      className="glass-card border-white/40 focus:border-[#1E90FF] transition-all"
                     />
                   </div>
-                ) : (
+
                   <div className="space-y-2">
-                    <Label htmlFor="church_select">Choisir votre église</Label>
+                    <Label htmlFor="password" style={{ color: '#0A3C60' }}>Mot de passe</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      required
+                      className="glass-card border-white/40 focus:border-[#1E90FF] transition-all"
+                    />
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full btn-led hover:scale-105 transition-all duration-300" 
+                    style={{ 
+                      background: '#1E90FF',
+                      color: 'white',
+                      borderRadius: '10px',
+                      padding: '12px',
+                      fontWeight: 'bold',
+                      boxShadow: '0 4px 15px rgba(30, 144, 255, 0.4)'
+                    }}
+                    disabled={loading}
+                  >
+                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    Se connecter maintenant
+                  </Button>
+                </form>
+              </TabsContent>
+
+              <TabsContent value="signup" className="animate-fade-in">
+                <form onSubmit={handleSignup} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="nom_complet" style={{ color: '#0A3C60' }}>Nom complet</Label>
+                    <Input
+                      id="nom_complet"
+                      placeholder="Jean Dupont"
+                      value={formData.nom_complet}
+                      onChange={(e) => setFormData({ ...formData, nom_complet: e.target.value })}
+                      required
+                      className="glass-card border-white/40 focus:border-[#1E90FF] transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-email" style={{ color: '#0A3C60' }}>Adresse e-mail</Label>
+                    <Input
+                      id="signup-email"
+                      type="email"
+                      placeholder="votre@email.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      required
+                      className="glass-card border-white/40 focus:border-[#1E90FF] transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-password" style={{ color: '#0A3C60' }}>Mot de passe</Label>
+                    <Input
+                      id="signup-password"
+                      type="password"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      required
+                      minLength={6}
+                      className="glass-card border-white/40 focus:border-[#1E90FF] transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label style={{ color: '#0A3C60' }}>Je suis</Label>
                     <Select
-                      value={formData.church_code}
-                      onValueChange={(value) => setFormData({ ...formData, church_code: value })}
+                      value={formData.role}
+                      onValueChange={(value: "admin" | "fidele") => setFormData({ ...formData, role: value })}
                     >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionnez une église" />
+                      <SelectTrigger className="glass-card border-white/40">
+                        <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {churches.map((church) => (
-                          <SelectItem key={church.id} value={church.id}>
-                            {church.nom} ({church.code_eglise})
-                          </SelectItem>
-                        ))}
+                        <SelectItem value="admin">Pasteur / Responsable (créer une église)</SelectItem>
+                        <SelectItem value="fidele">Fidèle (rejoindre une église)</SelectItem>
                       </SelectContent>
                     </Select>
-                    <p className="text-xs text-muted-foreground">
-                      Ou entrez le code d'église fourni par votre pasteur
-                    </p>
-                    <Input
-                      placeholder="EG-XXX-12345"
-                      value={formData.church_code.startsWith("EG-") ? formData.church_code : ""}
-                      onChange={(e) => setFormData({ ...formData, church_code: e.target.value })}
-                    />
                   </div>
-                )}
 
-                <Button type="submit" variant="premium" className="w-full" disabled={loading}>
-                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  S'inscrire
-                </Button>
-              </form>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+                  {formData.role === "admin" ? (
+                    <div className="space-y-2">
+                      <Label htmlFor="church_name" style={{ color: '#0A3C60' }}>Nom de l'église</Label>
+                      <Input
+                        id="church_name"
+                        placeholder="Église de la Grâce"
+                        value={formData.church_name}
+                        onChange={(e) => setFormData({ ...formData, church_name: e.target.value })}
+                        required
+                        className="glass-card border-white/40 focus:border-[#1E90FF] transition-all"
+                      />
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <Label htmlFor="church_select" style={{ color: '#0A3C60' }}>Choisir votre église</Label>
+                      <Select
+                        value={formData.church_code}
+                        onValueChange={(value) => setFormData({ ...formData, church_code: value })}
+                      >
+                        <SelectTrigger className="glass-card border-white/40">
+                          <SelectValue placeholder="Sélectionnez une église" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {churches.map((church) => (
+                            <SelectItem key={church.id} value={church.id}>
+                              {church.nom} ({church.code_eglise})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs" style={{ color: '#0A3C60', opacity: 0.7 }}>
+                        Ou entrez le code d'église fourni par votre pasteur
+                      </p>
+                      <Input
+                        placeholder="EG-XXX-12345"
+                        value={formData.church_code.startsWith("EG-") ? formData.church_code : ""}
+                        onChange={(e) => setFormData({ ...formData, church_code: e.target.value })}
+                        className="glass-card border-white/40 focus:border-[#1E90FF] transition-all"
+                      />
+                    </div>
+                  )}
+
+                  <Button 
+                    type="submit" 
+                    className="w-full btn-led hover:scale-105 transition-all duration-300" 
+                    style={{ 
+                      background: '#1E90FF',
+                      color: 'white',
+                      borderRadius: '10px',
+                      padding: '12px',
+                      fontWeight: 'bold',
+                      boxShadow: '0 4px 15px rgba(30, 144, 255, 0.4)'
+                    }}
+                    disabled={loading}
+                  >
+                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    S'inscrire maintenant
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </div>
       </div>
     </div>
   );
