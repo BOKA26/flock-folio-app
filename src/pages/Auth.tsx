@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, ArrowLeft } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import egliconnectLogo from "@/assets/egliconnect-logo-clean.png";
+import Logo3DAuth from "@/components/Logo3DAuth";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -183,20 +183,15 @@ const Auth = () => {
       <div className="w-full max-w-lg relative z-10 animate-fade-in">
         <div className="glass-card rounded-3xl p-8 spiritual-glow">
           <CardHeader className="text-center pb-8 space-y-4">
-            {/* Logo with Halo */}
-            <div className="mx-auto mb-4 relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/30 to-[#1E90FF]/30 rounded-full blur-2xl animate-pulse" />
-              <img 
-                src={egliconnectLogo} 
-                alt="EgliConnect Logo" 
-                className="w-24 h-24 object-contain relative z-10 drop-shadow-2xl animate-float"
-              />
+            {/* Logo 3D with Halo */}
+            <div className="mx-auto mb-4 relative flex justify-center items-center">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/40 to-[#1E90FF]/40 rounded-full blur-3xl animate-pulse" style={{ width: '200px', height: '200px', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }} />
+              <div className="relative z-10">
+                <Logo3DAuth />
+              </div>
             </div>
             <CardTitle className="text-4xl font-bold" style={{ color: '#0A3C60' }}>
               Créer mon compte
-            </CardTitle>
-            <CardTitle className="text-3xl font-bold" style={{ color: '#1E90FF' }}>
-              EgliConnect
             </CardTitle>
           </CardHeader>
           
