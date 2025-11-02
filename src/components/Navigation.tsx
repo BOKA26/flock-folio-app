@@ -23,29 +23,33 @@ export const Navigation = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-4">
             <Button 
-              variant="premium"
+              variant="glass-3d"
               size="sm"
               onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+              className="after:bg-[hsl(203,92%,56%)] after:shadow-[0_0_20px_hsl(203,92%,56%,0.8)]"
             >
               Fonctionnalités
             </Button>
             <Button 
-              variant="premium"
+              variant="glass-3d"
               size="sm"
               onClick={() => document.getElementById('benefits')?.scrollIntoView({ behavior: 'smooth' })}
+              className="after:bg-[hsl(330,85%,55%)] after:shadow-[0_0_20px_hsl(330,85%,55%,0.8)]"
             >
               Avantages
             </Button>
             <Button 
-              variant="premium"
+              variant="glass-3d"
               size="sm"
               onClick={() => navigate("/auth")}
+              className="after:bg-[hsl(180,85%,55%)] after:shadow-[0_0_20px_hsl(180,85%,55%,0.8)]"
             >
               Se Connecter
             </Button>
             <Button 
-              variant="premium"
+              variant="glass-3d"
               onClick={() => navigate("/auth?mode=signup")}
+              className="after:bg-[hsl(43,85%,55%)] after:shadow-[0_0_20px_hsl(43,85%,55%,0.8)]"
             >
               S'inscrire
             </Button>
@@ -65,9 +69,9 @@ export const Navigation = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4 space-y-3 border-t border-border/50">
             <Button 
-              variant="premium"
+              variant="glass-3d"
               size="sm"
-              className="w-full"
+              className="w-full after:bg-[hsl(203,92%,56%)] after:shadow-[0_0_20px_hsl(203,92%,56%,0.8)]"
               onClick={() => {
                 document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
                 setIsMenuOpen(false);
@@ -76,9 +80,9 @@ export const Navigation = () => {
               Fonctionnalités
             </Button>
             <Button 
-              variant="premium"
+              variant="glass-3d"
               size="sm"
-              className="w-full"
+              className="w-full after:bg-[hsl(330,85%,55%)] after:shadow-[0_0_20px_hsl(330,85%,55%,0.8)]"
               onClick={() => {
                 document.getElementById('benefits')?.scrollIntoView({ behavior: 'smooth' });
                 setIsMenuOpen(false);
@@ -87,9 +91,9 @@ export const Navigation = () => {
               Avantages
             </Button>
             <Button 
-              variant="premium"
+              variant="glass-3d"
               size="sm"
-              className="w-full"
+              className="w-full after:bg-[hsl(180,85%,55%)] after:shadow-[0_0_20px_hsl(180,85%,55%,0.8)]"
               onClick={() => {
                 navigate("/auth");
                 setIsMenuOpen(false);
@@ -98,8 +102,8 @@ export const Navigation = () => {
               Se Connecter
             </Button>
             <Button 
-              variant="premium"
-              className="w-full"
+              variant="glass-3d"
+              className="w-full after:bg-[hsl(43,85%,55%)] after:shadow-[0_0_20px_hsl(43,85%,55%,0.8)]"
               onClick={() => {
                 navigate("/auth?mode=signup");
                 setIsMenuOpen(false);
