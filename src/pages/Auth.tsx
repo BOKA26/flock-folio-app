@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import egliconnectLogo from "@/assets/egliconnect-logo.png";
+import egliconnectLogo from "@/assets/egliconnect-logo-clean.png";
 
 const Auth = () => {
   const navigate = useNavigate();
