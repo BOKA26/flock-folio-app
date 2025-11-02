@@ -26,7 +26,7 @@ export const Navigation = () => {
               variant="glass-3d"
               size="sm"
               onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-              className="after:bg-[hsl(203,92%,56%)] after:shadow-[0_0_20px_hsl(203,92%,56%,0.8)]"
+              className="after:bg-[hsl(var(--brand-sky))] after:shadow-[0_0_20px_hsl(var(--brand-sky)/0.8)]"
             >
               Fonctionnalités
             </Button>
@@ -34,7 +34,7 @@ export const Navigation = () => {
               variant="glass-3d"
               size="sm"
               onClick={() => document.getElementById('benefits')?.scrollIntoView({ behavior: 'smooth' })}
-              className="after:bg-[hsl(330,85%,55%)] after:shadow-[0_0_20px_hsl(330,85%,55%,0.8)]"
+              className="after:bg-[hsl(var(--brand-sky))] after:shadow-[0_0_20px_hsl(var(--brand-sky)/0.8)]"
             >
               Avantages
             </Button>
@@ -42,14 +42,14 @@ export const Navigation = () => {
               variant="glass-3d"
               size="sm"
               onClick={() => navigate("/auth")}
-              className="after:bg-[hsl(180,85%,55%)] after:shadow-[0_0_20px_hsl(180,85%,55%,0.8)]"
+              className="after:bg-[hsl(var(--brand-sky))] after:shadow-[0_0_20px_hsl(var(--brand-sky)/0.8)]"
             >
               Se Connecter
             </Button>
             <Button 
               variant="glass-3d"
               onClick={() => navigate("/auth?mode=signup")}
-              className="after:bg-[hsl(43,85%,55%)] after:shadow-[0_0_20px_hsl(43,85%,55%,0.8)]"
+              className="after:bg-[hsl(var(--brand-gold))] after:shadow-[0_0_20px_hsl(var(--brand-gold)/0.8)]"
             >
               S'inscrire
             </Button>
@@ -71,7 +71,7 @@ export const Navigation = () => {
             <Button 
               variant="glass-3d"
               size="sm"
-              className="w-full after:bg-[hsl(203,92%,56%)] after:shadow-[0_0_20px_hsl(203,92%,56%,0.8)]"
+              className="w-full after:bg-[hsl(var(--brand-sky))] after:shadow-[0_0_20px_hsl(var(--brand-sky)/0.8)]"
               onClick={() => {
                 document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
                 setIsMenuOpen(false);
@@ -82,7 +82,7 @@ export const Navigation = () => {
             <Button 
               variant="glass-3d"
               size="sm"
-              className="w-full after:bg-[hsl(330,85%,55%)] after:shadow-[0_0_20px_hsl(330,85%,55%,0.8)]"
+              className="w-full after:bg-[hsl(var(--brand-sky))] after:shadow-[0_0_20px_hsl(var(--brand-sky)/0.8)]"
               onClick={() => {
                 document.getElementById('benefits')?.scrollIntoView({ behavior: 'smooth' });
                 setIsMenuOpen(false);
@@ -93,7 +93,7 @@ export const Navigation = () => {
             <Button 
               variant="glass-3d"
               size="sm"
-              className="w-full after:bg-[hsl(180,85%,55%)] after:shadow-[0_0_20px_hsl(180,85%,55%,0.8)]"
+              className="w-full after:bg-[hsl(var(--brand-sky))] after:shadow-[0_0_20px_hsl(var(--brand-sky)/0.8)]"
               onClick={() => {
                 navigate("/auth");
                 setIsMenuOpen(false);
@@ -103,7 +103,7 @@ export const Navigation = () => {
             </Button>
             <Button 
               variant="glass-3d"
-              className="w-full after:bg-[hsl(43,85%,55%)] after:shadow-[0_0_20px_hsl(43,85%,55%,0.8)]"
+              className="w-full after:bg-[hsl(var(--brand-gold))] after:shadow-[0_0_20px_hsl(var(--brand-gold)/0.8)]"
               onClick={() => {
                 navigate("/auth?mode=signup");
                 setIsMenuOpen(false);
