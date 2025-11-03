@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -37,8 +37,10 @@ const Church = () => {
     email: "",
     site_web: "",
     facebook: "",
+    instagram: "",
     whatsapp: "",
     verset_clef: "",
+    subdomain: "",
   });
 
   useEffect(() => {
@@ -78,8 +80,10 @@ const Church = () => {
           email: churchData.email || "",
           site_web: churchData.site_web || "",
           facebook: churchData.facebook || "",
+          instagram: "",
           whatsapp: churchData.whatsapp || "",
           verset_clef: churchData.verset_clef || "",
+          subdomain: "",
         });
         setLogoUrl(churchData.logo_url || "");
         setCoverUrl(churchData.couverture_url || "");
@@ -187,27 +191,29 @@ const Church = () => {
 
   if (loading) {
     return (
-      <DashboardLayout>
+      <AdminDashboardLayout>
         <p className="text-center text-muted-foreground py-8">Chargement...</p>
-      </DashboardLayout>
+      </AdminDashboardLayout>
     );
   }
 
   return (
-    <DashboardLayout>
+    <AdminDashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-display font-bold text-foreground flex items-center gap-2">
-            <ChurchIcon className="h-8 w-8 text-primary" />
-            Paramètres de l'Église
+          <h1 className="text-3xl font-bold text-[hsl(var(--text-dark))] flex items-center gap-3">
+            <div className="h-12 w-12 rounded-[10px] bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--secondary))] flex items-center justify-center shadow-3d">
+              <ChurchIcon className="h-6 w-6 text-white" />
+            </div>
+            Identité de l'Église
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-[hsl(var(--text-dark))]/70 mt-2 ml-15">
             Personnalisez et gérez les informations de votre église
           </p>
         </div>
 
         {/* Cover and Logo Section */}
-        <Card className="shadow-soft overflow-hidden">
+        <Card className="shadow-3d overflow-hidden rounded-[10px] border-none">
           <div className="relative h-48 bg-gradient-blessing">
             {coverUrl ? (
               <img src={coverUrl} alt="Couverture" className="w-full h-full object-cover" />
@@ -227,7 +233,7 @@ const Church = () => {
                 }}
                 disabled={uploading}
               />
-              <Button size="sm" variant="secondary" asChild>
+              <Button size="sm" className="rounded-[10px] shadow-3d bg-[hsl(var(--secondary))] hover:bg-[hsl(var(--secondary))]/90 text-[hsl(var(--sidebar-background))]" asChild>
                 <span>
                   <Upload className="h-4 w-4 mr-2" />
                   Photo de couverture
@@ -256,7 +262,7 @@ const Church = () => {
                     }}
                     disabled={uploading}
                   />
-                  <Button size="icon" variant="secondary" className="rounded-full h-10 w-10" asChild>
+                  <Button size="icon" className="rounded-full h-10 w-10 shadow-3d bg-[hsl(var(--secondary))] hover:bg-[hsl(var(--secondary))]/90 text-[hsl(var(--sidebar-background))]" asChild>
                     <span>
                       <Upload className="h-4 w-4" />
                     </span>
@@ -267,35 +273,35 @@ const Church = () => {
           </CardContent>
         </Card>
 
-        <Card className="shadow-gentle">
+        <Card className="shadow-3d rounded-[10px] border-none bg-gradient-to-br from-[hsl(var(--primary))]/5 to-[hsl(var(--secondary))]/5">
           <CardHeader>
-            <CardTitle>Code d'église</CardTitle>
+            <CardTitle className="text-[hsl(var(--text-dark))]">Code d'église unique</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex gap-2">
               <Input
                 value={formData.code_eglise}
                 readOnly
-                className="font-mono font-bold text-primary"
+                className="font-mono font-bold text-[hsl(var(--primary))] text-lg rounded-[10px] border-[hsl(var(--primary))]/30"
               />
-              <Button variant="outline" onClick={copyCode}>
+              <Button onClick={copyCode} className="rounded-[10px] shadow-3d bg-[hsl(var(--secondary))] hover:bg-[hsl(var(--secondary))]/90 text-[hsl(var(--sidebar-background))]">
                 <Copy className="h-4 w-4" />
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground mt-2">
-              Partagez ce code avec les membres pour qu'ils rejoignent votre église
+            <p className="text-sm text-[hsl(var(--text-dark))]/60 mt-3">
+              ✨ Partagez ce code avec les membres pour qu'ils rejoignent votre communauté
             </p>
           </CardContent>
         </Card>
 
         <form onSubmit={handleSubmit}>
-          <Card className="shadow-gentle">
+          <Card className="shadow-3d rounded-[10px] border-none">
             <CardHeader>
-              <CardTitle>Informations générales</CardTitle>
+              <CardTitle className="text-[hsl(var(--text-dark))] text-xl">📋 Informations générales</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-5">
               <div>
-                <Label htmlFor="nom">Nom de l'église *</Label>
+                <Label htmlFor="nom" className="text-[hsl(var(--text-dark))]">Nom de l'église *</Label>
                 <Input
                   id="nom"
                   required
@@ -303,11 +309,12 @@ const Church = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, nom: e.target.value })
                   }
+                  className="rounded-[10px] border-[hsl(var(--primary))]/20"
                 />
               </div>
 
               <div>
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description" className="text-[hsl(var(--text-dark))]">Description spirituelle / Mission</Label>
                 <Textarea
                   id="description"
                   rows={3}
@@ -315,118 +322,179 @@ const Church = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
+                  placeholder="Décrivez la mission et la vision de votre église..."
+                  className="rounded-[10px] border-[hsl(var(--primary))]/20"
                 />
               </div>
 
               <div>
-                <Label htmlFor="verset_clef">Verset clé</Label>
+                <Label htmlFor="verset_clef" className="text-[hsl(var(--text-dark))]">📖 Verset clé ou Devise</Label>
                 <Input
                   id="verset_clef"
-                  placeholder="Ex: Jean 3:16"
+                  placeholder="Ex: Jean 3:16 - Car Dieu a tant aimé le monde..."
                   value={formData.verset_clef}
                   onChange={(e) =>
                     setFormData({ ...formData, verset_clef: e.target.value })
                   }
+                  className="rounded-[10px] border-[hsl(var(--primary))]/20"
                 />
               </div>
 
               <div>
-                <Label htmlFor="adresse">Adresse</Label>
+                <Label htmlFor="adresse" className="text-[hsl(var(--text-dark))]">📍 Adresse complète</Label>
                 <Input
                   id="adresse"
+                  placeholder="Adresse, ville, pays"
                   value={formData.adresse}
                   onChange={(e) =>
                     setFormData({ ...formData, adresse: e.target.value })
                   }
+                  className="rounded-[10px] border-[hsl(var(--primary))]/20"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="contact">Téléphone</Label>
+                  <Label htmlFor="contact" className="text-[hsl(var(--text-dark))]">📞 Téléphone</Label>
                   <Input
                     id="contact"
+                    placeholder="+225 XX XX XX XX XX"
                     value={formData.contact}
                     onChange={(e) =>
                       setFormData({ ...formData, contact: e.target.value })
                     }
+                    className="rounded-[10px] border-[hsl(var(--primary))]/20"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="whatsapp" className="text-[hsl(var(--text-dark))]">💬 WhatsApp</Label>
                   <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
+                    id="whatsapp"
+                    placeholder="+225 XX XX XX XX XX"
+                    value={formData.whatsapp}
                     onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
+                      setFormData({ ...formData, whatsapp: e.target.value })
                     }
+                    className="rounded-[10px] border-[hsl(var(--primary))]/20"
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="site_web">Site web</Label>
+                <Label htmlFor="email" className="text-[hsl(var(--text-dark))]">✉️ Email officiel</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="contact@eglise.com"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="rounded-[10px] border-[hsl(var(--primary))]/20"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="site_web" className="text-[hsl(var(--text-dark))]">🌐 Site web</Label>
                 <Input
                   id="site_web"
                   type="url"
-                  placeholder="https://"
+                  placeholder="https://votreeglise.com"
                   value={formData.site_web}
                   onChange={(e) =>
                     setFormData({ ...formData, site_web: e.target.value })
                   }
+                  className="rounded-[10px] border-[hsl(var(--primary))]/20"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <Label htmlFor="facebook">Facebook</Label>
+                  <Label htmlFor="facebook" className="text-[hsl(var(--text-dark))]">📘 Facebook</Label>
                   <Input
                     id="facebook"
-                    placeholder="URL Facebook"
+                    type="url"
+                    placeholder="https://facebook.com/..."
                     value={formData.facebook}
                     onChange={(e) =>
                       setFormData({ ...formData, facebook: e.target.value })
                     }
+                    className="rounded-[10px] border-[hsl(var(--primary))]/20"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="whatsapp">WhatsApp</Label>
+                  <Label htmlFor="instagram" className="text-[hsl(var(--text-dark))]">📷 Instagram</Label>
                   <Input
-                    id="whatsapp"
-                    placeholder="Numéro WhatsApp"
-                    value={formData.whatsapp}
+                    id="instagram"
+                    type="url"
+                    placeholder="https://instagram.com/..."
+                    value={formData.instagram}
                     onChange={(e) =>
-                      setFormData({ ...formData, whatsapp: e.target.value })
+                      setFormData({ ...formData, instagram: e.target.value })
                     }
+                    className="rounded-[10px] border-[hsl(var(--primary))]/20"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="youtube" className="text-[hsl(var(--text-dark))]">📺 YouTube</Label>
+                  <Input
+                    id="youtube"
+                    type="url"
+                    placeholder="https://youtube.com/..."
+                    className="rounded-[10px] border-[hsl(var(--primary))]/20"
                   />
                 </div>
               </div>
 
-              <div className="flex gap-4">
-                <Button type="submit" variant="premium" className="flex-1">
-                  <Save className="mr-2 h-4 w-4" />
-                  Enregistrer les modifications
+              <div>
+                <Label htmlFor="subdomain" className="text-[hsl(var(--text-dark))]">🌍 Sous-domaine personnalisé</Label>
+                <div className="flex gap-2 items-center">
+                  <Input
+                    id="subdomain"
+                    placeholder="votreeglise"
+                    value={formData.subdomain}
+                    onChange={(e) =>
+                      setFormData({ ...formData, subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })
+                    }
+                    className="rounded-[10px] border-[hsl(var(--primary))]/20"
+                  />
+                  <span className="text-[hsl(var(--text-dark))]/60 text-sm whitespace-nowrap">.egliconnect.app</span>
+                </div>
+                <p className="text-sm text-[hsl(var(--text-dark))]/60 mt-2">
+                  Ex: templeroyaume.egliconnect.app
+                </p>
+              </div>
+
+              <div className="pt-4">
+                <Button type="submit" className="w-full rounded-[10px] shadow-3d bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--secondary))] hover:from-[hsl(var(--primary))]/90 hover:to-[hsl(var(--secondary))]/90 text-white h-12 text-base font-semibold">
+                  <Save className="mr-2 h-5 w-5" />
+                  💾 Enregistrer les modifications
                 </Button>
+                <p className="text-sm text-[hsl(var(--secondary))] text-center mt-3">
+                  🔄 Sauvegarde automatique activée
+                </p>
               </div>
             </CardContent>
           </Card>
         </form>
 
         {/* Danger Zone */}
-        <Card className="shadow-soft border-destructive/50">
+        <Card className="shadow-3d border-destructive/50 rounded-[10px]">
           <CardHeader>
-            <CardTitle className="text-destructive">Zone dangereuse</CardTitle>
+            <CardTitle className="text-destructive flex items-center gap-2">
+              ⚠️ Zone dangereuse
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
-              La suppression de l'église est irréversible. Toutes les données associées seront perdues.
+              La suppression de l'église est irréversible. Toutes les données associées seront perdues définitivement.
             </p>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="destructive" className="w-full">
+                <Button variant="destructive" className="w-full rounded-[10px]">
                   <Trash2 className="mr-2 h-4 w-4" />
                   Supprimer mon église
                 </Button>
@@ -453,7 +521,7 @@ const Church = () => {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
+    </AdminDashboardLayout>
   );
 };
 
