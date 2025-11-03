@@ -2,3 +2,12 @@ project_id = "tyzcwcdqntxudqjftzsz"
 
 [functions.paystack-webhook]
 verify_jwt = false
+
+[functions.pastoral-advisor]
+verify_jwt = true
+
+[functions.chat-religieux]
+verify_jwt = true
+
+[functions.ingest-document]
+verify_jwt = true
