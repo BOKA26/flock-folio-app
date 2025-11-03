@@ -10,45 +10,46 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Sky Blue & Gold Spiritual Theme */
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    /* EgliConnect Spiritual Theme - Phase 1 */
+    --background: 0 0% 100%; /* Blanc pur */
+    --foreground: 203 75% 21%; /* Bleu foncé texte #0A3C60 */
     
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 203 75% 21%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 203 75% 21%;
     
-    --primary: 202 85% 45%; /* Sky Blue */
+    --primary: 202 85% 56%; /* Bleu ciel #1E90FF */
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 45 93% 58%; /* Golden */
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 43 65% 52%; /* Doré clair #D4AF37 */
+    --secondary-foreground: 203 75% 21%;
     
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
     
-    --accent: 45 93% 58%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 43 65% 52%; /* Doré */
+    --accent-foreground: 203 75% 21%;
     
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
     
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 202 85% 45%;
+    --ring: 202 85% 56%;
     
-    --radius: 0.5rem;
+    --radius: 0.625rem; /* 10px */
     
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 202 85% 45%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 202 85% 45%;
+    /* Sidebar sombre (bleu nuit + doré) */
+    --sidebar-background: 203 75% 12%; /* Bleu nuit très foncé */
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 43 65% 52%; /* Doré pour les actifs */
+    --sidebar-primary-foreground: 203 75% 12%;
+    --sidebar-accent: 203 75% 18%; /* Bleu nuit plus clair pour hover */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 203 75% 18%;
+    --sidebar-ring: 43 65% 52%;
     
     /* EgliConnect Brand Colors */
     --brand-blue: 201 85% 21%;
@@ -63,15 +64,16 @@ All colors MUST be HSL.
     --shadow-button-3d: 0 4px 12px hsl(203 92% 56% / 0.3), 0 8px 20px hsl(43 65% 52% / 0.15);
     --shadow-glow: 0 0 20px hsl(43 65% 52% / 0.4);
     
-    /* Spiritual Gradients */
-    --gradient-heaven: linear-gradient(135deg, hsl(202 85% 45%) 0%, hsl(210 100% 75%) 100%);
-    --gradient-divine: linear-gradient(135deg, hsl(45 93% 58%) 0%, hsl(35 100% 65%) 100%);
+    /* Spiritual Gradients - Nouvelles couleurs */
+    --gradient-heaven: linear-gradient(135deg, hsl(202 85% 56%) 0%, hsl(210 100% 75%) 100%);
+    --gradient-divine: linear-gradient(135deg, hsl(43 65% 52%) 0%, hsl(43 80% 60%) 100%);
     --gradient-blessing: linear-gradient(180deg, hsl(210 40% 98%) 0%, hsl(202 85% 95%) 100%);
     
-    /* Spiritual Shadows */
-    --shadow-soft: 0 2px 8px hsl(202 85% 45% / 0.1);
-    --shadow-divine: 0 8px 24px hsl(45 93% 58% / 0.15);
-    --shadow-deep: 0 10px 40px hsl(202 85% 45% / 0.2);
+    /* 3D & Spiritual Shadows */
+    --shadow-soft: 0 2px 8px hsl(202 85% 56% / 0.1);
+    --shadow-divine: 0 8px 24px hsl(43 65% 52% / 0.2);
+    --shadow-deep: 0 10px 40px hsl(202 85% 56% / 0.25);
+    --shadow-3d: 0 4px 12px hsl(203 75% 21% / 0.15), 0 8px 20px hsl(43 65% 52% / 0.1);
   }
 
   .dark {

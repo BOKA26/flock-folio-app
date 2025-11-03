@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, Heart, DollarSign, Megaphone, UserPlus, Plus, Edit } from "lucide-react";
@@ -115,24 +115,24 @@ const Dashboard = () => {
   };
 
   return (
-    <DashboardLayout>
+    <AdminDashboardLayout>
       {loading ? (
         <p className="text-center text-muted-foreground py-8">Chargement...</p>
       ) : (
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-display font-bold text-foreground">
-              Tableau de bord
+        <div className="space-y-6 animate-fade-in">
+          <div className="mb-2">
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              Vue d'ensemble
             </h1>
-            <p className="text-muted-foreground mt-1">
-              Bienvenue sur votre espace de gestion
+            <p className="text-muted-foreground">
+              Gérez votre église avec sagesse et efficacité
             </p>
           </div>
 
           {churchInfo?.verset_clef && (
-            <Card className="shadow-gentle border-l-4 border-l-primary">
+            <Card className="shadow-divine border-l-4 border-l-secondary bg-gradient-to-r from-primary/5 to-secondary/5">
               <CardContent className="py-6">
-                <p className="text-lg italic text-foreground">
+                <p className="text-lg italic text-foreground font-medium">
                   "{churchInfo.verset_clef}"
                 </p>
               </CardContent>
@@ -144,7 +144,7 @@ const Dashboard = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Button
                 onClick={() => navigate('/members')}
-                className="h-auto py-4 flex flex-col items-center gap-2"
+                className="h-auto py-4 flex flex-col items-center gap-2 rounded-[10px] shadow-3d hover:scale-105 transition-all"
                 variant="outline"
               >
                 <UserPlus className="h-6 w-6" />
@@ -152,7 +152,7 @@ const Dashboard = () => {
               </Button>
               <Button
                 onClick={() => navigate('/donations')}
-                className="h-auto py-4 flex flex-col items-center gap-2"
+                className="h-auto py-4 flex flex-col items-center gap-2 rounded-[10px] shadow-3d hover:scale-105 transition-all"
                 variant="outline"
               >
                 <Plus className="h-6 w-6" />
@@ -160,7 +160,7 @@ const Dashboard = () => {
               </Button>
               <Button
                 onClick={() => navigate('/announcements')}
-                className="h-auto py-4 flex flex-col items-center gap-2"
+                className="h-auto py-4 flex flex-col items-center gap-2 rounded-[10px] shadow-3d hover:scale-105 transition-all"
                 variant="outline"
               >
                 <Megaphone className="h-6 w-6" />
@@ -168,7 +168,7 @@ const Dashboard = () => {
               </Button>
               <Button
                 onClick={() => navigate('/church')}
-                className="h-auto py-4 flex flex-col items-center gap-2"
+                className="h-auto py-4 flex flex-col items-center gap-2 rounded-[10px] shadow-3d hover:scale-105 transition-all"
                 variant="outline"
               >
                 <Edit className="h-6 w-6" />
@@ -178,7 +178,7 @@ const Dashboard = () => {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="shadow-gentle hover:shadow-elegant transition-all">
+            <Card className="shadow-3d hover:scale-105 transition-all duration-300 border-t-4 border-t-primary rounded-[10px] bg-gradient-to-br from-white to-primary/5">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Megaphone className="h-5 w-5 text-primary" />
@@ -195,10 +195,10 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="shadow-gentle hover:shadow-elegant transition-all">
+            <Card className="shadow-3d hover:scale-105 transition-all duration-300 border-t-4 border-t-secondary rounded-[10px] bg-gradient-to-br from-white to-secondary/5">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <Users className="h-5 w-5 text-primary" />
+                  <Users className="h-5 w-5 text-secondary" />
                   Membres
                 </CardTitle>
               </CardHeader>
@@ -212,7 +212,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="shadow-gentle hover:shadow-elegant transition-all">
+            <Card className="shadow-3d hover:scale-105 transition-all duration-300 border-t-4 border-t-primary rounded-[10px] bg-gradient-to-br from-white to-primary/5">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Heart className="h-5 w-5 text-primary" />
@@ -229,10 +229,10 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="shadow-gentle hover:shadow-elegant transition-all">
+            <Card className="shadow-3d hover:scale-105 transition-all duration-300 border-t-4 border-t-secondary rounded-[10px] bg-gradient-to-br from-white to-secondary/5">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <DollarSign className="h-5 w-5 text-primary" />
+                  <DollarSign className="h-5 w-5 text-secondary" />
                   Dons
                 </CardTitle>
               </CardHeader>
@@ -351,7 +351,7 @@ const Dashboard = () => {
           </div>
         </div>
       )}
-    </DashboardLayout>
+    </AdminDashboardLayout>
   );
 };
 
