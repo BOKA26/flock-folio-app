@@ -50,30 +50,48 @@ export type Database = {
           contenu: string
           created_at: string
           date_evenement: string | null
+          heure_debut: string | null
+          heure_fin: string | null
           id: string
           image_url: string | null
+          lieu: string | null
+          nb_participants: number | null
+          qr_code_url: string | null
           titre: string
           type: string
+          type_evenement: string | null
         }
         Insert: {
           church_id: string
           contenu: string
           created_at?: string
           date_evenement?: string | null
+          heure_debut?: string | null
+          heure_fin?: string | null
           id?: string
           image_url?: string | null
+          lieu?: string | null
+          nb_participants?: number | null
+          qr_code_url?: string | null
           titre: string
           type?: string
+          type_evenement?: string | null
         }
         Update: {
           church_id?: string
           contenu?: string
           created_at?: string
           date_evenement?: string | null
+          heure_debut?: string | null
+          heure_fin?: string | null
           id?: string
           image_url?: string | null
+          lieu?: string | null
+          nb_participants?: number | null
+          qr_code_url?: string | null
           titre?: string
           type?: string
+          type_evenement?: string | null
         }
         Relationships: [
           {
@@ -216,6 +234,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      event_invitations: {
+        Row: {
+          church_id: string
+          created_at: string
+          email: string | null
+          event_id: string
+          id: string
+          membre_id: string | null
+          qr_code: string | null
+          statut: string | null
+          telephone: string | null
+        }
+        Insert: {
+          church_id: string
+          created_at?: string
+          email?: string | null
+          event_id: string
+          id?: string
+          membre_id?: string | null
+          qr_code?: string | null
+          statut?: string | null
+          telephone?: string | null
+        }
+        Update: {
+          church_id?: string
+          created_at?: string
+          email?: string | null
+          event_id?: string
+          id?: string
+          membre_id?: string | null
+          qr_code?: string | null
+          statut?: string | null
+          telephone?: string | null
+        }
+        Relationships: []
       }
       kb_chunks: {
         Row: {
@@ -390,6 +444,111 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ministries: {
+        Row: {
+          church_id: string
+          created_at: string
+          date_prochaine_activite: string | null
+          description: string | null
+          id: string
+          nb_membres: number | null
+          nom: string
+          prochaine_activite: string | null
+          responsable_id: string | null
+          responsable_nom: string | null
+          updated_at: string
+        }
+        Insert: {
+          church_id: string
+          created_at?: string
+          date_prochaine_activite?: string | null
+          description?: string | null
+          id?: string
+          nb_membres?: number | null
+          nom: string
+          prochaine_activite?: string | null
+          responsable_id?: string | null
+          responsable_nom?: string | null
+          updated_at?: string
+        }
+        Update: {
+          church_id?: string
+          created_at?: string
+          date_prochaine_activite?: string | null
+          description?: string | null
+          id?: string
+          nb_membres?: number | null
+          nom?: string
+          prochaine_activite?: string | null
+          responsable_id?: string | null
+          responsable_nom?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ministry_members: {
+        Row: {
+          church_id: string
+          created_at: string
+          date_adhesion: string
+          id: string
+          membre_id: string
+          ministry_id: string
+          role: string | null
+        }
+        Insert: {
+          church_id: string
+          created_at?: string
+          date_adhesion?: string
+          id?: string
+          membre_id: string
+          ministry_id: string
+          role?: string | null
+        }
+        Update: {
+          church_id?: string
+          created_at?: string
+          date_adhesion?: string
+          id?: string
+          membre_id?: string
+          ministry_id?: string
+          role?: string | null
+        }
+        Relationships: []
+      }
+      ministry_missions: {
+        Row: {
+          church_id: string
+          created_at: string
+          date_mission: string
+          description: string | null
+          id: string
+          ministry_id: string
+          statut: string | null
+          titre: string
+        }
+        Insert: {
+          church_id: string
+          created_at?: string
+          date_mission: string
+          description?: string | null
+          id?: string
+          ministry_id: string
+          statut?: string | null
+          titre: string
+        }
+        Update: {
+          church_id?: string
+          created_at?: string
+          date_mission?: string
+          description?: string | null
+          id?: string
+          ministry_id?: string
+          statut?: string | null
+          titre?: string
+        }
+        Relationships: []
       }
       prayer_requests: {
         Row: {
