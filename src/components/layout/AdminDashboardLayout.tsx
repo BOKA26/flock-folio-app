@@ -86,6 +86,7 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
   const menuItems = [
     { icon: Home, label: "Tableau de bord", path: "/dashboard" },
     { icon: Settings, label: "Paramètres Généraux", path: "/church", roles: ["admin"] },
+    { icon: Shield, label: "Équipe et Accès", path: "/teams", roles: ["admin"] },
     { icon: Users, label: "Membres", path: "/members", roles: ["admin", "operateur"] },
     { icon: DollarSign, label: "Dons & Finances", path: "/donations", roles: ["admin", "operateur"] },
     { icon: Calendar, label: "Cultes & Événements", path: "/announcements" },
@@ -94,7 +95,6 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
     { icon: BookOpen, label: "Ressources spirituelles", path: "/knowledge", roles: ["admin", "operateur"] },
     { icon: Heart, label: "Demandes de Prière", path: "/prayers" },
     { icon: BarChart3, label: "Rapports & Analyses", path: "/reports", roles: ["admin"] },
-    { icon: Shield, label: "Sécurité & Technique", path: "/settings", roles: ["admin"] },
     { icon: HelpCircle, label: "Support & Aide", path: "/support" },
   ];
 
