@@ -155,6 +155,28 @@ All colors MUST be HSL.
   .shadow-deep {
     box-shadow: var(--shadow-deep);
   }
+  
+  .shadow-elegant {
+    box-shadow: var(--shadow-3d);
+  }
+  
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  
+  .btn-3d {
+    @apply relative rounded-[10px] transition-all duration-300;
+    box-shadow: var(--shadow-button-3d);
+  }
+  
+  .btn-3d:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-button-3d), var(--shadow-glow);
+  }
+  
+  .btn-3d:active {
+    transform: translateY(0);
+  }
 
   .hover-scale {
     @apply transition-transform duration-300 hover:scale-105;

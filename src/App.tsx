@@ -15,6 +15,7 @@ import DonationPayment from "./pages/DonationPayment";
 import OnlineDonations from "./pages/OnlineDonations";
 import Church from "./pages/Church";
 import Settings from "./pages/Settings";
+import AdvancedSettings from "./pages/AdvancedSettings";
 import MemberSpace from "./pages/MemberSpace";
 import Knowledge from "./pages/Knowledge";
 import Teams from "./pages/Teams";
@@ -22,6 +23,7 @@ import Ministries from "./pages/Ministries";
 import Communication from "./pages/Communication";
 import SpiritualResources from "./pages/SpiritualResources";
 import Reports from "./pages/Reports";
+import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +51,8 @@ const App = () => (
           <Route path="/communication" element={<Communication />} />
           <Route path="/spiritual-resources" element={<SpiritualResources />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/advanced-settings" element={<AdvancedSettings />} />
+          <Route path="/support" element={<Support />} />
           <Route path="/knowledge" element={<Knowledge />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
