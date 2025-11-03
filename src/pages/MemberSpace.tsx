@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import MemberLayout from "@/components/layout/MemberLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Church, MapPin, Phone, Mail, Globe, Facebook, Heart, DollarSign, Megaphone, MessageSquare } from "lucide-react";
+import { Church, MapPin, Phone, Mail, Globe, Facebook, Heart, DollarSign, Megaphone, MessageSquare, Calendar, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import ChatbotReligieux from "@/components/ChatbotReligieux";
 
@@ -100,7 +101,7 @@ const MemberSpace = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-blessing">
+    <MemberLayout>
       {/* Header with Cover Image */}
       <div className="relative h-64 md:h-80 bg-gradient-heaven overflow-hidden">
         {churchInfo?.couverture_url ? (
@@ -410,7 +411,7 @@ const MemberSpace = () => {
 
       {/* Chatbot floating button */}
       <ChatbotReligieux />
-    </div>
+    </MemberLayout>
   );
 };
 

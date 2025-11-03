@@ -17,6 +17,13 @@ import Church from "./pages/Church";
 import Settings from "./pages/Settings";
 import AdvancedSettings from "./pages/AdvancedSettings";
 import MemberSpace from "./pages/MemberSpace";
+import MemberProfile from "./pages/MemberProfile";
+import MemberDonations from "./pages/MemberDonations";
+import MemberAnnouncements from "./pages/MemberAnnouncements";
+import MemberPrayers from "./pages/MemberPrayers";
+import MemberResources from "./pages/MemberResources";
+import MemberStats from "./pages/MemberStats";
+import MemberSettings from "./pages/MemberSettings";
 import Knowledge from "./pages/Knowledge";
 import Teams from "./pages/Teams";
 import Ministries from "./pages/Ministries";
@@ -39,6 +46,13 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/member-space" element={<MemberSpace />} />
+          <Route path="/member-profile" element={<MemberProfile />} />
+          <Route path="/member-donations" element={<MemberDonations />} />
+          <Route path="/member-announcements" element={<MemberAnnouncements />} />
+          <Route path="/member-prayers" element={<MemberPrayers />} />
+          <Route path="/member-resources" element={<MemberResources />} />
+          <Route path="/member-stats" element={<MemberStats />} />
+          <Route path="/member-settings" element={<MemberSettings />} />
           <Route path="/members" element={<Members />} />
           <Route path="/announcements" element={<Announcements />} />
           <Route path="/prayers" element={<Prayers />} />
