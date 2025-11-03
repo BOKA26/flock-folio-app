@@ -85,6 +85,36 @@ export type Database = {
           },
         ]
       }
+      attendances: {
+        Row: {
+          church_id: string
+          created_at: string
+          date_evenement: string
+          id: string
+          membre_id: string
+          present: boolean
+          type_evenement: string
+        }
+        Insert: {
+          church_id: string
+          created_at?: string
+          date_evenement?: string
+          id?: string
+          membre_id: string
+          present?: boolean
+          type_evenement: string
+        }
+        Update: {
+          church_id?: string
+          created_at?: string
+          date_evenement?: string
+          id?: string
+          membre_id?: string
+          present?: boolean
+          type_evenement?: string
+        }
+        Relationships: []
+      }
       churches: {
         Row: {
           adresse: string | null
@@ -310,11 +340,14 @@ export type Database = {
           church_id: string
           created_at: string
           date_adhesion: string | null
+          date_naissance: string | null
           email: string | null
+          groupe_departement: string | null
           id: string
           nom: string
           prenom: string
           sexe: string | null
+          statut: string | null
           telephone: string | null
           user_id: string | null
         }
@@ -322,11 +355,14 @@ export type Database = {
           church_id: string
           created_at?: string
           date_adhesion?: string | null
+          date_naissance?: string | null
           email?: string | null
+          groupe_departement?: string | null
           id?: string
           nom: string
           prenom: string
           sexe?: string | null
+          statut?: string | null
           telephone?: string | null
           user_id?: string | null
         }
@@ -334,11 +370,14 @@ export type Database = {
           church_id?: string
           created_at?: string
           date_adhesion?: string | null
+          date_naissance?: string | null
           email?: string | null
+          groupe_departement?: string | null
           id?: string
           nom?: string
           prenom?: string
           sexe?: string | null
+          statut?: string | null
           telephone?: string | null
           user_id?: string | null
         }
@@ -393,6 +432,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      spiritual_history: {
+        Row: {
+          church_id: string
+          created_at: string
+          date_evenement: string
+          details: string | null
+          id: string
+          membre_id: string
+          type_evenement: string
+        }
+        Insert: {
+          church_id: string
+          created_at?: string
+          date_evenement: string
+          details?: string | null
+          id?: string
+          membre_id: string
+          type_evenement: string
+        }
+        Update: {
+          church_id?: string
+          created_at?: string
+          date_evenement?: string
+          details?: string | null
+          id?: string
+          membre_id?: string
+          type_evenement?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
