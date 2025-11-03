@@ -91,9 +91,10 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
     { icon: DollarSign, label: "Dons & Finances", path: "/donations", roles: ["admin", "operateur"] },
     { icon: Calendar, label: "Cultes & Événements", path: "/announcements" },
     { icon: HandHeart, label: "Ministères", path: "/ministries", roles: ["admin", "operateur"] },
-    { icon: MessageCircle, label: "Messagerie interne", path: "/messages", roles: ["admin", "operateur"] },
-    { icon: BookOpen, label: "Ressources spirituelles", path: "/knowledge", roles: ["admin", "operateur"] },
+    { icon: MessageCircle, label: "Messagerie interne", path: "/communication", roles: ["admin", "operateur"] },
+    { icon: BookOpen, label: "Ressources spirituelles", path: "/spiritual-resources", roles: ["admin", "operateur"] },
     { icon: Heart, label: "Demandes de Prière", path: "/prayers" },
+    { icon: BookOpen, label: "Base de connaissances", path: "/knowledge", roles: ["admin", "operateur"] },
     { icon: BarChart3, label: "Rapports & Analyses", path: "/reports", roles: ["admin"] },
     { icon: HelpCircle, label: "Support & Aide", path: "/support" },
   ];

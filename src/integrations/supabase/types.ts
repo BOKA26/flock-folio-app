@@ -445,6 +445,48 @@ export type Database = {
           },
         ]
       }
+      messages: {
+        Row: {
+          church_id: string
+          content: string
+          created_at: string
+          id: string
+          ministry_id: string | null
+          read: boolean | null
+          recipient_id: string | null
+          recipient_role: Database["public"]["Enums"]["app_role"] | null
+          recipient_type: string | null
+          sender_id: string
+          subject: string
+        }
+        Insert: {
+          church_id: string
+          content: string
+          created_at?: string
+          id?: string
+          ministry_id?: string | null
+          read?: boolean | null
+          recipient_id?: string | null
+          recipient_role?: Database["public"]["Enums"]["app_role"] | null
+          recipient_type?: string | null
+          sender_id: string
+          subject: string
+        }
+        Update: {
+          church_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          ministry_id?: string | null
+          read?: boolean | null
+          recipient_id?: string | null
+          recipient_role?: Database["public"]["Enums"]["app_role"] | null
+          recipient_type?: string | null
+          sender_id?: string
+          subject?: string
+        }
+        Relationships: []
+      }
       ministries: {
         Row: {
           church_id: string
@@ -550,29 +592,77 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          church_id: string
+          content: string
+          created_at: string
+          id: string
+          link: string | null
+          read: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          church_id: string
+          content: string
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          church_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       prayer_requests: {
         Row: {
+          answered_at: string | null
+          answered_by: string | null
           church_id: string
           created_at: string
           date_demande: string
           id: string
           membre_id: string | null
+          reponse: string | null
+          statut: string | null
           texte: string
         }
         Insert: {
+          answered_at?: string | null
+          answered_by?: string | null
           church_id: string
           created_at?: string
           date_demande?: string
           id?: string
           membre_id?: string | null
+          reponse?: string | null
+          statut?: string | null
           texte: string
         }
         Update: {
+          answered_at?: string | null
+          answered_by?: string | null
           church_id?: string
           created_at?: string
           date_demande?: string
           id?: string
           membre_id?: string | null
+          reponse?: string | null
+          statut?: string | null
           texte?: string
         }
         Relationships: [
@@ -619,6 +709,48 @@ export type Database = {
           id?: string
           membre_id?: string
           type_evenement?: string
+        }
+        Relationships: []
+      }
+      spiritual_resources: {
+        Row: {
+          category: string
+          church_id: string
+          content: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          titre: string
+          type: string
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          category: string
+          church_id: string
+          content?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          titre: string
+          type: string
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          category?: string
+          church_id?: string
+          content?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          titre?: string
+          type?: string
+          updated_at?: string
+          url?: string | null
         }
         Relationships: []
       }

@@ -19,6 +19,8 @@ import MemberSpace from "./pages/MemberSpace";
 import Knowledge from "./pages/Knowledge";
 import Teams from "./pages/Teams";
 import Ministries from "./pages/Ministries";
+import Communication from "./pages/Communication";
+import SpiritualResources from "./pages/SpiritualResources";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +45,8 @@ const App = () => (
           <Route path="/church" element={<Church />} />
           <Route path="/teams" element={<Teams />} />
           <Route path="/ministries" element={<Ministries />} />
+          <Route path="/communication" element={<Communication />} />
+          <Route path="/spiritual-resources" element={<SpiritualResources />} />
           <Route path="/knowledge" element={<Knowledge />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
