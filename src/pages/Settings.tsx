@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -60,14 +60,14 @@ const Settings = () => {
 
   if (loading) {
     return (
-      <DashboardLayout>
+      <AdminDashboardLayout>
         <p className="text-center text-muted-foreground py-8">Chargement...</p>
-      </DashboardLayout>
+      </AdminDashboardLayout>
     );
   }
 
   return (
-    <DashboardLayout>
+    <AdminDashboardLayout>
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-display font-bold text-foreground flex items-center gap-2">
@@ -166,7 +166,7 @@ const Settings = () => {
           </Card>
         </form>
       </div>
-    </DashboardLayout>
+    </AdminDashboardLayout>
   );
 };
 
