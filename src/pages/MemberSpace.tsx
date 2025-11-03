@@ -14,6 +14,7 @@ const MemberSpace = () => {
   const [member, setMember] = useState<any>(null);
   const [churchInfo, setChurchInfo] = useState<any>(null);
   const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
   const [prayers, setPrayers] = useState<any[]>([]);
   const [donations, setDonations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,6 +55,17 @@ const MemberSpace = () => {
         .order("created_at", { ascending: false })
         .limit(5);
       setAnnouncements(announcementsData || []);
+
+      // Load upcoming events
+      const { data: eventsData } = await supabase
+        .from("announcements")
+        .select("*")
+        .eq("church_id", memberData.church_id)
+        .eq("type", "evenement")
+        .gte("date_evenement", new Date().toISOString())
+        .order("date_evenement", { ascending: true })
+        .limit(5);
+      setEvents(eventsData || []);
 
       // Load prayers
       const { data: prayersData } = await supabase
@@ -139,17 +151,87 @@ const MemberSpace = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-        {/* Verset Clé */}
+      <div className="max-w-6xl mx-auto px-4 py-8 space-y-8 animate-fade-in">
+        {/* Citation biblique du jour */}
+        <Card className="shadow-divine border-l-4 border-l-secondary bg-gradient-to-r from-primary/5 to-secondary/5">
+          <CardContent className="py-6">
+            <p className="text-sm font-semibold text-secondary mb-2">🙏 Citation biblique du jour</p>
+            <p className="text-lg italic text-foreground">
+              "Car rien n'est impossible à Dieu"
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">— Luc 1:37</p>
+          </CardContent>
+        </Card>
+
+        {/* Verset Clé de l'Église */}
         {churchInfo?.verset_clef && (
           <Card className="shadow-divine border-l-4 border-l-primary">
             <CardContent className="py-6">
+              <p className="text-sm font-semibold text-primary mb-2">📖 Verset clé de l'église</p>
               <p className="text-lg italic text-center text-foreground">
                 "{churchInfo.verset_clef}"
               </p>
             </CardContent>
           </Card>
         )}
+
+        {/* Mini résumé spirituel */}
+        <div className="grid md:grid-cols-3 gap-4">
+          <Card className="shadow-3d hover-scale bg-gradient-to-br from-primary/10 to-primary/5 border-t-4 border-t-primary">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Calendar className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs text-muted-foreground">Dernière participation</p>
+                  <p className="font-semibold text-sm">Culte du dimanche</p>
+                  <p className="text-xs text-muted-foreground">27 octobre 2024</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-3d hover-scale bg-gradient-to-br from-secondary/10 to-secondary/5 border-t-4 border-t-secondary">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center">
+                  <DollarSign className="h-6 w-6 text-secondary" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs text-muted-foreground">Dernier don</p>
+                  <p className="font-semibold text-sm">
+                    {donations.length > 0 ? `${Number(donations[0].montant).toFixed(2)} €` : 'Aucun don'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {donations.length > 0 ? donations[0].type_don : '—'}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-3d hover-scale bg-gradient-to-br from-primary/10 to-primary/5 border-t-4 border-t-primary">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Megaphone className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs text-muted-foreground">Prochain événement</p>
+                  <p className="font-semibold text-sm">
+                    {events.length > 0 ? events[0].titre : 'Aucun événement'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {events.length > 0 && events[0].date_evenement 
+                      ? new Date(events[0].date_evenement).toLocaleDateString('fr-FR')
+                      : '—'}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Mon Église */}
         <Card className="shadow-soft">

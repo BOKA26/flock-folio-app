@@ -5,14 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Church, Calendar, Phone, Mail, MapPin, Edit, Save } from "lucide-react";
+import { User, Church, Calendar, Phone, Mail, MapPin, Edit, Save, Upload, Lock, DollarSign } from "lucide-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useNavigate } from "react-router-dom";
 
 const MemberProfile = () => {
+  const navigate = useNavigate();
   const [member, setMember] = useState<any>(null);
   const [churchInfo, setChurchInfo] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     nom: "",
     prenom: "",
@@ -40,6 +44,7 @@ const MemberProfile = () => {
       if (memberData) {
         setMember(memberData);
         setChurchInfo(memberData.churches);
+        setAvatarUrl(user.user_metadata?.avatar_url || null);
         setFormData({
           nom: memberData.nom || "",
           prenom: memberData.prenom || "",
@@ -71,6 +76,39 @@ const MemberProfile = () => {
     } catch (error) {
       console.error("Error updating profile:", error);
       toast.error("Erreur lors de la mise à jour");
+    }
+  };
+
+  const handleAvatarUpload = async (file: File) => {
+    try {
+      setUploading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
+      const publicUrl = data.publicUrl;
+
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: { avatar_url: publicUrl }
+      });
+
+      if (updateError) throw updateError;
+
+      setAvatarUrl(publicUrl);
+      toast.success("Photo de profil mise à jour");
+    } catch (error: any) {
+      toast.error(error.message || "Erreur lors de l'upload");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -120,11 +158,35 @@ const MemberProfile = () => {
         <Card className="shadow-soft">
           <CardContent className="pt-6">
             <div className="flex flex-col md:flex-row items-center gap-6">
-              <Avatar className="h-32 w-32 border-4 border-primary shadow-lg">
-                <AvatarFallback className="text-3xl bg-gradient-divine">
-                  {member?.prenom?.[0]}{member?.nom?.[0]}
-                </AvatarFallback>
-              </Avatar>
+              <div className="relative">
+                <Avatar className="h-32 w-32 border-4 border-primary shadow-lg">
+                  <AvatarImage src={avatarUrl || undefined} />
+                  <AvatarFallback className="text-3xl bg-gradient-divine">
+                    {member?.prenom?.[0]}{member?.nom?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <label className="absolute bottom-0 right-0 cursor-pointer">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleAvatarUpload(file);
+                    }}
+                    disabled={uploading}
+                  />
+                  <Button 
+                    size="icon" 
+                    className="rounded-full h-10 w-10 shadow-3d bg-secondary hover:bg-secondary/90" 
+                    asChild
+                  >
+                    <span>
+                      <Upload className="h-4 w-4" />
+                    </span>
+                  </Button>
+                </label>
+              </div>
               <div className="text-center md:text-left flex-1">
                 <h2 className="text-2xl font-bold">
                   {member?.prenom} {member?.nom}
@@ -282,6 +344,41 @@ const MemberProfile = () => {
                 </div>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions */}
+        <Card className="shadow-soft">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              Mes Activités
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid md:grid-cols-3 gap-4">
+            <Button 
+              variant="outline" 
+              className="h-auto py-4 flex flex-col gap-2"
+              onClick={() => navigate('/member/donations')}
+            >
+              <DollarSign className="h-6 w-6 text-primary" />
+              <span className="text-sm font-semibold">Mes dons</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              className="h-auto py-4 flex flex-col gap-2"
+              onClick={() => navigate('/member/announcements')}
+            >
+              <Calendar className="h-6 w-6 text-primary" />
+              <span className="text-sm font-semibold">Événements</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              className="h-auto py-4 flex flex-col gap-2"
+              onClick={() => navigate('/member/settings')}
+            >
+              <Lock className="h-6 w-6 text-primary" />
+              <span className="text-sm font-semibold">Sécurité</span>
+            </Button>
           </CardContent>
         </Card>
       </div>
