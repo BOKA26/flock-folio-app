@@ -31,6 +31,7 @@ import Communication from "./pages/Communication";
 import SpiritualResources from "./pages/SpiritualResources";
 import Reports from "./pages/Reports";
 import Support from "./pages/Support";
+import OperatorDashboard from "./pages/OperatorDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/operator-dashboard" element={<OperatorDashboard />} />
           <Route path="/member-space" element={<MemberSpace />} />
           <Route path="/member-profile" element={<MemberProfile />} />
           <Route path="/member-donations" element={<MemberDonations />} />

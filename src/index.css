@@ -56,6 +56,11 @@ All colors MUST be HSL.
     --brand-gold: 43 65% 52%;
     --brand-sky: 203 92% 56%;
     
+    /* Operator Dashboard Colors */
+    --operator-blue: 202 85% 56%; /* #1E90FF bleu ciel */
+    --operator-gold: 43 65% 52%; /* #D4AF37 doré */
+    --operator-deep-blue: 203 75% 21%; /* #0A3C60 bleu profond */
+    
     /* Navigation Gradients */
     --gradient-nav: linear-gradient(135deg, hsl(0 0% 100% / 0.95), hsl(43 65% 52% / 0.05));
     

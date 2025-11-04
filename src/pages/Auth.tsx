@@ -66,9 +66,12 @@ const Auth = () => {
         .single();
 
       if (roleData) {
-        // Admin et operateur vont au dashboard
-        if (roleData.role === "admin" || roleData.role === "operateur") {
+        // Admin va au dashboard, operateur au tableau de bord opérateur
+        if (roleData.role === "admin") {
           return "/dashboard";
+        }
+        if (roleData.role === "operateur") {
+          return "/operator-dashboard";
         }
         // Fidèles vont à l'espace membre
         if (roleData.role === "fidele") {
