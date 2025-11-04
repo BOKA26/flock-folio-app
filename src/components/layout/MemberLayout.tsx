@@ -1,26 +1,18 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Home,
-  User,
-  Heart,
-  DollarSign,
-  Megaphone,
-  BookOpen,
-  BarChart3,
-  Settings,
-  LogOut,
-  Menu,
-  X,
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Menu, X, LogOut, Home, Church, Calendar, DollarSign, BookOpen, Heart, Users, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 
-const MemberLayout = ({ children }: { children: React.ReactNode }) => {
-  const location = useLocation();
+interface MemberLayoutProps {
+  children: React.ReactNode;
+}
+
+const MemberLayout = ({ children }: MemberLayoutProps) => {
   const navigate = useNavigate();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [churchInfo, setChurchInfo] = useState<any>(null);
   const [memberInfo, setMemberInfo] = useState<any>(null);
 
@@ -52,119 +44,117 @@ const MemberLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut();
-      toast.success("Déconnexion réussie");
-      navigate("/auth");
-    } catch (error) {
-      toast.error("Erreur lors de la déconnexion");
-    }
+    await supabase.auth.signOut();
+    navigate('/auth');
+    toast.success("Déconnexion réussie");
   };
 
   const menuItems = [
     { icon: Home, label: "Accueil", path: "/member-space" },
-    { icon: User, label: "Mon Profil", path: "/member-profile" },
-    { icon: DollarSign, label: "Mes Dons", path: "/member-donations" },
-    { icon: Megaphone, label: "Annonces", path: "/member-announcements" },
+    { icon: Church, label: "Mon Église", path: "/member-church" },
+    { icon: Calendar, label: "Cultes & Événements", path: "/member-announcements" },
+    { icon: DollarSign, label: "Dons & Finances", path: "/member-donations" },
+    { icon: BookOpen, label: "Ressources Spirituelles", path: "/member-resources" },
     { icon: Heart, label: "Prières", path: "/member-prayers" },
-    { icon: BookOpen, label: "Ressources", path: "/member-resources" },
-    { icon: BarChart3, label: "Statistiques", path: "/member-stats" },
-    { icon: Settings, label: "Paramètres", path: "/member-settings" },
+    { icon: Users, label: "Communauté", path: "/member-community" },
+    { icon: HelpCircle, label: "Aide & Support", path: "/member-support" },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-blessing">
-      {/* Mobile Menu Button */}
+    <div className="min-h-screen bg-gradient-to-br from-member-sky via-white to-member-blue">
+      {/* Mobile menu button */}
       <button
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-card shadow-soft"
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-xl bg-white shadow-member glow-gold"
       >
-        {isSidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        {sidebarOpen ? <X className="h-6 w-6 text-member-deep" /> : <Menu className="h-6 w-6 text-member-deep" />}
       </button>
 
       {/* Sidebar */}
       <aside
-        className={`
-          fixed top-0 left-0 z-40 h-screen transition-transform duration-300
-          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
-          lg:translate-x-0 w-64 bg-card border-r shadow-divine
-        `}
+        className={`fixed top-0 left-0 h-full w-72 bg-gradient-to-b from-member-blue to-member-bright shadow-member transform transition-transform duration-300 ease-in-out z-40 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
       >
-        <div className="h-full flex flex-col">
-          {/* Church Header */}
-          <div className="p-6 border-b bg-gradient-heaven">
+        <div className="flex flex-col h-full p-6">
+          {/* Logo & Church Name */}
+          <div className="mb-8 text-center">
             {churchInfo?.logo_url ? (
-              <img
-                src={churchInfo.logo_url}
-                alt="Logo"
-                className="h-16 w-16 mx-auto rounded-lg object-cover shadow-lg mb-3"
+              <img 
+                src={churchInfo.logo_url} 
+                alt="Logo" 
+                className="h-16 w-16 mx-auto mb-3 rounded-xl shadow-lg glow-gold object-cover"
               />
             ) : (
-              <div className="h-16 w-16 mx-auto rounded-lg bg-primary/20 flex items-center justify-center mb-3">
-                <Home className="h-8 w-8 text-primary" />
+              <div className="h-16 w-16 mx-auto mb-3 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center glow-gold">
+                <Church className="h-8 w-8 text-white" />
               </div>
             )}
-            <h2 className="text-center font-semibold text-sm text-white">
-              {churchInfo?.nom || "Mon Église"}
-            </h2>
-            <p className="text-center text-xs text-white/80 mt-1">
-              {memberInfo?.prenom} {memberInfo?.nom}
-            </p>
+            <h2 className="text-white font-bold text-lg">{churchInfo?.nom || "EgliConnect"}</h2>
+            <p className="text-white/80 text-sm mt-1">👋 {memberInfo?.prenom} {memberInfo?.nom}</p>
           </div>
 
-          {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto p-4">
-            <ul className="space-y-2">
-              {menuItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.path;
-                return (
-                  <li key={item.path}>
-                    <Link
-                      to={item.path}
-                      onClick={() => setIsSidebarOpen(false)}
-                      className={`
-                        flex items-center gap-3 px-4 py-3 rounded-lg transition-all
-                        ${
-                          isActive
-                            ? "bg-primary text-primary-foreground shadow-soft"
-                            : "hover:bg-accent text-muted-foreground hover:text-foreground"
-                        }
-                      `}
-                    >
-                      <Icon className="h-5 w-5" />
-                      <span className="font-medium">{item.label}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+          {/* Navigation Menu */}
+          <nav className="flex-1 space-y-2">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setSidebarOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                    isActive
+                      ? "bg-white/30 backdrop-blur-sm shadow-lg glow-gold text-white font-semibold"
+                      : "text-white/90 hover:bg-white/20 hover:glow-gold"
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Logout Button */}
-          <div className="p-4 border-t">
+          {/* Profile & Logout */}
+          <div className="space-y-2 mt-4 pt-4 border-t border-white/20">
+            <Link
+              to="/member-profile"
+              onClick={() => setSidebarOpen(false)}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/90 hover:bg-white/20 hover:glow-gold transition-all"
+            >
+              <div className="h-8 w-8 rounded-full bg-member-gold flex items-center justify-center text-white font-bold text-sm">
+                {memberInfo?.prenom?.[0]}{memberInfo?.nom?.[0]}
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium">Mon Profil</p>
+              </div>
+            </Link>
             <Button
               onClick={handleLogout}
-              variant="outline"
-              className="w-full flex items-center gap-2"
+              variant="ghost"
+              className="w-full justify-start gap-3 text-white/90 hover:bg-white/20 hover:text-white rounded-xl"
             >
-              <LogOut className="h-4 w-4" />
-              Déconnexion
+              <LogOut className="h-5 w-5" />
+              Se déconnecter
             </Button>
           </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="lg:ml-64 min-h-screen">
-        <div className="p-6 lg:p-8">{children}</div>
+      <main className="lg:ml-72 min-h-screen">
+        <div className="p-4 md:p-8">
+          {children}
+        </div>
       </main>
 
       {/* Overlay for mobile */}
-      {isSidebarOpen && (
+      {sidebarOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-30"
-          onClick={() => setIsSidebarOpen(false)}
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
         />
       )}
     </div>

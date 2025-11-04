@@ -24,6 +24,9 @@ import MemberPrayers from "./pages/MemberPrayers";
 import MemberResources from "./pages/MemberResources";
 import MemberStats from "./pages/MemberStats";
 import MemberSettings from "./pages/MemberSettings";
+import MemberChurch from "./pages/MemberChurch";
+import MemberCommunity from "./pages/MemberCommunity";
+import MemberSupport from "./pages/MemberSupport";
 import Knowledge from "./pages/Knowledge";
 import Teams from "./pages/Teams";
 import Ministries from "./pages/Ministries";
@@ -49,10 +52,13 @@ const App = () => (
           <Route path="/operator-dashboard" element={<OperatorDashboard />} />
           <Route path="/member-space" element={<MemberSpace />} />
           <Route path="/member-profile" element={<MemberProfile />} />
+          <Route path="/member-church" element={<MemberChurch />} />
           <Route path="/member-donations" element={<MemberDonations />} />
           <Route path="/member-announcements" element={<MemberAnnouncements />} />
           <Route path="/member-prayers" element={<MemberPrayers />} />
           <Route path="/member-resources" element={<MemberResources />} />
+          <Route path="/member-community" element={<MemberCommunity />} />
+          <Route path="/member-support" element={<MemberSupport />} />
           <Route path="/member-stats" element={<MemberStats />} />
           <Route path="/member-settings" element={<MemberSettings />} />
           <Route path="/members" element={<Members />} />

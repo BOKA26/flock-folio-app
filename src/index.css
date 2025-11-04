@@ -60,6 +60,13 @@ All colors MUST be HSL.
     --operator-blue: 202 85% 56%; /* #1E90FF bleu ciel */
     --operator-gold: 43 65% 52%; /* #D4AF37 doré */
     --operator-deep-blue: 203 75% 21%; /* #0A3C60 bleu profond */
+
+    /* Member Dashboard Colors - Luminous & Spiritual */
+    --member-sky: 202 100% 89%; /* #C8E8FF bleu clair */
+    --member-blue: 199 77% 74%; /* #89CFF0 bleu ciel doux */
+    --member-gold: 46 65% 52%; /* #D4AF37 doré clair */
+    --member-deep: 205 81% 21%; /* #0A3C60 bleu profond */
+    --member-bright: 210 100% 56%; /* #1E90FF bleu vif */
     
     /* Navigation Gradients */
     --gradient-nav: linear-gradient(135deg, hsl(0 0% 100% / 0.95), hsl(43 65% 52% / 0.05));
@@ -147,6 +154,22 @@ All colors MUST be HSL.
   
   .gradient-blessing {
     background: var(--gradient-blessing);
+  }
+
+  .gradient-member {
+    background: linear-gradient(135deg, hsl(var(--member-sky)), hsl(var(--member-blue)));
+  }
+
+  .gradient-member-glow {
+    background: linear-gradient(135deg, hsl(var(--member-blue)), hsl(var(--member-bright)));
+  }
+
+  .shadow-member {
+    box-shadow: 0 4px 20px rgba(137, 207, 240, 0.3);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
   }
   
   .text-gradient {

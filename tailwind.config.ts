@@ -62,6 +62,13 @@ export default {
           gold: "hsl(var(--operator-gold))",
           "deep-blue": "hsl(var(--operator-deep-blue))",
         },
+        member: {
+          sky: "hsl(var(--member-sky))",
+          blue: "hsl(var(--member-blue))",
+          gold: "hsl(var(--member-gold))",
+          deep: "hsl(var(--member-deep))",
+          bright: "hsl(var(--member-bright))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
