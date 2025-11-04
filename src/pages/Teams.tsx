@@ -156,12 +156,20 @@ const Teams = () => {
       return;
     }
 
-    // Validation de l'email
-    const emailSchema = z.string().email({ message: "Adresse email invalide" });
+    // Validation et normalisation de l'email
+    const emailSchema = z.string().trim().toLowerCase().email({ message: "Adresse email invalide" }).max(255);
+    let normalizedEmail = "";
     try {
-      emailSchema.parse(formData.email);
+      normalizedEmail = emailSchema.parse(formData.email);
     } catch (error: any) {
-      toast.error("Format d'email invalide. Veuillez vérifier l'adresse email.");
+      toast.error("Format d'email invalide. Exemple: nom@gmail.com ou nom@exemple.com");
+      return;
+    }
+    // Interdire les sous-domaines pour les principaux fournisseurs (ex: xxx.gmail.com)
+    const domain = normalizedEmail.split("@")[1] || "";
+    const freeProviders = ["gmail.com","yahoo.com","outlook.com","hotmail.com","icloud.com","live.com"];
+    if (freeProviders.some(p => domain.endsWith("." + p))) {
+      toast.error("Adresse email invalide: utilisez directement @gmail.com/@outlook.com (sans sous-domaine).");
       return;
     }
 
@@ -178,8 +186,8 @@ const Teams = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            email: formData.email,
-            fullName: formData.fullName,
+            email: normalizedEmail,
+            fullName: formData.fullName.trim(),
             role: formData.role,
             churchId: churchId,
           }),

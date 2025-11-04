@@ -50,7 +50,28 @@ serve(async (req) => {
       );
     }
 
-    const { email, fullName, role, churchId } = await req.json();
+    const body = await req.json();
+    const email = String(body.email ?? '').trim().toLowerCase();
+    const fullName = String(body.fullName ?? '').trim();
+    const role = body.role;
+    const churchId = body.churchId;
+
+    // Validation email côté serveur (plus stricte que le simple format)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(email) || email.length > 255) {
+      return new Response(
+        JSON.stringify({ error: 'Adresse email invalide. Exemple: jean@gmail.com ou jean@exemple.com' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    const domain = email.split('@')[1] || '';
+    const freeProviders = ['gmail.com','yahoo.com','outlook.com','hotmail.com','icloud.com','live.com'];
+    if (freeProviders.some(p => domain.endsWith('.' + p))) {
+      return new Response(
+        JSON.stringify({ error: "Adresse email invalide: n'utilisez pas de sous-domaine pour Gmail/Outlook/etc. Utilisez par ex. nom@gmail.com" }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     // Vérifier que c'est bien l'église de l'admin
     if (churchId !== roleData.church_id) {
@@ -61,13 +82,14 @@ serve(async (req) => {
     }
 
     // Envoyer l'invitation
+    const origin = req.headers.get('origin');
     const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
       data: {
         full_name: fullName,
         church_id: churchId,
         role: role,
       },
-      redirectTo: `${req.headers.get('origin')}/auth`,
+      ...(origin ? { redirectTo: `${origin}/auth` } : {}),
     });
 
     if (inviteError) {
@@ -102,8 +124,9 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Erreur:', error);
+    const message = error instanceof Error ? error.message : String(error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
