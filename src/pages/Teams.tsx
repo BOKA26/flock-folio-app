@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -152,6 +153,15 @@ const Teams = () => {
   const handleAddUser = async () => {
     if (!formData.email || !formData.fullName) {
       toast.error("Tous les champs sont requis");
+      return;
+    }
+
+    // Validation de l'email
+    const emailSchema = z.string().email({ message: "Adresse email invalide" });
+    try {
+      emailSchema.parse(formData.email);
+    } catch (error: any) {
+      toast.error("Format d'email invalide. Veuillez vérifier l'adresse email.");
       return;
     }
 
