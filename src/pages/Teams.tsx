@@ -208,6 +208,13 @@ const Teams = () => {
         // Gestion spécifique des erreurs
         let errorMessage = result.error || "Erreur lors de l'invitation";
         
+        // Si l'erreur contient "rate limit"
+        if (errorMessage.includes("rate limit") || errorMessage.includes("email rate limit exceeded")) {
+          errorMessage = "⏳ Limite d'envoi d'emails atteinte. Veuillez patienter 2-3 minutes avant de renvoyer une invitation. Cette limite protège contre le spam.";
+          toast.error(errorMessage, { duration: 6000 });
+          throw new Error(errorMessage);
+        }
+        
         // Si l'erreur contient "already been registered"
         if (errorMessage.includes("already been registered") || errorMessage.includes("email_exists")) {
           errorMessage = `Cet email (${formData.email}) est déjà enregistré. L'utilisateur a peut-être déjà un compte. Essayez de le rechercher dans la liste ou utilisez un autre email.`;
