@@ -93,7 +93,7 @@ const MemberSpace = () => {
   };
 
   const handleNewPrayer = () => {
-    navigate('/prayers');
+    navigate('/member-prayers');
   };
 
   const handleDonate = () => {

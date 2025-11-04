@@ -358,7 +358,7 @@ const MemberProfile = () => {
             <Button 
               variant="outline" 
               className="h-auto py-4 flex flex-col gap-2"
-              onClick={() => navigate('/member/donations')}
+              onClick={() => navigate('/member-donations')}
             >
               <DollarSign className="h-6 w-6 text-primary" />
               <span className="text-sm font-semibold">Mes dons</span>
@@ -366,7 +366,7 @@ const MemberProfile = () => {
             <Button 
               variant="outline" 
               className="h-auto py-4 flex flex-col gap-2"
-              onClick={() => navigate('/member/announcements')}
+              onClick={() => navigate('/member-announcements')}
             >
               <Calendar className="h-6 w-6 text-primary" />
               <span className="text-sm font-semibold">Événements</span>
@@ -374,7 +374,7 @@ const MemberProfile = () => {
             <Button 
               variant="outline" 
               className="h-auto py-4 flex flex-col gap-2"
-              onClick={() => navigate('/member/settings')}
+              onClick={() => navigate('/member-settings')}
             >
               <Lock className="h-6 w-6 text-primary" />
               <span className="text-sm font-semibold">Sécurité</span>
