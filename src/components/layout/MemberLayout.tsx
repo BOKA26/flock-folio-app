@@ -28,15 +28,33 @@ const MemberLayout = ({ children }: MemberLayoutProps) => {
         return;
       }
 
-      const { data: memberData } = await supabase
+      // Try to get member data
+      const { data: memberData, error: memberError } = await supabase
         .from("members")
         .select("*, churches(*)")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       if (memberData) {
         setMemberInfo(memberData);
         setChurchInfo(memberData.churches);
+      } else if (!memberError || memberError.code === 'PGRST116') {
+        // Member doesn't exist yet, try to get church from user_roles
+        const { data: roleData } = await supabase
+          .from("user_roles")
+          .select("church_id, churches(*)")
+          .eq("user_id", user.id)
+          .single();
+
+        if (roleData) {
+          setChurchInfo(roleData.churches);
+          // Set basic member info from auth
+          setMemberInfo({
+            prenom: user.user_metadata?.nom_complet?.split(" ")[0] || "Membre",
+            nom: user.user_metadata?.nom_complet?.split(" ").slice(1).join(" ") || "",
+            email: user.email
+          });
+        }
       }
     } catch (error) {
       console.error("Error loading church info:", error);
