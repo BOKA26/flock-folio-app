@@ -173,6 +173,14 @@ const Teams = () => {
       return;
     }
 
+    // Mapper les rôles français vers les rôles de la base de données
+    const roleMap: Record<string, string> = {
+      'admin': 'admin',
+      'operateur': 'moderator',
+      'fidele': 'user'
+    };
+    const dbRole = roleMap[formData.role] || formData.role;
+
     try {
       // Appeler l'Edge Function pour inviter l'utilisateur
       const { data: { session } } = await supabase.auth.getSession();
@@ -188,7 +196,7 @@ const Teams = () => {
           body: JSON.stringify({
             email: normalizedEmail,
             fullName: formData.fullName.trim(),
-            role: formData.role,
+            role: dbRole,
             churchId: churchId,
           }),
         }
