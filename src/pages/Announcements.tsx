@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout";
+import { announcementSchema } from "@/lib/validation-schemas";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -114,12 +116,20 @@ const Announcements = () => {
 
       if (!roleData) throw new Error("Église non trouvée");
 
-      const announcementData = {
+      // Validate input with Zod
+      const validated = announcementSchema.parse({
         titre: formData.titre,
         contenu: formData.contenu,
-        date_evenement: formData.date_evenement || null,
-        image_url: formData.image_url || null,
         type: formData.type,
+        image_url: formData.image_url || "",
+      });
+
+      const announcementData = {
+        titre: validated.titre,
+        contenu: validated.contenu,
+        type: validated.type,
+        image_url: validated.image_url || null,
+        date_evenement: formData.date_evenement || null,
         church_id: roleData.church_id,
       };
 
@@ -132,7 +142,7 @@ const Announcements = () => {
         if (error) throw error;
         toast.success("Annonce modifiée avec succès");
       } else {
-        const { error } = await supabase.from("announcements").insert(announcementData);
+        const { error } = await supabase.from("announcements").insert([announcementData]);
         if (error) throw error;
         toast.success("Annonce créée avec succès");
       }
@@ -142,6 +152,10 @@ const Announcements = () => {
       setFormData({ titre: "", contenu: "", date_evenement: "", image_url: "", type: "annonce" });
       loadAnnouncements();
     } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+        return;
+      }
       toast.error(error.message || "Erreur lors de l'opération");
     }
   };

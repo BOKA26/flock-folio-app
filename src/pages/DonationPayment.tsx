@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import { donationSchema } from "@/lib/validation-schemas";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -81,20 +83,30 @@ const DonationPayment = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase.from("donations").insert({
+      // Validate donation data with Zod
+      const validated = donationSchema.parse({
         montant: donationData.montant,
         type_don: donationData.type_don,
+      });
+
+      const { error } = await supabase.from("donations").insert([{
+        montant: validated.montant,
+        type_don: validated.type_don,
         membre_id: donationData.membre_id,
         church_id: donationData.church_id,
         statut: "completed",
         reference_transaction: `${selectedPayment}_${Date.now()}_${coordinates.nom}_${coordinates.prenom}`,
-      });
+      }]);
 
       if (error) throw error;
 
       toast.success("Don enregistré avec succès ! 🙏");
       navigate("/donations");
     } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+        return;
+      }
       console.error("Error saving donation:", error);
       toast.error("Erreur lors de l'enregistrement du don");
     } finally {

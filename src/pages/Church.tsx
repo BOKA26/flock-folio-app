@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout";
+import { churchSchema } from "@/lib/validation-schemas";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -99,25 +101,32 @@ const Church = () => {
     e.preventDefault();
 
     try {
+      // Validate input with Zod
+      const validated = churchSchema.parse({
+        nom: formData.nom,
+        description: formData.description || "",
+        email: formData.email || "",
+        contact: formData.contact || "",
+        site_web: formData.site_web || "",
+        adresse: formData.adresse || "",
+        whatsapp: formData.whatsapp || "",
+        facebook: formData.facebook || "",
+        verset_clef: formData.verset_clef || "",
+      });
+
       const { error } = await supabase
         .from("churches")
-        .update({
-          nom: formData.nom,
-          description: formData.description,
-          adresse: formData.adresse,
-          contact: formData.contact,
-          email: formData.email,
-          site_web: formData.site_web,
-          facebook: formData.facebook,
-          whatsapp: formData.whatsapp,
-          verset_clef: formData.verset_clef,
-        })
+        .update(validated)
         .eq("id", churchId);
 
       if (error) throw error;
 
       toast.success("Informations mises à jour");
     } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+        return;
+      }
       toast.error(error.message || "Erreur lors de la mise à jour");
     }
   };

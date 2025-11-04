@@ -2,6 +2,8 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout";
+import { faqSchema } from "@/lib/validation-schemas";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -102,24 +104,25 @@ const Knowledge = () => {
   };
 
   const handleAddFaq = async () => {
-    if (!faqQuestion.trim() || !faqAnswer.trim()) {
-      toast.error("La question et la réponse sont requises");
-      return;
-    }
-
     if (!churchData?.church_id) {
       toast.error("Église non trouvée");
       return;
     }
 
     try {
+      // Validate input with Zod
+      const validated = faqSchema.parse({
+        question: faqQuestion,
+        answer: faqAnswer
+      });
+
       const { error } = await supabase
         .from('kb_faq')
-        .insert({
+        .insert([{
           church_id: churchData.church_id,
-          question: faqQuestion,
-          answer: faqAnswer
-        });
+          question: validated.question,
+          answer: validated.answer
+        }]);
 
       if (error) throw error;
 
@@ -128,6 +131,10 @@ const Knowledge = () => {
       setFaqAnswer("");
       refetchFaqs();
     } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+        return;
+      }
       console.error('Error adding FAQ:', error);
       toast.error("Erreur lors de l'ajout de la FAQ");
     }

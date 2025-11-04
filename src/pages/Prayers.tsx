@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout";
+import { prayerSchema } from "@/lib/validation-schemas";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -73,10 +75,13 @@ const Prayers = () => {
 
       if (!roleData) throw new Error("Église non trouvée");
 
-      const { error } = await supabase.from("prayer_requests").insert({
-        texte: formData.texte,
+      // Validate input with Zod
+      const validated = prayerSchema.parse(formData);
+
+      const { error } = await supabase.from("prayer_requests").insert([{
+        texte: validated.texte,
         church_id: roleData.church_id,
-      });
+      }]);
 
       if (error) throw error;
 
@@ -85,6 +90,10 @@ const Prayers = () => {
       setFormData({ texte: "" });
       loadPrayers();
     } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+        return;
+      }
       toast.error(error.message || "Erreur");
     }
   };

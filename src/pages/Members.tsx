@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout";
+import { memberSchema } from "@/lib/validation-schemas";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -137,19 +139,32 @@ const Members = () => {
     e.preventDefault();
 
     try {
+      // Validate input with Zod
+      const validated = memberSchema.parse(formData);
+
       if (editingMember) {
         const { error } = await supabase
           .from("members")
-          .update(formData)
+          .update({
+            nom: validated.nom,
+            prenom: validated.prenom,
+            email: validated.email || null,
+            telephone: validated.telephone || null,
+            sexe: validated.sexe || null,
+          })
           .eq("id", editingMember.id);
 
         if (error) throw error;
         toast.success("Membre modifié avec succès");
       } else {
-        const { error } = await supabase.from("members").insert({
-          ...formData,
+        const { error } = await supabase.from("members").insert([{
+          nom: validated.nom,
+          prenom: validated.prenom,
+          email: validated.email || null,
+          telephone: validated.telephone || null,
+          sexe: validated.sexe || null,
           church_id: churchId,
-        });
+        }]);
 
         if (error) throw error;
         toast.success("Membre ajouté avec succès");
@@ -160,6 +175,10 @@ const Members = () => {
       resetForm();
       loadMembers();
     } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+        return;
+      }
       toast.error(error.message || "Erreur lors de l'opération");
     }
   };

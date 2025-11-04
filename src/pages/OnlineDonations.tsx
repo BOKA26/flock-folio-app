@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import { donationSchema } from "@/lib/validation-schemas";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -76,22 +78,36 @@ const OnlineDonations = () => {
           // Save donation to database
           const { data: { user } } = await supabase.auth.getUser();
           
-          const { error } = await supabase.from("donations").insert({
-            montant: parseFloat(amount),
-            type_don: donationType,
-            church_id: churchId,
-            membre_id: user?.id || null,
-            reference_transaction: response.reference,
-            statut: 'completed',
-          });
+          try {
+            // Validate donation data with Zod
+            const validated = donationSchema.parse({
+              montant: parseFloat(amount),
+              type_don: donationType,
+            });
 
-          if (error) {
-            console.error('Error saving donation:', error);
-            toast.error("Erreur lors de l'enregistrement du don");
-          } else {
-            toast.success("Don effectué avec succès ! Que Dieu vous bénisse 🙏");
-            setAmount("");
-            setDonationType("offrande");
+            const { error } = await supabase.from("donations").insert([{
+              montant: validated.montant,
+              type_don: validated.type_don,
+              church_id: churchId,
+              membre_id: user?.id || null,
+              reference_transaction: response.reference,
+              statut: 'completed',
+            }]);
+
+            if (error) {
+              console.error('Error saving donation:', error);
+              toast.error("Erreur lors de l'enregistrement du don");
+            } else {
+              toast.success("Don effectué avec succès ! Que Dieu vous bénisse 🙏");
+              setAmount("");
+              setDonationType("offrande");
+            }
+          } catch (error: any) {
+            if (error instanceof z.ZodError) {
+              toast.error(error.errors[0].message);
+            } else {
+              toast.error("Erreur lors de l'enregistrement du don");
+            }
           }
         },
         onClose: () => {
