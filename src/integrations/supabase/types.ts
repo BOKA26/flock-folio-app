@@ -758,6 +758,8 @@ export type Database = {
         Row: {
           church_id: string
           created_at: string
+          email: string | null
+          full_name: string | null
           id: string
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
@@ -765,6 +767,8 @@ export type Database = {
         Insert: {
           church_id: string
           created_at?: string
+          email?: string | null
+          full_name?: string | null
           id?: string
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
@@ -772,6 +776,8 @@ export type Database = {
         Update: {
           church_id?: string
           created_at?: string
+          email?: string | null
+          full_name?: string | null
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string

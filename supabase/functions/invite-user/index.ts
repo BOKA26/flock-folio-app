@@ -86,6 +86,8 @@ serve(async (req) => {
           user_id: inviteData.user.id,
           church_id: churchId,
           role: role,
+          email: email,
+          full_name: fullName,
         });
 
       if (roleInsertError) {

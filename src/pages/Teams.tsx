@@ -417,13 +417,15 @@ const Teams = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {userRoles.map((userRole) => (
+                    {userRoles.map((userRole: any) => (
                       <TableRow key={userRole.id}>
                         <TableCell className="font-medium">
-                          {userRole.user_id.substring(0, 8)}...
+                          {userRole.full_name || userRole.user_id.substring(0, 8) + "..."}
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm text-muted-foreground">N/A</span>
+                          <span className="text-sm text-muted-foreground">
+                            {userRole.email || "N/A"}
+                          </span>
                         </TableCell>
                         <TableCell>{getRoleBadge(userRole.role)}</TableCell>
                         <TableCell>
