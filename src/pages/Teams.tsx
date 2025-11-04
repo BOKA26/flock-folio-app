@@ -179,7 +179,15 @@ const Teams = () => {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Erreur lors de l'invitation");
+        // Gestion spécifique des erreurs
+        let errorMessage = result.error || "Erreur lors de l'invitation";
+        
+        // Si l'erreur contient "already been registered"
+        if (errorMessage.includes("already been registered") || errorMessage.includes("email_exists")) {
+          errorMessage = `Cet email (${formData.email}) est déjà enregistré. L'utilisateur a peut-être déjà un compte. Essayez de le rechercher dans la liste ou utilisez un autre email.`;
+        }
+        
+        throw new Error(errorMessage);
       }
 
       toast.success("Invitation envoyée par email");
@@ -190,6 +198,7 @@ const Teams = () => {
       // Log l'activité
       await logActivity("invitation_sent", `Invitation envoyée à ${formData.email}`);
     } catch (error: any) {
+      console.error("Erreur invitation:", error);
       toast.error(error.message || "Erreur lors de l'invitation");
     }
   };
