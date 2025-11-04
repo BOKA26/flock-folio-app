@@ -216,10 +216,15 @@ const Teams = () => {
         }
         
         // Si l'erreur contient "already been registered"
-        if (errorMessage.includes("already been registered") || errorMessage.includes("email_exists")) {
-          errorMessage = `Cet email (${formData.email}) est déjà enregistré. L'utilisateur a peut-être déjà un compte. Essayez de le rechercher dans la liste ou utilisez un autre email.`;
+        if (errorMessage.toLowerCase().includes("already") || 
+            errorMessage.includes("email_exists") ||
+            errorMessage.includes("User with this email address has already been registered")) {
+          errorMessage = `⚠️ Cet email est déjà enregistré. L'utilisateur possède déjà un compte et peut se connecter directement.`;
+          toast.error(errorMessage, { duration: 5000 });
+          throw new Error(errorMessage);
         }
         
+        toast.error(errorMessage);
         throw new Error(errorMessage);
       }
 
