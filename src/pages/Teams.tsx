@@ -156,21 +156,36 @@ const Teams = () => {
     }
 
     try {
-      // Envoyer une invitation par email
-      const { data, error } = await supabase.auth.admin.inviteUserByEmail(formData.email, {
-        data: {
-          full_name: formData.fullName,
-          church_id: churchId,
-          role: formData.role,
-        },
-        redirectTo: `${window.location.origin}/auth`,
-      });
+      // Appeler l'Edge Function pour inviter l'utilisateur
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const response = await fetch(
+        `https://tyzcwcdqntxudqjftzsz.supabase.co/functions/v1/invite-user`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session?.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            fullName: formData.fullName,
+            role: formData.role,
+            churchId: churchId,
+          }),
+        }
+      );
 
-      if (error) throw error;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Erreur lors de l'invitation");
+      }
 
       toast.success("Invitation envoyée par email");
       setOpenAddDialog(false);
       setFormData({ email: "", fullName: "", role: "fidele" });
+      await loadUsers(churchId);
       
       // Log l'activité
       await logActivity("invitation_sent", `Invitation envoyée à ${formData.email}`);
