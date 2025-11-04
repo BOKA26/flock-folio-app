@@ -93,16 +93,19 @@ const OperatorDashboardLayout = ({ children }: OperatorDashboardLayoutProps) => 
   ];
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-gradient-to-b from-[hsl(var(--operator-deep-blue))] to-[hsl(var(--operator-blue))] text-white">
+    <div className="flex flex-col h-full bg-gradient-to-b from-[#0A2540] to-[#1a3a5c] text-white">
       {/* Header */}
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-[hsl(var(--operator-gold))]/20 flex items-center justify-center backdrop-blur-sm border border-[hsl(var(--operator-gold))]/30">
-            <Sparkles className="h-6 w-6 text-[hsl(var(--operator-gold))]" />
+          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#B8941F] flex items-center justify-center shadow-lg">
+            <Sparkles className="h-7 w-7 text-white" />
           </div>
           <div>
-            <h2 className="font-semibold text-lg">{churchName}</h2>
-            <p className="text-xs text-white/70">Tableau de bord opérateur</p>
+            <h2 className="font-bold text-base text-white">{churchName || "VC"}</h2>
+            <p className="text-xs text-[#D4AF37] flex items-center gap-1">
+              <Sparkles className="h-3 w-3" />
+              Opérateur
+            </p>
           </div>
         </div>
       </div>
@@ -119,19 +122,13 @@ const OperatorDashboardLayout = ({ children }: OperatorDashboardLayoutProps) => 
                 key={item.path}
                 to={item.path}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-[10px] transition-all duration-200 group ${
+                className={`flex items-center gap-3 px-4 py-3 rounded-[10px] transition-all ${
                   isActive
-                    ? "bg-[hsl(var(--operator-gold))]/20 text-white shadow-lg shadow-[hsl(var(--operator-gold))]/20 border border-[hsl(var(--operator-gold))]/30"
-                    : "hover:bg-white/10 text-white/80 hover:text-white"
+                    ? "bg-[#D4AF37] text-[#0A2540] shadow-lg"
+                    : "text-white hover:bg-white/10"
                 }`}
               >
-                <Icon 
-                  className={`h-5 w-5 transition-colors ${
-                    isActive 
-                      ? "text-[hsl(var(--operator-gold))]" 
-                      : "text-white/70 group-hover:text-white"
-                  }`}
-                />
+                <Icon className="h-5 w-5" />
                 <span className="font-medium">{item.label}</span>
               </Link>
             );
@@ -148,7 +145,7 @@ const OperatorDashboardLayout = ({ children }: OperatorDashboardLayoutProps) => 
         <Button
           onClick={handleLogout}
           variant="outline"
-          className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-[10px] transition-all duration-200"
+          className="w-full bg-transparent border-white/20 text-white hover:bg-white/10 hover:text-white rounded-[10px]"
         >
           <LogOut className="h-4 w-4 mr-2" />
           Se déconnecter

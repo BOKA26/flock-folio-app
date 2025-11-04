@@ -105,28 +105,28 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
   );
 
   const SidebarContent = () => (
-    <div className="flex h-full flex-col bg-[hsl(var(--sidebar-background))] text-[hsl(var(--sidebar-foreground))]">
+    <div className="flex h-full flex-col bg-gradient-to-b from-[#0A2540] to-[#1a3a5c] text-white">
       {/* Logo & Church Name */}
-      <div className="border-b border-[hsl(var(--sidebar-border))] p-6">
+      <div className="border-b border-white/10 p-6">
         <div className="flex items-center gap-3">
           {churchLogo ? (
             <img 
               src={churchLogo} 
               alt={churchName || "Logo"} 
-              className="h-12 w-12 rounded-lg object-cover shadow-md"
+              className="h-14 w-14 rounded-xl object-cover shadow-lg"
             />
           ) : (
-            <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--secondary))] flex items-center justify-center shadow-md">
+            <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#B8941F] flex items-center justify-center shadow-lg">
               <Church className="h-7 w-7 text-white" />
             </div>
           )}
           <div>
-            <h2 className="font-bold text-lg text-white">
-              {churchName || "EgliConnect"}
+            <h2 className="font-bold text-base text-white">
+              {churchName || "VC"}
             </h2>
-            <p className="text-xs text-[hsl(var(--secondary))] capitalize flex items-center gap-1">
+            <p className="text-xs text-[#D4AF37] capitalize flex items-center gap-1">
               <Sparkles className="h-3 w-3" />
-              {userRole || "Membre"}
+              {userRole === "admin" ? "Admin" : userRole || "Membre"}
             </p>
           </div>
         </div>
@@ -144,8 +144,8 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
                 onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-3 rounded-[10px] px-4 py-3 text-sm font-medium transition-all ${
                   isActive
-                    ? "bg-[hsl(var(--secondary))] text-[hsl(var(--sidebar-background))] shadow-lg"
-                    : "text-[hsl(var(--sidebar-foreground))] hover:bg-[hsl(var(--sidebar-accent))] hover:text-white"
+                    ? "bg-[#D4AF37] text-[#0A2540] shadow-lg"
+                    : "text-white hover:bg-white/10"
                 }`}
               >
                 <item.icon className="h-5 w-5" />
@@ -157,11 +157,11 @@ const AdminDashboardLayout = ({ children }: AdminDashboardLayoutProps) => {
       </ScrollArea>
 
       {/* Logout Button */}
-      <div className="border-t border-[hsl(var(--sidebar-border))] p-4">
+      <div className="border-t border-white/10 p-4">
         <Button 
           onClick={handleLogout} 
           variant="outline" 
-          className="w-full border-[hsl(var(--sidebar-border))] text-[hsl(var(--sidebar-foreground))] hover:bg-[hsl(var(--sidebar-accent))] rounded-[10px]"
+          className="w-full border-white/20 text-white hover:bg-white/10 hover:text-white rounded-[10px] bg-transparent"
         >
           <LogOut className="mr-2 h-4 w-4" />
           Déconnexion

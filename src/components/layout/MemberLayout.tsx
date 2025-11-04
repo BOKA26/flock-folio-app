@@ -90,30 +90,30 @@ const MemberLayout = ({ children }: MemberLayoutProps) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full w-72 bg-gradient-to-b from-member-blue to-member-bright shadow-member transform transition-transform duration-300 ease-in-out z-40 ${
+        className={`fixed top-0 left-0 h-full w-72 bg-gradient-to-b from-[#0A2540] to-[#1a3a5c] shadow-xl transform transition-transform duration-300 ease-in-out z-40 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
         <div className="flex flex-col h-full p-6">
           {/* Logo & Church Name */}
-          <div className="mb-8 text-center">
+          <div className="mb-8 pb-6 border-b border-white/10">
             {churchInfo?.logo_url ? (
               <img 
                 src={churchInfo.logo_url} 
                 alt="Logo" 
-                className="h-16 w-16 mx-auto mb-3 rounded-xl shadow-lg glow-gold object-cover"
+                className="h-14 w-14 mx-auto mb-3 rounded-xl shadow-lg object-cover"
               />
             ) : (
-              <div className="h-16 w-16 mx-auto mb-3 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center glow-gold">
-                <Church className="h-8 w-8 text-white" />
+              <div className="h-14 w-14 mx-auto mb-3 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#B8941F] flex items-center justify-center shadow-lg">
+                <Church className="h-7 w-7 text-white" />
               </div>
             )}
-            <h2 className="text-white font-bold text-lg">{churchInfo?.nom || "EgliConnect"}</h2>
-            <p className="text-white/80 text-sm mt-1">👋 {memberInfo?.prenom} {memberInfo?.nom}</p>
+            <h2 className="text-white font-bold text-base text-center">{churchInfo?.nom || "VC"}</h2>
+            <p className="text-[#D4AF37] text-xs mt-1 text-center">👋 {memberInfo?.prenom} {memberInfo?.nom}</p>
           </div>
 
           {/* Navigation Menu */}
-          <nav className="flex-1 space-y-2">
+          <nav className="flex-1 space-y-1">
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
@@ -122,27 +122,27 @@ const MemberLayout = ({ children }: MemberLayoutProps) => {
                   key={item.path}
                   to={item.path}
                   onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-[10px] transition-all ${
                     isActive
-                      ? "bg-white/30 backdrop-blur-sm shadow-lg glow-gold text-white font-semibold"
-                      : "text-white/90 hover:bg-white/20 hover:glow-gold"
+                      ? "bg-[#D4AF37] text-[#0A2540] shadow-lg font-medium"
+                      : "text-white hover:bg-white/10"
                   }`}
                 >
                   <Icon className="h-5 w-5" />
-                  <span>{item.label}</span>
+                  <span className="text-sm">{item.label}</span>
                 </Link>
               );
             })}
           </nav>
 
           {/* Profile & Logout */}
-          <div className="space-y-2 mt-4 pt-4 border-t border-white/20">
+          <div className="space-y-2 mt-4 pt-4 border-t border-white/10">
             <Link
               to="/member-profile"
               onClick={() => setSidebarOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/90 hover:bg-white/20 hover:glow-gold transition-all"
+              className="flex items-center gap-3 px-4 py-3 rounded-[10px] text-white hover:bg-white/10 transition-all"
             >
-              <div className="h-8 w-8 rounded-full bg-member-gold flex items-center justify-center text-white font-bold text-sm">
+              <div className="h-8 w-8 rounded-full bg-[#D4AF37] flex items-center justify-center text-white font-bold text-sm">
                 {memberInfo?.prenom?.[0]}{memberInfo?.nom?.[0]}
               </div>
               <div className="flex-1">
@@ -152,7 +152,7 @@ const MemberLayout = ({ children }: MemberLayoutProps) => {
             <Button
               onClick={handleLogout}
               variant="ghost"
-              className="w-full justify-start gap-3 text-white/90 hover:bg-white/20 hover:text-white rounded-xl"
+              className="w-full justify-start gap-3 text-white hover:bg-white/10 hover:text-white rounded-[10px] bg-transparent"
             >
               <LogOut className="h-5 w-5" />
               Se déconnecter

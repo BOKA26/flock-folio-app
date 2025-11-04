@@ -16,6 +16,7 @@ import {
   Menu,
   Home,
   BookOpen,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -91,23 +92,28 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   );
 
   const SidebarContent = () => (
-    <div className="flex h-full flex-col">
-      <div className="border-b border-border/40 p-6">
+    <div className="flex h-full flex-col bg-gradient-to-b from-[#0A2540] to-[#1a3a5c] text-white">
+      <div className="border-b border-white/10 p-6">
         <div className="flex items-center gap-3">
           {churchLogo ? (
             <img 
               src={churchLogo} 
               alt={churchName || "Logo"} 
-              className="h-10 w-10 rounded-lg object-cover"
+              className="h-14 w-14 rounded-xl object-cover shadow-lg"
             />
           ) : (
-            <Church className="h-10 w-10 text-primary" />
+            <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#B8941F] flex items-center justify-center shadow-lg">
+              <Church className="h-7 w-7 text-white" />
+            </div>
           )}
           <div>
-            <h2 className="font-display font-bold text-lg text-foreground">
-              {churchName || "EgliConnect"}
+            <h2 className="font-bold text-base text-white">
+              {churchName || "VC"}
             </h2>
-            <p className="text-xs text-muted-foreground capitalize">{userRole || "Membre"}</p>
+            <p className="text-xs text-[#D4AF37] capitalize flex items-center gap-1">
+              <Sparkles className="h-3 w-3" />
+              {userRole || "Membre"}
+            </p>
           </div>
         </div>
       </div>
@@ -121,10 +127,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 key={item.path}
                 to={item.path}
                 onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent ${
+                className={`flex items-center gap-3 rounded-[10px] px-4 py-3 text-sm font-medium transition-all ${
                   isActive
-                    ? "bg-primary/10 text-primary font-semibold"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-[#D4AF37] text-[#0A2540] shadow-lg"
+                    : "text-white hover:bg-white/10"
                 }`}
               >
                 <item.icon className="h-5 w-5" />
@@ -135,8 +141,12 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         </nav>
       </ScrollArea>
 
-      <div className="border-t border-border/40 p-4">
-        <Button onClick={handleLogout} variant="outline" className="w-full">
+      <div className="border-t border-white/10 p-4">
+        <Button 
+          onClick={handleLogout} 
+          variant="outline" 
+          className="w-full border-white/20 text-white hover:bg-white/10 hover:text-white rounded-[10px] bg-transparent"
+        >
           <LogOut className="mr-2 h-4 w-4" />
           Déconnexion
         </Button>
