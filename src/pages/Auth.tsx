@@ -27,9 +27,10 @@ const Auth = () => {
 
   useEffect(() => {
     // Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
-        navigate('/dashboard');
+        const redirectPath = await getRedirectPath(session.user.id);
+        navigate(redirectPath);
       }
     });
 
@@ -46,14 +47,41 @@ const Auth = () => {
     fetchChurches();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_IN" && session) {
-        navigate('/dashboard');
+        const redirectPath = await getRedirectPath(session.user.id);
+        navigate(redirectPath);
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const getRedirectPath = async (userId: string): Promise<string> => {
+    try {
+      const { data: roleData } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .single();
+
+      if (roleData) {
+        // Admin et operateur vont au dashboard
+        if (roleData.role === "admin" || roleData.role === "operateur") {
+          return "/dashboard";
+        }
+        // Fidèles vont à l'espace membre
+        if (roleData.role === "fidele") {
+          return "/member-space";
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching role:", error);
+    }
+    
+    // Par défaut, on redirige vers le dashboard
+    return "/dashboard";
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,8 +95,12 @@ const Auth = () => {
 
       if (error) throw error;
       
-      toast.success("Connexion réussie !");
-      navigate("/dashboard");
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const redirectPath = await getRedirectPath(user.id);
+        toast.success("Connexion réussie !");
+        navigate(redirectPath);
+      }
     } catch (error: any) {
       toast.error(error.message || "Erreur de connexion");
     } finally {
@@ -135,7 +167,7 @@ const Auth = () => {
         if (roleError) throw roleError;
 
         toast.success(`Église créée avec succès ! Code: ${churchCode}`);
-        navigate("/dashboard");
+        navigate("/dashboard"); // Admins vont au dashboard
       } else {
         // Fidele joining existing church
         let churchId = formData.church_code;
@@ -164,7 +196,7 @@ const Auth = () => {
         if (roleError) throw roleError;
 
         toast.success("Compte créé avec succès !");
-        navigate("/dashboard");
+        navigate("/member-space"); // Fidèles vont à l'espace membre
       }
 
     } catch (error: any) {
