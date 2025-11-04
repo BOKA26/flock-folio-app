@@ -60,6 +60,9 @@ interface UserRole {
   user_id: string;
   role: string;
   created_at: string;
+  email?: string;
+  full_name?: string;
+  groupe_departement?: string;
 }
 
 interface ActivityLog {
@@ -122,7 +125,10 @@ const Teams = () => {
   const loadUsers = async (churchId: string) => {
     const { data, error } = await supabase
       .from("user_roles")
-      .select("*")
+      .select(`
+        *,
+        members!inner(groupe_departement)
+      `)
       .eq("church_id", churchId)
       .order("created_at", { ascending: false });
 
@@ -131,7 +137,13 @@ const Teams = () => {
       return;
     }
 
-    setUserRoles(data || []);
+    // Mapper les données pour inclure le département
+    const mappedData = (data || []).map((item: any) => ({
+      ...item,
+      groupe_departement: item.members?.groupe_departement || null
+    }));
+
+    setUserRoles(mappedData);
   };
 
   const loadActivityLogs = async (churchId: string) => {
@@ -449,6 +461,7 @@ const Teams = () => {
                       <TableHead className="text-[hsl(var(--text-dark))]">Nom</TableHead>
                       <TableHead className="text-[hsl(var(--text-dark))]">Email</TableHead>
                       <TableHead className="text-[hsl(var(--text-dark))]">Rôle</TableHead>
+                      <TableHead className="text-[hsl(var(--text-dark))]">Département</TableHead>
                       <TableHead className="text-[hsl(var(--text-dark))]">Statut</TableHead>
                       <TableHead className="text-[hsl(var(--text-dark))]">Ajouté le</TableHead>
                       <TableHead className="text-right text-[hsl(var(--text-dark))]">Actions</TableHead>
@@ -466,6 +479,11 @@ const Teams = () => {
                           </span>
                         </TableCell>
                         <TableCell>{getRoleBadge(userRole.role)}</TableCell>
+                        <TableCell>
+                          <span className="text-sm text-muted-foreground">
+                            {userRole.groupe_departement || "N/A"}
+                          </span>
+                        </TableCell>
                         <TableCell>
                           <Badge className="bg-green-500 text-white rounded-[10px] flex items-center gap-1 w-fit">
                             <CheckCircle2 className="h-3 w-3" />
