@@ -151,6 +151,9 @@ const Members = () => {
             email: validated.email || null,
             telephone: validated.telephone || null,
             sexe: validated.sexe || null,
+            date_naissance: formData.date_naissance || null,
+            statut: formData.statut,
+            groupe_departement: formData.groupe_departement || null,
           })
           .eq("id", editingMember.id);
 
@@ -163,6 +166,9 @@ const Members = () => {
           email: validated.email || null,
           telephone: validated.telephone || null,
           sexe: validated.sexe || null,
+          date_naissance: formData.date_naissance || null,
+          statut: formData.statut,
+          groupe_departement: formData.groupe_departement || null,
           church_id: churchId,
         }]);
 
