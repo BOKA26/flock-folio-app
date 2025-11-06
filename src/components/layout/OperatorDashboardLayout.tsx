@@ -140,12 +140,12 @@ const OperatorDashboardLayout = ({ children }: OperatorDashboardLayoutProps) => 
       <div className="p-4 border-t border-white/10 space-y-3">
         <div className="px-4 py-3 bg-white/5 rounded-[10px] backdrop-blur-sm">
           <p className="text-xs text-white/70">Connecté en tant que</p>
-          <p className="font-medium text-sm truncate">{operatorName}</p>
+          <p className="font-medium text-sm truncate text-white">{operatorName}</p>
         </div>
         <Button
           onClick={handleLogout}
           variant="outline"
-          className="w-full bg-transparent border-white/20 text-white hover:bg-white/10 hover:text-white rounded-[10px]"
+          className="w-full bg-white/5 border-white/30 text-white hover:bg-white hover:text-[#0A2540] hover:border-white rounded-[10px] backdrop-blur-sm transition-all font-medium shadow-sm"
         >
           <LogOut className="h-4 w-4 mr-2" />
           Se déconnecter

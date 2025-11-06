@@ -151,8 +151,8 @@ const MemberLayout = ({ children }: MemberLayoutProps) => {
             </Link>
             <Button
               onClick={handleLogout}
-              variant="ghost"
-              className="w-full justify-start gap-3 text-white hover:bg-white/10 hover:text-white rounded-[10px] bg-transparent"
+              variant="outline"
+              className="w-full justify-start gap-3 bg-white/5 border-white/30 text-white hover:bg-white hover:text-[#0A2540] hover:border-white rounded-[10px] backdrop-blur-sm transition-all font-medium shadow-sm"
             >
               <LogOut className="h-5 w-5" />
               Se déconnecter

@@ -145,7 +145,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <Button 
           onClick={handleLogout} 
           variant="outline" 
-          className="w-full border-white/20 text-white hover:bg-white/10 hover:text-white rounded-[10px] bg-transparent"
+          className="w-full border-white/30 text-white hover:bg-white hover:text-[#0A2540] hover:border-white rounded-[10px] bg-white/5 backdrop-blur-sm transition-all font-medium shadow-sm"
         >
           <LogOut className="mr-2 h-4 w-4" />
           Déconnexion
