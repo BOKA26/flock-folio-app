@@ -79,7 +79,7 @@ const MemberLayout = ({ children }: MemberLayoutProps) => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-member-sky via-white to-member-blue">
+    <div className="min-h-screen bg-gradient-to-br from-[hsl(210,40%,98%)] via-white to-[hsl(202,85%,95%)]">
       {/* Mobile menu button */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
