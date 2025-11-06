@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import MemberLayout from "@/components/layout/MemberLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Church, MapPin, Phone, Mail, Globe, Facebook, Heart, DollarSign, Megaphone, MessageSquare, Calendar, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
@@ -17,6 +17,7 @@ const MemberSpace = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [prayers, setPrayers] = useState<any[]>([]);
   const [donations, setDonations] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -83,6 +84,51 @@ const MemberSpace = () => {
         .eq("membre_id", memberData.id)
         .order("date_don", { ascending: false });
       setDonations(donationsData || []);
+
+      // Load messages from pastor
+      const { data: messagesData } = await supabase
+        .from("messages")
+        .select("*")
+        .eq("church_id", memberData.church_id)
+        .order("created_at", { ascending: false })
+        .limit(10);
+      setMessages(messagesData || []);
+
+      // Setup realtime subscription for messages
+      const channel = supabase
+        .channel('messages-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'messages',
+            filter: `church_id=eq.${memberData.church_id}`
+          },
+          async (payload) => {
+            console.log('Message update received:', payload);
+            
+            if (payload.eventType === 'INSERT') {
+              setMessages((current) => [payload.new, ...current].slice(0, 10));
+              toast.success("Nouveau message du pasteur");
+            } else if (payload.eventType === 'UPDATE') {
+              setMessages((current) =>
+                current.map((msg) =>
+                  msg.id === payload.new.id ? payload.new : msg
+                )
+              );
+            } else if (payload.eventType === 'DELETE') {
+              setMessages((current) =>
+                current.filter((msg) => msg.id !== payload.old.id)
+              );
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
 
     } catch (error) {
       console.error("Error loading member data:", error);
@@ -301,6 +347,41 @@ const MemberSpace = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Messages du Pasteur en Temps Réel */}
+        {messages.length > 0 && (
+          <Card className="shadow-divine border-t-4 border-t-primary bg-gradient-to-br from-primary/5 to-secondary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="h-6 w-6 text-primary" />
+                💬 Messages du Pasteur
+              </CardTitle>
+              <CardDescription>Messages et communications importantes</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {messages.slice(0, 5).map((message) => (
+                <div key={message.id} className="border-l-4 border-l-primary pl-4 py-3 bg-white rounded-lg shadow-sm">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h4 className="font-semibold text-foreground">{message.subject}</h4>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                      {new Date(message.created_at).toLocaleDateString('fr-FR')}
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{message.content}</p>
+                  {message.recipient_type && (
+                    <div className="mt-2">
+                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                        {message.recipient_type === 'all' ? 'Tous les membres' : 
+                         message.recipient_type === 'members' ? 'Membres' : 
+                         message.recipient_type}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Two Column Layout */}
         <div className="grid lg:grid-cols-2 gap-8">
