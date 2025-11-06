@@ -46,8 +46,13 @@ const Auth = () => {
     
     fetchChurches();
 
-    // Listen for auth changes
+    // Listen for auth changes (but not during signup)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Only redirect on SIGNED_IN if it's not a new signup
+      if (event === "SIGNED_IN" && session && !session.user.email_confirmed_at) {
+        // Skip redirect during signup, let handleSignup manage it
+        return;
+      }
       if (event === "SIGNED_IN" && session) {
         const redirectPath = await getRedirectPath(session.user.id);
         navigate(redirectPath);
@@ -130,8 +135,7 @@ const Auth = () => {
         options: {
           data: {
             nom_complet: formData.nom_complet
-          },
-          emailRedirectTo: `${window.location.origin}/dashboard`
+          }
         }
       });
 
@@ -170,6 +174,10 @@ const Auth = () => {
         if (roleError) throw roleError;
 
         toast.success(`Église créée avec succès ! Code: ${churchCode}`);
+        
+        // Wait a bit for the role to be fully created
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
         navigate("/dashboard"); // Admins vont au dashboard
       } else {
         // Fidele joining existing church
@@ -216,6 +224,10 @@ const Auth = () => {
         }
 
         toast.success("Compte créé avec succès !");
+        
+        // Wait a bit for the role to be fully created
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
         navigate("/member-space"); // Fidèles vont à l'espace membre
       }
 
