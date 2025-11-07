@@ -189,6 +189,7 @@ const Announcements = () => {
   const canManage = userRole === "admin" || userRole === "operateur";
   const announcesOnly = announcements.filter(a => !a.type || a.type === 'annonce');
   const cultesOnly = announcements.filter(a => a.type === 'culte');
+  const eventsOnly = announcements.filter(a => a.type === 'evenement');
 
   return (
     <AdminDashboardLayout>
@@ -196,7 +197,7 @@ const Announcements = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-3xl font-display font-bold text-foreground">
-              Annonces et Cultes
+              Annonces, Événements et Cultes
             </h1>
             <p className="text-muted-foreground mt-1">
               Gérez les annonces, événements et programmes de culte
@@ -220,7 +221,7 @@ const Announcements = () => {
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>
-                    {editingAnnouncement ? "Modifier" : "Nouveau"} {formData.type === 'culte' ? 'programme de culte' : 'annonce'}
+                    {editingAnnouncement ? "Modifier" : "Nouveau"} {formData.type === 'culte' ? 'programme de culte' : formData.type === 'evenement' ? 'événement' : 'annonce'}
                   </DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -235,6 +236,7 @@ const Announcements = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="annonce">Annonce</SelectItem>
+                        <SelectItem value="evenement">Événement</SelectItem>
                         <SelectItem value="culte">Programme de culte</SelectItem>
                       </SelectContent>
                     </Select>
@@ -306,8 +308,9 @@ const Announcements = () => {
           <p className="text-center text-muted-foreground py-8">Chargement...</p>
         ) : (
           <Tabs defaultValue="annonces" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="annonces">Annonces ({announcesOnly.length})</TabsTrigger>
+              <TabsTrigger value="evenements">Événements ({eventsOnly.length})</TabsTrigger>
               <TabsTrigger value="cultes">Programmes de culte ({cultesOnly.length})</TabsTrigger>
             </TabsList>
             
@@ -380,6 +383,82 @@ const Announcements = () => {
                       <p className="text-xs text-muted-foreground mt-4">
                         Publié le{" "}
                         {new Date(announcement.created_at).toLocaleDateString("fr-FR")}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </TabsContent>
+
+            <TabsContent value="evenements" className="space-y-4">
+              {eventsOnly.length === 0 ? (
+                <Card className="shadow-gentle">
+                  <CardContent className="py-12 text-center">
+                    <p className="text-muted-foreground">Aucun événement pour le moment</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                eventsOnly.map((event) => (
+                  <Card key={event.id} className="shadow-gentle hover:shadow-elegant transition-all">
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <CardTitle className="text-xl mb-2">
+                            {event.titre}
+                          </CardTitle>
+                          {event.date_evenement && (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Calendar className="h-4 w-4" />
+                              {new Date(event.date_evenement).toLocaleDateString(
+                                "fr-FR",
+                                {
+                                  weekday: "long",
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        {canManage && (
+                          <div className="flex gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEdit(event)}
+                            >
+                              <Edit className="h-4 w-4 text-primary" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDelete(event.id)}
+                            >
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      {event.image_url && (
+                        <div className="overflow-hidden rounded-lg mb-4">
+                          <img 
+                            src={event.image_url} 
+                            alt={event.titre}
+                            className="w-full h-auto object-contain transition-transform duration-300 hover:scale-110 cursor-pointer"
+                          />
+                        </div>
+                      )}
+                      <p className="text-muted-foreground whitespace-pre-wrap">
+                        {event.contenu}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-4">
+                        Publié le{" "}
+                        {new Date(event.created_at).toLocaleDateString("fr-FR")}
                       </p>
                     </CardContent>
                   </Card>
