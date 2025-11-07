@@ -24,22 +24,83 @@ const MemberResources = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data: memberData } = await supabase
-        .from("members")
-        .select("*")
+      // Get church_id from user_roles first
+      const { data: roleData } = await supabase
+        .from("user_roles")
+        .select("church_id")
         .eq("user_id", user.id)
         .single();
 
-      if (!memberData) return;
+      if (!roleData?.church_id) {
+        toast.error("Vous n'êtes pas associé à une église");
+        setLoading(false);
+        return;
+      }
+
+      // Get or create member profile
+      let { data: memberData } = await supabase
+        .from("members")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      // Create member profile if it doesn't exist
+      if (!memberData) {
+        const { data: newMember } = await supabase
+          .from("members")
+          .insert({
+            user_id: user.id,
+            church_id: roleData.church_id,
+            nom: user.user_metadata?.nom_complet?.split(" ")[1] || "",
+            prenom: user.user_metadata?.nom_complet?.split(" ")[0] || "",
+            email: user.email,
+          })
+          .select()
+          .single();
+        
+        memberData = newMember;
+      }
+
       setMember(memberData);
 
+      // Load resources using church_id from user_roles
       const { data: resourcesData } = await supabase
         .from("spiritual_resources")
         .select("*")
-        .eq("church_id", memberData.church_id)
+        .eq("church_id", roleData.church_id)
         .order("created_at", { ascending: false });
 
       setResources(resourcesData || []);
+
+      // Setup realtime listener for new resources
+      const channel = supabase
+        .channel('resources-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'spiritual_resources',
+            filter: `church_id=eq.${roleData.church_id}`
+          },
+          (payload) => {
+            if (payload.eventType === 'INSERT') {
+              setResources(prev => [payload.new as any, ...prev]);
+              toast.success("Nouvelle ressource disponible !");
+            } else if (payload.eventType === 'UPDATE') {
+              setResources(prev => prev.map(item => 
+                item.id === (payload.new as any).id ? payload.new as any : item
+              ));
+            } else if (payload.eventType === 'DELETE') {
+              setResources(prev => prev.filter(item => item.id !== payload.old.id));
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     } catch (error) {
       console.error("Error loading resources:", error);
       toast.error("Erreur lors du chargement");
