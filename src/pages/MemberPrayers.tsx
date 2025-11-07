@@ -25,22 +25,86 @@ const MemberPrayers = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data: memberData } = await supabase
-        .from("members")
-        .select("*")
+      // Get church_id from user_roles first
+      const { data: roleData } = await supabase
+        .from("user_roles")
+        .select("church_id")
         .eq("user_id", user.id)
         .single();
 
-      if (!memberData) return;
-      setMember(memberData);
+      if (!roleData?.church_id) {
+        toast.error("Vous n'êtes pas associé à une église");
+        setLoading(false);
+        return;
+      }
 
+      // Get or create member profile
+      let { data: memberData } = await supabase
+        .from("members")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      // Create member profile if it doesn't exist
+      if (!memberData) {
+        const { data: newMember } = await supabase
+          .from("members")
+          .insert({
+            user_id: user.id,
+            church_id: roleData.church_id,
+            nom: user.user_metadata?.nom_complet?.split(" ")[1] || "",
+            prenom: user.user_metadata?.nom_complet?.split(" ")[0] || "",
+            email: user.email,
+          })
+          .select()
+          .single();
+        
+        memberData = newMember;
+      }
+
+      setMember({ ...memberData, church_id: roleData.church_id });
+
+      // Load prayers using user.id (not member.id) for membre_id
       const { data: prayersData } = await supabase
         .from("prayer_requests")
         .select("*")
-        .eq("membre_id", memberData.id)
+        .eq("membre_id", user.id)
         .order("date_demande", { ascending: false });
 
       setPrayers(prayersData || []);
+
+      // Setup realtime listener
+      const channel = supabase
+        .channel('prayers-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'prayer_requests',
+            filter: `membre_id=eq.${user.id}`
+          },
+          (payload) => {
+            if (payload.eventType === 'INSERT') {
+              setPrayers(prev => [payload.new as any, ...prev]);
+              toast.success("Votre demande a été enregistrée");
+            } else if (payload.eventType === 'UPDATE') {
+              setPrayers(prev => prev.map(item => 
+                item.id === (payload.new as any).id ? payload.new as any : item
+              ));
+              if ((payload.new as any).reponse && !(payload.old as any).reponse) {
+                toast.success("Vous avez reçu une réponse à votre prière 🙏");
+              }
+            } else if (payload.eventType === 'DELETE') {
+              setPrayers(prev => prev.filter(item => item.id !== payload.old.id));
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     } catch (error) {
       console.error("Error loading prayers:", error);
       toast.error("Erreur lors du chargement");
@@ -57,11 +121,17 @@ const MemberPrayers = () => {
 
     setSubmitting(true);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || !member) {
+        toast.error("Erreur d'authentification");
+        return;
+      }
+
       const { error } = await supabase
         .from("prayer_requests")
         .insert({
           texte: newPrayer,
-          membre_id: member.id,
+          membre_id: user.id, // Use user.id instead of member.id
           church_id: member.church_id,
           statut: "pending",
         });
