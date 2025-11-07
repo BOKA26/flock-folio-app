@@ -65,11 +65,11 @@ const MemberPrayers = () => {
 
       setMember({ ...memberData, church_id: roleData.church_id });
 
-      // Load prayers using user.id (not member.id) for membre_id
+      // Load prayers using member.id for membre_id to satisfy FK
       const { data: prayersData } = await supabase
         .from("prayer_requests")
         .select("*")
-        .eq("membre_id", user.id)
+        .eq("membre_id", memberData.id)
         .order("date_demande", { ascending: false });
 
       setPrayers(prayersData || []);
@@ -83,7 +83,7 @@ const MemberPrayers = () => {
             event: '*',
             schema: 'public',
             table: 'prayer_requests',
-            filter: `membre_id=eq.${user.id}`
+            filter: `membre_id=eq.${memberData.id}`
           },
           (payload) => {
             if (payload.eventType === 'INSERT') {
@@ -131,7 +131,7 @@ const MemberPrayers = () => {
 
       console.log("Sending prayer request:", {
         texte: newPrayer,
-        membre_id: user.id,
+        membre_id: member.id,
         church_id: member.church_id,
       });
 
@@ -139,7 +139,7 @@ const MemberPrayers = () => {
         .from("prayer_requests")
         .insert({
           texte: newPrayer,
-          membre_id: user.id,
+          membre_id: member.id,
           church_id: member.church_id,
           statut: "pending",
         })
