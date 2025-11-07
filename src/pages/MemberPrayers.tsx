@@ -15,6 +15,7 @@ const MemberPrayers = () => {
   const [newPrayer, setNewPrayer] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     loadPrayers();
@@ -124,26 +125,39 @@ const MemberPrayers = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || !member) {
         toast.error("Erreur d'authentification");
+        setSubmitting(false);
         return;
       }
 
-      const { error } = await supabase
+      console.log("Sending prayer request:", {
+        texte: newPrayer,
+        membre_id: user.id,
+        church_id: member.church_id,
+      });
+
+      const { data, error } = await supabase
         .from("prayer_requests")
         .insert({
           texte: newPrayer,
-          membre_id: user.id, // Use user.id instead of member.id
+          membre_id: user.id,
           church_id: member.church_id,
           statut: "pending",
-        });
+        })
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Prayer insert error:", error);
+        throw error;
+      }
 
+      console.log("Prayer inserted successfully:", data);
       toast.success("Votre demande de prière a été envoyée 🙏");
       setNewPrayer("");
+      setDialogOpen(false);
       loadPrayers();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting prayer:", error);
-      toast.error("Erreur lors de l'envoi");
+      toast.error(error.message || "Erreur lors de l'envoi");
     } finally {
       setSubmitting(false);
     }
@@ -181,7 +195,7 @@ const MemberPrayers = () => {
             Ma Vie Spirituelle
           </h1>
           
-          <Dialog>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button className="gradient-divine">
                 <Heart className="h-4 w-4 mr-2" />
@@ -313,7 +327,7 @@ const MemberPrayers = () => {
                 <p className="text-muted-foreground mb-4">
                   Vous n'avez pas encore de demande de prière
                 </p>
-                <Dialog>
+                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                   <DialogTrigger asChild>
                     <Button className="gradient-divine">
                       <Heart className="h-4 w-4 mr-2" />
