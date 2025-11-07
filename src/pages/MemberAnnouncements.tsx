@@ -11,6 +11,7 @@ const MemberAnnouncements = () => {
   const [member, setMember] = useState<any>(null);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
+  const [cultes, setCultes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -76,8 +77,17 @@ const MemberAnnouncements = () => {
         .eq("type", "evenement")
         .order("date_evenement", { ascending: true });
 
+      // Load cultes
+      const { data: cultesData } = await supabase
+        .from("announcements")
+        .select("*")
+        .eq("church_id", roleData.church_id)
+        .eq("type", "culte")
+        .order("date_evenement", { ascending: true });
+
       setAnnouncements(announcementsData || []);
       setEvents(eventsData || []);
+      setCultes(cultesData || []);
 
       // Setup realtime listeners
       const channel = supabase
@@ -101,6 +111,11 @@ const MemberAnnouncements = () => {
                   new Date(a.date_evenement).getTime() - new Date(b.date_evenement).getTime()
                 ));
                 toast.success("Nouvel événement !");
+              } else if (newItem.type === 'culte') {
+                setCultes(prev => [...prev, newItem].sort((a, b) => 
+                  new Date(a.date_evenement).getTime() - new Date(b.date_evenement).getTime()
+                ));
+                toast.success("Nouveau programme de culte !");
               }
             } else if (payload.eventType === 'UPDATE') {
               const updatedItem = payload.new as any;
@@ -112,11 +127,16 @@ const MemberAnnouncements = () => {
                 setEvents(prev => prev.map(item => 
                   item.id === updatedItem.id ? updatedItem : item
                 ));
+              } else if (updatedItem.type === 'culte') {
+                setCultes(prev => prev.map(item => 
+                  item.id === updatedItem.id ? updatedItem : item
+                ));
               }
             } else if (payload.eventType === 'DELETE') {
               const deletedId = payload.old.id;
               setAnnouncements(prev => prev.filter(item => item.id !== deletedId));
               setEvents(prev => prev.filter(item => item.id !== deletedId));
+              setCultes(prev => prev.filter(item => item.id !== deletedId));
             }
           }
         )
@@ -169,8 +189,9 @@ const MemberAnnouncements = () => {
         </h1>
 
         <Tabs defaultValue="announcements" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsList className="grid w-full max-w-2xl grid-cols-3">
             <TabsTrigger value="announcements">Annonces ({announcements.length})</TabsTrigger>
+            <TabsTrigger value="cultes">Programmes de culte ({cultes.length})</TabsTrigger>
             <TabsTrigger value="events">Événements ({events.length})</TabsTrigger>
           </TabsList>
 
@@ -216,6 +237,88 @@ const MemberAnnouncements = () => {
                 <CardContent className="py-12 text-center">
                   <Megaphone className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">Aucune annonce pour le moment</p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="cultes" className="space-y-4 mt-6">
+            {cultes.length > 0 ? (
+              cultes.map((culte) => (
+                <Card key={culte.id} className="shadow-soft hover:shadow-divine transition-shadow">
+                  <CardContent className="pt-6">
+                    {culte.image_url && (
+                      <img
+                        src={culte.image_url}
+                        alt={culte.titre}
+                        className="w-full h-64 object-cover rounded-lg mb-4"
+                      />
+                    )}
+                    <div className="space-y-4">
+                      <h3 className="text-2xl font-bold">{culte.titre}</h3>
+                      
+                      <p className="text-muted-foreground">{culte.contenu}</p>
+                      
+                      <div className="grid md:grid-cols-2 gap-4 p-4 bg-accent/50 rounded-lg">
+                        {culte.date_evenement && (
+                          <div className="flex items-center gap-2">
+                            <Calendar className="h-5 w-5 text-primary" />
+                            <div>
+                              <p className="text-sm font-semibold">Date</p>
+                              <p className="text-sm text-muted-foreground">
+                                {new Date(culte.date_evenement).toLocaleDateString('fr-FR', {
+                                  weekday: 'long',
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric',
+                                })}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {(culte.heure_debut || culte.heure_fin) && (
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-5 w-5 text-primary" />
+                            <div>
+                              <p className="text-sm font-semibold">Horaire</p>
+                              <p className="text-sm text-muted-foreground">
+                                {culte.heure_debut} - {culte.heure_fin}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {culte.lieu && (
+                          <div className="flex items-center gap-2">
+                            <MapPin className="h-5 w-5 text-primary" />
+                            <div>
+                              <p className="text-sm font-semibold">Lieu</p>
+                              <p className="text-sm text-muted-foreground">{culte.lieu}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex gap-2 pt-4 border-t">
+                        <Button
+                          variant="outline"
+                          onClick={() => handleShare(culte)}
+                          className="flex-1"
+                        >
+                          <Share2 className="h-4 w-4 mr-2" />
+                          Partager
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <Card className="shadow-soft">
+                <CardContent className="py-12 text-center">
+                  <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">Aucun programme de culte pour le moment</p>
                 </CardContent>
               </Card>
             )}
