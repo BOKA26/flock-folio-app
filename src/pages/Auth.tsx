@@ -206,22 +206,7 @@ const Auth = () => {
 
         if (roleError) throw roleError;
 
-        // Create member entry
-        const nameParts = formData.nom_complet.split(" ");
-        const { error: memberError } = await supabase
-          .from("members")
-          .insert({
-            user_id: authData.user.id,
-            church_id: churchId,
-            nom: nameParts.slice(-1)[0] || formData.nom_complet,
-            prenom: nameParts.slice(0, -1).join(" ") || formData.nom_complet,
-            email: formData.email,
-            statut: "actif"
-          });
-
-        if (memberError) {
-          console.error("Error creating member:", memberError);
-        }
+        // Member entry will be created automatically by database trigger
 
         toast.success("Compte créé avec succès !");
         
