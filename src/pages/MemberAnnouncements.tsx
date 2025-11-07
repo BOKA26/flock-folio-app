@@ -22,31 +22,109 @@ const MemberAnnouncements = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data: memberData } = await supabase
-        .from("members")
-        .select("*, churches(*)")
+      // Get church_id from user_roles first
+      const { data: roleData } = await supabase
+        .from("user_roles")
+        .select("church_id")
         .eq("user_id", user.id)
         .single();
 
-      if (!memberData) return;
+      if (!roleData?.church_id) {
+        toast.error("Vous n'êtes pas associé à une église");
+        return;
+      }
+
+      // Get or create member profile
+      let { data: memberData } = await supabase
+        .from("members")
+        .select("*, churches(*)")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      // Create member profile if it doesn't exist
+      if (!memberData) {
+        const { data: newMember } = await supabase
+          .from("members")
+          .insert({
+            user_id: user.id,
+            church_id: roleData.church_id,
+            nom: user.user_metadata?.nom_complet?.split(" ")[1] || "",
+            prenom: user.user_metadata?.nom_complet?.split(" ")[0] || "",
+            email: user.email,
+          })
+          .select("*, churches(*)")
+          .single();
+        
+        memberData = newMember;
+      }
+
       setMember(memberData);
 
+      // Load announcements
       const { data: announcementsData } = await supabase
         .from("announcements")
         .select("*")
-        .eq("church_id", memberData.church_id)
+        .eq("church_id", roleData.church_id)
         .eq("type", "annonce")
         .order("created_at", { ascending: false });
 
+      // Load events
       const { data: eventsData } = await supabase
         .from("announcements")
         .select("*")
-        .eq("church_id", memberData.church_id)
+        .eq("church_id", roleData.church_id)
         .eq("type", "evenement")
         .order("date_evenement", { ascending: true });
 
       setAnnouncements(announcementsData || []);
       setEvents(eventsData || []);
+
+      // Setup realtime listeners
+      const channel = supabase
+        .channel('announcements-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'announcements',
+            filter: `church_id=eq.${roleData.church_id}`
+          },
+          (payload) => {
+            if (payload.eventType === 'INSERT') {
+              const newItem = payload.new as any;
+              if (newItem.type === 'annonce') {
+                setAnnouncements(prev => [newItem, ...prev]);
+                toast.success("Nouvelle annonce !");
+              } else if (newItem.type === 'evenement') {
+                setEvents(prev => [...prev, newItem].sort((a, b) => 
+                  new Date(a.date_evenement).getTime() - new Date(b.date_evenement).getTime()
+                ));
+                toast.success("Nouvel événement !");
+              }
+            } else if (payload.eventType === 'UPDATE') {
+              const updatedItem = payload.new as any;
+              if (updatedItem.type === 'annonce') {
+                setAnnouncements(prev => prev.map(item => 
+                  item.id === updatedItem.id ? updatedItem : item
+                ));
+              } else if (updatedItem.type === 'evenement') {
+                setEvents(prev => prev.map(item => 
+                  item.id === updatedItem.id ? updatedItem : item
+                ));
+              }
+            } else if (payload.eventType === 'DELETE') {
+              const deletedId = payload.old.id;
+              setAnnouncements(prev => prev.filter(item => item.id !== deletedId));
+              setEvents(prev => prev.filter(item => item.id !== deletedId));
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     } catch (error) {
       console.error("Error loading data:", error);
       toast.error("Erreur lors du chargement");
