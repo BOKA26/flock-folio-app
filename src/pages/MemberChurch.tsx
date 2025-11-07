@@ -25,24 +25,62 @@ const MemberChurch = () => {
         return;
       }
 
+      // First, get the church_id from user_roles
+      const { data: roleData, error: roleError } = await supabase
+        .from("user_roles")
+        .select("church_id")
+        .eq("user_id", user.id)
+        .single();
+
+      if (roleError || !roleData) {
+        toast.error("Vous n'êtes associé à aucune église. Veuillez contacter votre pasteur.");
+        return;
+      }
+
+      // Get church information
+      const { data: churchData, error: churchError } = await supabase
+        .from("churches")
+        .select("*")
+        .eq("id", roleData.church_id)
+        .single();
+
+      if (churchError || !churchData) {
+        toast.error("Impossible de charger les informations de l'église");
+        return;
+      }
+
+      setChurchInfo(churchData);
+
+      // Check if member entry exists, if not create it
       const { data: memberData } = await supabase
         .from("members")
-        .select("*, churches(*)")
+        .select("id")
         .eq("user_id", user.id)
         .single();
 
       if (!memberData) {
-        toast.error("Profil membre introuvable");
-        return;
-      }
+        // Create member entry if it doesn't exist
+        const { error: memberError } = await supabase
+          .from("members")
+          .insert({
+            user_id: user.id,
+            church_id: roleData.church_id,
+            nom: user.user_metadata?.nom_complet?.split(" ").slice(-1)[0] || "Membre",
+            prenom: user.user_metadata?.nom_complet?.split(" ").slice(0, -1).join(" ") || "",
+            email: user.email,
+            statut: "actif"
+          });
 
-      setChurchInfo(memberData.churches);
+        if (memberError) {
+          console.error("Error creating member:", memberError);
+        }
+      }
 
       // Load ministries
       const { data: ministriesData } = await supabase
         .from("ministries")
         .select("*")
-        .eq("church_id", memberData.church_id);
+        .eq("church_id", roleData.church_id);
 
       setMinistries(ministriesData || []);
     } catch (error) {

@@ -33,26 +33,70 @@ const MemberSpace = () => {
       }
       setUser(user);
 
-      // Get member info
-      const { data: memberData } = await supabase
-        .from("members")
-        .select("*, churches(*)")
+      // First, get the church_id from user_roles
+      const { data: roleData, error: roleError } = await supabase
+        .from("user_roles")
+        .select("church_id")
         .eq("user_id", user.id)
         .single();
 
-      if (!memberData) {
-        toast.error("Profil membre introuvable");
+      if (roleError || !roleData) {
+        toast.error("Vous n'êtes associé à aucune église. Veuillez contacter votre pasteur.");
         return;
       }
 
-      setMember(memberData);
-      setChurchInfo(memberData.churches);
+      // Get church information
+      const { data: churchData, error: churchError } = await supabase
+        .from("churches")
+        .select("*")
+        .eq("id", roleData.church_id)
+        .single();
+
+      if (churchError || !churchData) {
+        toast.error("Impossible de charger les informations de l'église");
+        return;
+      }
+
+      setChurchInfo(churchData);
+
+      // Get or create member info
+      let memberData = await supabase
+        .from("members")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!memberData.data) {
+        // Create member entry if it doesn't exist
+        const { data: newMember, error: memberError } = await supabase
+          .from("members")
+          .insert({
+            user_id: user.id,
+            church_id: roleData.church_id,
+            nom: user.user_metadata?.nom_complet?.split(" ").slice(-1)[0] || "Membre",
+            prenom: user.user_metadata?.nom_complet?.split(" ").slice(0, -1).join(" ") || "",
+            email: user.email,
+            statut: "actif"
+          })
+          .select()
+          .single();
+
+        if (memberError) {
+          console.error("Error creating member:", memberError);
+        } else {
+          memberData.data = newMember;
+        }
+      }
+
+      if (memberData.data) {
+        setMember(memberData.data);
+      }
 
       // Load announcements
       const { data: announcementsData } = await supabase
         .from("announcements")
         .select("*")
-        .eq("church_id", memberData.church_id)
+        .eq("church_id", roleData.church_id)
         .order("created_at", { ascending: false })
         .limit(5);
       setAnnouncements(announcementsData || []);
@@ -61,7 +105,7 @@ const MemberSpace = () => {
       const { data: eventsData } = await supabase
         .from("announcements")
         .select("*")
-        .eq("church_id", memberData.church_id)
+        .eq("church_id", roleData.church_id)
         .eq("type", "evenement")
         .gte("date_evenement", new Date().toISOString())
         .order("date_evenement", { ascending: true })
@@ -72,24 +116,26 @@ const MemberSpace = () => {
       const { data: prayersData } = await supabase
         .from("prayer_requests")
         .select("*")
-        .eq("church_id", memberData.church_id)
+        .eq("church_id", roleData.church_id)
         .order("created_at", { ascending: false })
         .limit(5);
       setPrayers(prayersData || []);
 
       // Load my donations
-      const { data: donationsData } = await supabase
-        .from("donations")
-        .select("*")
-        .eq("membre_id", memberData.id)
-        .order("date_don", { ascending: false });
-      setDonations(donationsData || []);
+      if (memberData.data) {
+        const { data: donationsData } = await supabase
+          .from("donations")
+          .select("*")
+          .eq("membre_id", memberData.data.id)
+          .order("date_don", { ascending: false });
+        setDonations(donationsData || []);
+      }
 
       // Load messages from pastor
       const { data: messagesData } = await supabase
         .from("messages")
         .select("*")
-        .eq("church_id", memberData.church_id)
+        .eq("church_id", roleData.church_id)
         .order("created_at", { ascending: false })
         .limit(10);
       setMessages(messagesData || []);
@@ -103,7 +149,7 @@ const MemberSpace = () => {
             event: '*',
             schema: 'public',
             table: 'messages',
-            filter: `church_id=eq.${memberData.church_id}`
+            filter: `church_id=eq.${roleData.church_id}`
           },
           async (payload) => {
             console.log('Message update received:', payload);
