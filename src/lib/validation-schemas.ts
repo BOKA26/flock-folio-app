@@ -13,7 +13,7 @@ export const memberSchema = z.object({
 export const announcementSchema = z.object({
   titre: z.string().trim().min(1, 'Le titre est requis').max(200, 'Le titre ne peut dépasser 200 caractères'),
   contenu: z.string().trim().min(1, 'Le contenu est requis').max(5000, 'Le contenu ne peut dépasser 5000 caractères'),
-  type: z.enum(['annonce', 'culte']),
+  type: z.enum(['annonce', 'culte', 'evenement']),
   image_url: z.string().url('URL invalide').max(500, 'URL trop longue').optional().or(z.literal('')),
 });
 
